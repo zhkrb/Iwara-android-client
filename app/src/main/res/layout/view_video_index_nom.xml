@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:clickable="true"
+    android:focusable="true">
+    
+    <com.zhkrb.iwara.custom.RateImageView
+        android:layout_width="wrap_content"
+        android:layout_height="90dp"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:isWidthRate="false"
+        app:rate="1.7"
+        android:id="@+id/thumb"
+        android:scaleType="center"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="15dp"
+        android:paddingEnd="0dp"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:ellipsize="end"
+            android:text="测试测试测试测试测试测试测试测试测试试测试测试测试测试测试测试测试测试测试测试"
+            android:textSize="14sp"
+            android:textColor="@color/textColor_black"
+            android:textAlignment="viewStart"
+            android:id="@+id/title"
+            />
+        <TextView
+            android:layout_below="@id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="12sp"
+            android:textColor="@color/textColor_dark"
+            android:id="@+id/user"
+            />
+        <TextView
+            android:layout_below="@id/user"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="12sp"
+            android:textColor="@color/textColor_dark"
+            android:id="@+id/view"
+
+            />
+
+        <TextView
+            android:layout_below="@id/user"
+
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="12sp"
+            android:textColor="@color/textColor_dark"
+            android:id="@+id/like"
+            android:layout_toEndOf="@id/view"
+            android:layout_marginStart="10dp"
+            />
+
+        <ImageView
+            android:layout_marginStart="3dp"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/ic_favorite_black_24dp"
+            android:layout_toEndOf="@id/like"
+            android:layout_alignBottom="@id/like"
+            android:scaleType="center"
+            />
+
+
+
+    </RelativeLayout>
+    
+    
+
+
+
+</LinearLayout>

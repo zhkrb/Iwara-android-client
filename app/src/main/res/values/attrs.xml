@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RefreshView">
+        <attr name="enableLoadMore" format="boolean"/>
+        <attr name="enableRefresh" format="boolean"/>
+        <attr name="showNoData" format="boolean"/>
+        <attr name="showLoading" format="boolean"/>
+        <attr name="layout" format="reference"/>
+    </declare-styleable>
+    <declare-styleable name="RateImageView">
+        <attr name="rate" format="float"/>
+        <attr name="isWidthRate" format="boolean"/>
+
+    </declare-styleable>
+    <declare-styleable name="CutCardView">
+        <attr name="AllCut" format="boolean"/>
+        <attr name="TopLeftCut" format="boolean"/>
+        <attr name="TopRightCut" format="boolean"/>
+        <attr name="BottomLeftCut" format="boolean"/>
+        <attr name="BottomRightCut" format="boolean"/>
+        <attr name="CutElevation" format="dimension"/>
+        <attr name="TopLeftCutRadius" format="dimension"/>
+        <attr name="TopRightCutRadius" format="dimension"/>
+        <attr name="BottomLeftRadius" format="dimension"/>
+        <attr name="BottomRightRadius" format="dimension"/>
+        <attr name="AllCutRadius" format="dimension"/>
+        <attr name="CutForeground" format="reference"/>
+    </declare-styleable>
+</resources>

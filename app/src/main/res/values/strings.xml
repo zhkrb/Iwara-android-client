@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Iwara</string>
+    <string name="test_name">多语言切换</string>
+    <string name="safe_mode_off">安全模式关闭</string>
+    <string name="load_failure" >加载失败</string>
+    <string name="video_view">次观看</string>
+    <string name="no_more">无更多结果</string>
+    <string name="no_more_there" >RUA! 空空如也</string>
+    <string name="serializationerror">JSON序列化异常</string>
+    <string name="uncheckedioerror">IO异常</string>
+    <string name="unsupported_mime_type">不支持的mime类型</string>
+    <string name="unknow_error">未知错误</string>
+    <string name="socket_time_out">连接超时</string>
+</resources>

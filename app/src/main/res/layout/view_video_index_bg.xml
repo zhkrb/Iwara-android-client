@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhkrb.iwara.custom.CutCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:BottomRightCut="true"
+    app:BottomRightRadius="20dp"
+    app:cardBackgroundColor="@color/secondaryLight"
+    app:CutElevation="2dp"
+    android:clickable="true"
+    app:cardCornerRadius="0dp"
+
+    android:focusable="true">
+<LinearLayout
+
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <com.zhkrb.iwara.custom.RateImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/thumb"
+        android:scaleType="center"
+        app:rate="0.70"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textColor="@color/textColor_black"
+            android:textSize="16sp"
+            android:id="@+id/title"
+            android:lineSpacingExtra="3dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/user"
+                android:textSize="14sp"
+                android:textColor="@color/textColor_dark"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="14sp"
+                android:textColor="@color/textColor_dark"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/view"
+
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="14sp"
+                android:textColor="@color/textColor_dark"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/like"
+
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="5dp"
+                />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:scaleType="center"
+                android:src="@drawable/ic_favorite_black_24dp"
+                />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>
+</com.zhkrb.iwara.custom.CutCardView>

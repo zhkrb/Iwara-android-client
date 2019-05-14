@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@null"
+    android:paddingBottom="5dp"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    >
+    <com.zhkrb.iwara.custom.CutCardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:BottomRightCut="true"
+        app:BottomRightRadius="15dp"
+        app:cardBackgroundColor="@color/secondaryLight"
+        app:CutElevation="2dp"
+        android:clickable="true"
+        app:cardCornerRadius="0dp"
+        android:focusable="true">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+
+            <com.zhkrb.iwara.custom.RateImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/thumb"
+                app:rate="0.68"
+                android:scaleType="center"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_alignBottom="@id/thumb"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:orientation="horizontal"
+                android:background="@mipmap/bg_video_title_shadow"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/view"
+                    android:textColor="@color/textColor"
+                    android:layout_gravity="center_vertical"
+                    android:textAlignment="center"
+                    android:textSize="14sp"
+                    />
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/like"
+                    android:textColor="@color/textColor"
+                    android:layout_gravity="center_vertical"
+                    android:textAlignment="center"
+                    android:textSize="14sp"
+                    android:layout_marginEnd="5dp"
+                    />
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_favorite_black_24dp"
+                    android:tint="@color/textColor"
+                    android:layout_gravity="center_vertical"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:orientation="vertical"
+                android:layout_below="@id/thumb"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:textColor="@color/textColor_black"
+                    android:gravity="center_vertical"
+                    android:textSize="14sp"
+                    android:id="@+id/title"
+                    android:lineSpacingExtra="3dp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/user"
+                    android:textSize="12sp"
+                    android:textColor="@color/textColor_dark"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="3dp"
+                    android:gravity="center_vertical"
+                    />
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+    </com.zhkrb.iwara.custom.CutCardView>
+
+</RelativeLayout>

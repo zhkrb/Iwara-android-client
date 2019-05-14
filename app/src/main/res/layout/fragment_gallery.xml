@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/surfaceDark">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/appBarLayout"
+        app:liftOnScroll="true"
+        android:background="@null"
+        >
+
+
+        <com.zhkrb.iwara.custom.CutCardView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/cardView"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            >
+
+        </com.zhkrb.iwara.custom.CutCardView>
+
+
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.zhkrb.iwara.custom.RefreshView.RefreshView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:id="@+id/refreshView"
+
+        >
+
+    </com.zhkrb.iwara.custom.RefreshView.RefreshView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Iwara</string>
+    <string name="test_name">Switch language</string>
+    <string name="safe_mode_off">Safe mode off</string>
+    <string name="load_failure" >load failure</string>
+    <string name="video_view">views</string>
+    <string name="no_more">no more results</string>
+    <string name="no_more_there" >nothing in there</string>
+    <string name="serializationerror">serialization fails</string>
+    <string name="uncheckedioerror">IO error</string>
+    <string name="unsupported_mime_type">supported mime</string>
+    <string name="unknow_error">unknow error</string>
+    <string name="socket_time_out">Time out</string>
+</resources>
