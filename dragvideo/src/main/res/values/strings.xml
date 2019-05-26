@@ -1,0 +1,3 @@
+<resources>
+    <string name="behavior_scale_video">com.zhkrb.dragvideo.ScaleVideoBehavior</string>
+</resources>

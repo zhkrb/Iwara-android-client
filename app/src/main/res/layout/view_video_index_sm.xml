@@ -19,10 +19,12 @@
         app:CutElevation="2dp"
         android:clickable="true"
         app:cardCornerRadius="0dp"
+        android:background="@null"
         android:focusable="true">
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@null"
             >
 
             <com.zhkrb.iwara.custom.RateImageView
@@ -39,7 +41,7 @@
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:orientation="horizontal"
-                android:background="@mipmap/bg_video_title_shadow"
+                android:background="@drawable/bg_video_title_shadow"
                 >
 
                 <TextView

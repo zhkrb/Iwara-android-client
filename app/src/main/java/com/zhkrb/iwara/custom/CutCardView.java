@@ -5,8 +5,10 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.widget.FrameLayout;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.shape.CornerTreatment;
@@ -97,8 +99,9 @@ public class CutCardView extends MaterialCardView {
         mShapeDrawable.setPaintStyle(Paint.Style.FILL);
         mShapeDrawable.setFillColor(backgoundColor);
         mShapeDrawable.setUseTintColorForShadow(true);
+//        mShapeDrawable.setTint(getResources().getColor(R.color.textColor_dark));
         mShapeDrawable.setElevation(CutElevation);
-        mShapeDrawable.setShadowCompatibilityMode(MaterialShapeDrawable.SHADOW_COMPAT_MODE_ALWAYS);
+        mShapeDrawable.setShadowCompatibilityMode(MaterialShapeDrawable.SHADOW_COMPAT_MODE_DEFAULT);
         setBackground(mShapeDrawable);
         if (mForegoundDrawable!=null){
             setForeground(mForegoundDrawable);

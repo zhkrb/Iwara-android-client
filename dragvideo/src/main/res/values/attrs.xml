@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ScaleVideoView">
+        <attr name="view_layout" format="reference"/>
+        <attr name="target_width" format="dimension"/>
+    </declare-styleable>
+</resources>

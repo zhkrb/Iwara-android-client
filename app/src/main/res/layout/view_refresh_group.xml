@@ -7,6 +7,7 @@
     android:id="@+id/refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@null"
     >
 
     <com.zhkrb.iwara.custom.RefreshView.ScaleRecyclerView
@@ -15,6 +16,7 @@
         android:layout_height="match_parent"
         android:overScrollMode="never"
         android:visibility="gone"
+        android:background="@null"
 
         />
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

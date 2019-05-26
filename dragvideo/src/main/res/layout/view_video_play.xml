@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhkrb.dragvideo.DragVideoLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:cardUseCompatPadding="true"
+            app:cardElevation="0dp"
+            app:cardPreventCornerOverlap="true"
+            android:minHeight="170dp"
+            >
+            <com.zhkrb.dragvideo.ScaleVideoView
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:background="@color/textColor"
+                />
+        </com.google.android.material.card.MaterialCardView>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+
+
+    </androidx.core.widget.NestedScrollView>
+
+
+
+
+</com.zhkrb.dragvideo.DragVideoLayout>

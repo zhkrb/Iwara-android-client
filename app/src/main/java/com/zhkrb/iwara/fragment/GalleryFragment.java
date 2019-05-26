@@ -8,6 +8,7 @@ import android.view.View;
 import com.alibaba.fastjson.JSON;
 import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.adapter.VideoListAdapter;
+import com.zhkrb.iwara.base.AbsActivity;
 import com.zhkrb.iwara.base.AbsFragment;
 import com.zhkrb.iwara.bean.VideoListBean;
 import com.zhkrb.iwara.custom.ItemDecoration;
@@ -33,6 +34,7 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
 
     @Override
     protected void main() {
+        ((AbsActivity)mContext).getWindow().setBackgroundDrawable(null);
         Bundle bundle = getArguments();
         if (bundle!=null){
             mGalleryMode = bundle.getInt("mdoe",0);

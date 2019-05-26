@@ -1,1 +1,1 @@
-include ':app', ':network'
+include ':app', ':network', ':dragvideo'

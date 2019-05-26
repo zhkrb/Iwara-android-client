@@ -90,8 +90,8 @@ public class VideoListAdapter extends RefreshAdapter<VideoListBean> {
         if (mList!=null&&mList.size()>0 && isListSort){
             if (mLastBgSize>0){
                 List<VideoListBean> list1 = mList.subList(mList.size()-mLastBgSize,mList.size());
-                mList.subList(mList.size()-mLastBgSize,mList.size()).clear();
                 list.addAll(0,list1);
+                mList.removeAll(list1);
             }
             SortUtil.result result1 = SortUtil.SortVideoList(list,isLastItemSingle);
             isLastItemSingle = result1.isLastSignle();
