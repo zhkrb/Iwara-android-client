@@ -13,6 +13,7 @@
         android:id="@+id/thumb"
         android:scaleType="centerCrop"
         android:src="@mipmap/screen"
+        android:contentDescription=""
         />
 
     <View

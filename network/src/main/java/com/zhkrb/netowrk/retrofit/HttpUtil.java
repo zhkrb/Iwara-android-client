@@ -2,6 +2,10 @@ package com.zhkrb.netowrk.retrofit;
 
 import com.zhkrb.netowrk.NetworkCallback;
 import com.zhkrb.netowrk.retrofit.bean.GetBean;
+import com.zhkrb.netowrk.retrofit.manager.RequestManager;
+
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -15,38 +19,33 @@ public class HttpUtil {
         HttpClient.getInstance().init(url);
     }
 
-    public static Observable<ResponseBody> getBody(String api){
-        return HttpClient.getInstance().get(api,"",null);
+    public static void reSetUrl(String url){
+        HttpClient.getInstance().reSet(url);
     }
 
-    public static void testSend(@NonNull RetrofitCallback callback){
-        callback.onStart();
-        HttpClient.getInstance().get("aa","123",
+    public static void cancel(String tag){
+        RequestManager.getInstance().cancel(tag);
+    }
+
+    public static void cancelAll(){
+        RequestManager.getInstance().cancelAll();
+    }
+
+    public static Observable<ResponseBody> getBody(String api){
+        return HttpClient.getInstance().get(api,null);
+    }
+
+    public static void testSend(String tag,@NonNull RetrofitCallback callback){
+        HttpClient.getInstance().get("aa",
                 new GetBean()
                         .param("test",1)
                         .param("cc",2)
-                ).subscribe(new Observer<ResponseBody>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(ResponseBody body) {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
+                ).subscribe(callback.addTag(tag));
     }
 
+    public static void getVideoUrlList(String url,String tag,@NonNull RetrofitCallback callback){
+        HttpClient.getInstance().get(url,null).
+                subscribe(callback.addTag(tag));
+    }
 
 }

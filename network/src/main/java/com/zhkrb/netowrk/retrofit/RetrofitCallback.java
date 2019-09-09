@@ -1,45 +1,72 @@
 package com.zhkrb.netowrk.retrofit;
 
-import com.zhkrb.netowrk.NetworkCallback;
+import android.text.TextUtils;
+import android.util.Log;
 
+import com.zhkrb.netowrk.ExceptionUtil;
+import com.zhkrb.netowrk.NetworkCallback;
+import com.zhkrb.netowrk.retrofit.manager.RequestManager;
+
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+
+import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RetrofitCallback extends NetworkCallback implements Callback<ResponseBody> {
+public abstract class RetrofitCallback extends NetworkCallback implements Observer<ResponseBody> {
 
+    private String mTag;
 
-    @Override
-    public void onStart() {
-
-    }
-
-    @Override
-    public void onSuccess(int code, String msg, String info) {
-
-    }
-
-    @Override
-    public void onFinish() {
-
-    }
-
-    @Override
-    public void onError(int code ,String msg) {
-
+    public RetrofitCallback addTag(String tag){
+        mTag = tag;
+        return this;
     }
 
 
     @Override
-
-    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
+    public void onSubscribe(Disposable d) {
+        RequestManager.getInstance().add(mTag,d);
+        onStart();
     }
 
     @Override
-    public void onFailure(Call<ResponseBody> call, Throwable t) {
+    public void onNext(ResponseBody responseBody) {
+        String string = null;
+        try {
+            string = responseBody.string();
+        } catch (IOException e) {
+            e.printStackTrace();
+            onSuccess(HttpURLConnection.HTTP_OK,"can't cast","");
+        }
+        if (TextUtils.isEmpty(string)){
+           onSuccess(HttpURLConnection.HTTP_OK,"empty body","");
+            return;
+        }
+        onSuccess(HttpURLConnection.HTTP_OK,"success",string);
+    }
+
+    @Override
+    public void onError(Throwable t) {
+        t.printStackTrace();
+        ExceptionUtil.msg msg1 = ExceptionUtil.getException(t);
+        Log.e("jsoup exception",msg1.getCode()+": "+msg1.getMsg());
+        onError(msg1.getCode(),msg1.getMsg());
+        RequestManager.getInstance().remove(mTag);
+        onFinish();
+    }
+
+    @Override
+    public void onComplete() {
+        RequestManager.getInstance().remove(mTag);
+        onFinish();
 
     }
 }

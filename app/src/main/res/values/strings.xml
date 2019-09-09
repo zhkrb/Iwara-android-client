@@ -11,4 +11,6 @@
     <string name="unsupported_mime_type">不支持的mime类型</string>
     <string name="unknow_error">未知错误</string>
     <string name="socket_time_out">连接超时</string>
+    <string name="url_is_empty">URL为空</string>
+    <string name="main_click_next_exit">再按一次返回键返回到桌面</string>
 </resources>

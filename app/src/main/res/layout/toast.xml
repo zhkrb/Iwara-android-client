@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhkrb.dragvideo.widget.CutCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:AllCut="true"
+    app:AllCutRadius="@dimen/cut_4dp"
+    app:CutElevation="@dimen/elevation_2dp"
+    app:cardBackgroundColor="@color/black_alpha"
+    app:cardCornerRadius="0dp"
+    android:background="@android:color/transparent"
+    android:theme="@style/Theme.MaterialComponents"
+    >
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="50dp"
+            android:maxWidth="300dp"
+            android:id="@+id/text"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/overline"
+            android:letterSpacing="@dimen/caption_ls"
+            android:textAlignment="center"
+            android:layout_marginStart="@dimen/card_default_margin"
+            android:layout_marginEnd="@dimen/card_default_margin"
+            android:layout_marginTop="@dimen/card_default_margin_top_bottom"
+            android:layout_marginBottom="@dimen/card_default_margin_top_bottom"
+            />
+
+</com.zhkrb.dragvideo.widget.CutCardView>

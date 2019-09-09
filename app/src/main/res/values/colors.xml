@@ -1,20 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="colorPrimary">#7b1fa2</color>
-    <color name="colorPrimaryDark">#49008C</color>
-    <color name="colorPrimaryLight">#9A57B0</color>
+    <color name="colorPrimaryDark">#4a148c</color>
+    <color name="colorPrimaryLight">#9c27b0</color>
     <color name="colorAccent">#7b1fa2</color>
+
     <color name="textColor">#fff</color>
-    <color name="textColor_dark">#999999</color>
-    <color name="textColor_black">#222222</color>
-    <color name="secondary">#F3E4F5</color>
+    <color name="textColor_medium">#ABFFFFFF</color>
+    <color name="textColor_disable">#61FFFFFF</color>
+    <color name="textColor_black">#DE000000</color>
+    <color name="textColor_black_medium">#99000000</color>
+    <color name="textColor_black_disable">#4D000000</color>
+
+    <color name="secondary">#F3E5F5</color>
     <color name="secondaryLight">#fff</color>
     <color name="secondaryDark">#CD8ED8</color>
-    <color name="surfaceDark">#F0F0F0</color>
-    <color name="surfaceDark2">#E6E6E6</color>
-    <color name="ref_pink">#FF4081</color>
-    <color name="ref_pop">#9c27b0</color>
-    <color name="ref_green">#259b24</color>
-    <color name="ref_red">#e51c23</color>
-    <color name="ref_blue">#5677fc</color>
+
+    <color name="surfaceLight">@color/textColor</color>
+    <color name="surfaceDark">#f5f5f5</color>
+
+    <color name="ref_pink">#E91E63</color>
+    <color name="ref_pop">#9C27B0</color>
+    <color name="ref_green">#4CAF50</color>
+    <color name="ref_red">#FF1744</color>
+    <color name="ref_blue">#3F51B5</color>
+
+    <color name="colorPrimary_500">#9C27B0</color>
+    <color name="colorPrimary_700">#7B1FA2</color>
+
+
+
 </resources>

@@ -1,3 +1,21 @@
+/*
+ * Copyright zhkrb
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Create by zhkrb on 2019/9/7 22:12
+ */
+
 package com.zhkrb.iwara.bean;
 
 import android.text.TextUtils;
@@ -14,6 +32,7 @@ public class VideoListBean {
     private String title;
     private String user_name;
     private String user_href;
+    private String play_href;
     private int type;
 
     public String getLike() {
@@ -81,5 +100,13 @@ public class VideoListBean {
 
     public void setUser_href(String user_href) {
         this.user_href = user_href;
+    }
+
+    public String getPlay_href() {
+        return play_href;
+    }
+
+    public void setPlay_href(String play_href) {
+        this.play_href = play_href;
     }
 }

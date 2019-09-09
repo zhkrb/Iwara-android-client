@@ -1,12 +1,32 @@
+/*
+ * Copyright zhkrb
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Create by zhkrb on 2019/9/7 22:12
+ */
+
 package com.zhkrb.iwara.custom;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
@@ -23,7 +43,8 @@ import com.zhkrb.iwara.utils.DpUtil;
 
 public class CutCardView extends MaterialCardView {
 
-    private ShapeAppearanceModel mShapeAppearanceModel;
+    private final Context mcontext;
+    private ShapeAppearanceModel.Builder mShapeAppearanceModel;
     private MaterialShapeDrawable mShapeDrawable;
 
     private boolean isAllCut;
@@ -45,11 +66,12 @@ public class CutCardView extends MaterialCardView {
     }
 
     public CutCardView(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.materialCardViewStyle);
+        this(context, attrs, 0);
     }
 
     public CutCardView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mcontext = context;
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.CutCardView);
         isAllCut = ta.getBoolean(R.styleable.CutCardView_AllCut, false);
         isTopLeftCut = ta.getBoolean(R.styleable.CutCardView_TopLeftCut, false);
@@ -63,6 +85,7 @@ public class CutCardView extends MaterialCardView {
         mBottomLeftRadius = ta.getDimension(R.styleable.CutCardView_BottomLeftRadius,0);
         mBottomRightRadius = ta.getDimension(R.styleable.CutCardView_BottomRightRadius,0);
         mForegoundDrawable = ta.getDrawable(R.styleable.CutCardView_CutForeground);
+//        mForegoundDrawable = getForeground();
         backgoundColor = getCardBackgroundColor();
         ta.recycle();
         init();
@@ -70,7 +93,7 @@ public class CutCardView extends MaterialCardView {
 
     private void init() {
         if (isAllCut || isTopLeftCut || isTopRightCut || isBottomLeftCut || isBottomRightCut){
-            mShapeAppearanceModel = new ShapeAppearanceModel();
+            mShapeAppearanceModel = new ShapeAppearanceModel().toBuilder();
 //            mShapeAppearanceModel.setCornerRadius(0);
             if (isTopLeftCut){
                 mShapeAppearanceModel.setTopLeftCorner(new CutCornerTreatment(mTopLeftRadius));
@@ -95,17 +118,26 @@ public class CutCardView extends MaterialCardView {
         if (mShapeAppearanceModel == null){
             return;
         }
-        mShapeDrawable = new MaterialShapeDrawable(mShapeAppearanceModel);
+        mShapeDrawable = new MaterialShapeDrawable(mShapeAppearanceModel.build());
         mShapeDrawable.setPaintStyle(Paint.Style.FILL);
         mShapeDrawable.setFillColor(backgoundColor);
-        mShapeDrawable.setUseTintColorForShadow(true);
-//        mShapeDrawable.setTint(getResources().getColor(R.color.textColor_dark));
+//        mShapeDrawable.setUseTintColorForShadow(true);
+//        mShapeDrawable.setTint(getResources().getColor(R.color.textColor_black_medium));
         mShapeDrawable.setElevation(CutElevation);
         mShapeDrawable.setShadowCompatibilityMode(MaterialShapeDrawable.SHADOW_COMPAT_MODE_DEFAULT);
+
         setBackground(mShapeDrawable);
         if (mForegoundDrawable!=null){
             setForeground(mForegoundDrawable);
         }
+    }
+
+    //根据进度设置切角有无 1 显示切角 0 不显示
+    public void setCutProgress(float progress){
+        if (mShapeDrawable==null){
+            return;
+        }
+        mShapeDrawable.setInterpolation(progress);
     }
 
 

@@ -8,7 +8,10 @@
     android:paddingTop="5dp"
     android:paddingBottom="5dp"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:clipChildren="true"
+    android:clipToPadding="true"
+    >
     
     <com.zhkrb.iwara.custom.RateImageView
         android:layout_width="wrap_content"
@@ -32,7 +35,7 @@
             android:layout_height="wrap_content"
             android:maxLines="3"
             android:ellipsize="end"
-            android:text="测试测试测试测试测试测试测试测试测试试测试测试测试测试测试测试测试测试测试测试"
+            android:text=""
             android:textSize="14sp"
             android:textColor="@color/textColor_black"
             android:textAlignment="viewStart"
@@ -45,7 +48,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textSize="12sp"
-            android:textColor="@color/textColor_dark"
+            android:textColor="@color/textColor_black_medium"
             android:id="@+id/user"
             />
         <TextView
@@ -55,7 +58,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textSize="12sp"
-            android:textColor="@color/textColor_dark"
+            android:textColor="@color/textColor_black_medium"
             android:id="@+id/view"
 
             />
@@ -68,7 +71,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textSize="12sp"
-            android:textColor="@color/textColor_dark"
+            android:textColor="@color/textColor_black_medium"
             android:id="@+id/like"
             android:layout_toEndOf="@id/view"
             android:layout_marginStart="10dp"

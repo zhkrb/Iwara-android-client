@@ -2,20 +2,26 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </androidx.core.widget.NestedScrollView>
-    <com.zhkrb.iwara.custom.DragViewGroup
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/drag_layout"
-        android:orientation="vertical"
+        android:id="@+id/videoplay"
+        android:visibility="visible"
         >
+    </FrameLayout>
 
-    </com.zhkrb.iwara.custom.DragViewGroup>
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="80dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/btn"
+        />
+
 
 
 </RelativeLayout>

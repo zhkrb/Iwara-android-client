@@ -10,14 +10,15 @@
     android:background="@null"
     >
 
-    <com.zhkrb.iwara.custom.RefreshView.ScaleRecyclerView
+    <com.zhkrb.iwara.custom.refreshView.ScaleRecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="never"
         android:visibility="gone"
         android:background="@null"
-
+        android:clipChildren="false"
+        android:clipToPadding="false"
         />
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <RelativeLayout
@@ -46,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="5dp"
-                android:textColor="@color/textColor_dark"
+                android:textColor="@color/textColor_black_medium"
                 android:textSize="16sp" />
 
 

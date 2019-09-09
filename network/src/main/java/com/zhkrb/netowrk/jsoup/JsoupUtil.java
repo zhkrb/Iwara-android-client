@@ -30,8 +30,8 @@ public class JsoupUtil {
 
     /**
      *
-     * @param type
-     * @param p
+     * @param type  排序类型
+     * @param p 页数
      * @param callback
      * json格式：
      * [

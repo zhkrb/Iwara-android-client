@@ -11,7 +11,8 @@
     app:CutElevation="2dp"
     android:clickable="true"
     app:cardCornerRadius="0dp"
-
+    android:clipChildren="true"
+    android:clipToPadding="true"
     android:focusable="true">
 <LinearLayout
 
@@ -20,12 +21,12 @@
     android:layout_height="wrap_content"
     >
 
-    <com.zhkrb.iwara.custom.RateImageView
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
         android:id="@+id/thumb"
-        android:scaleType="center"
-        app:rate="0.70"
         />
     <LinearLayout
         android:layout_width="match_parent"
@@ -60,7 +61,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/user"
                 android:textSize="14sp"
-                android:textColor="@color/textColor_dark"
+                android:textColor="@color/textColor_black_medium"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 />
@@ -69,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textSize="14sp"
-                android:textColor="@color/textColor_dark"
+                android:textColor="@color/textColor_black_medium"
                 android:layout_gravity="center_vertical"
                 android:id="@+id/view"
 
@@ -78,7 +79,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textSize="14sp"
-                android:textColor="@color/textColor_dark"
+                android:textColor="@color/textColor_black_medium"
                 android:layout_gravity="center_vertical"
                 android:id="@+id/like"
 

@@ -12,4 +12,6 @@
     <string name="unsupported_mime_type">supported mime</string>
     <string name="unknow_error">unknow error</string>
     <string name="socket_time_out">Time out</string>
+    <string name="url_is_empty">URL is empty</string>
+    <string name="main_click_next_exit">Press button again to return</string>
 </resources>

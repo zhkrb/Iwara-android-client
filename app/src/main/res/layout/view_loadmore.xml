@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/no_more"
-            android:textColor="@color/textColor_dark"
+            android:textColor="@color/textColor_black_medium"
             android:textSize="16sp"
             />
     </RelativeLayout>
@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="3dp"
                 android:id="@+id/error_text"
-                android:textColor="@color/textColor_dark"
+                android:textColor="@color/textColor_black_medium"
                 android:textSize="16sp"
                 android:layout_gravity="center_vertical"
                 />

@@ -1,43 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.zhkrb.dragvideo.DragVideoLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/black_alpha"
+    android:id="@+id/parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     >
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
 
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:cardUseCompatPadding="true"
-            app:cardElevation="0dp"
-            app:cardPreventCornerOverlap="true"
-            android:minHeight="170dp"
-            >
-            <com.zhkrb.dragvideo.ScaleVideoView
-                android:layout_width="match_parent"
-                android:layout_height="220dp"
-                android:background="@color/textColor"
-                />
-        </com.google.android.material.card.MaterialCardView>
-
-
-    </com.google.android.material.appbar.AppBarLayout>
-    <androidx.core.widget.NestedScrollView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_below="@id/view_header"
+        android:id="@+id/view_desc"
+        android:background="@color/surfaceDark2"
         >
 
 
-    </androidx.core.widget.NestedScrollView>
+    </FrameLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="195dp"
+        android:id="@+id/view_header"
+        android:clipChildren="false"
+        android:background="@color/textColor"
+        >
 
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/progress"
+            android:layout_marginTop="4dp"
+            android:thumbTint="@color/colorAccent"
+            android:thumb="@drawable/seekbar_thumb"
+            android:progressDrawable="@drawable/scale_progress_drawable"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            style="@android:style/Widget.Material.SeekBar"
+            android:splitTrack="false"
+            android:max="1000"
+            />
 
-
-</com.zhkrb.dragvideo.DragVideoLayout>
+    </RelativeLayout>
+</RelativeLayout>

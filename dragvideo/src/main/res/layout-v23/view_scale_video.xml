@@ -1,82 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
-    android:orientation="horizontal">
-
-    <FrameLayout
-        android:id="@+id/video_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    >
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="start|center_vertical"
-        android:background="@null">
-
-    </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/info_content"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="end|center_vertical"
-        android:background="@null"
-        android:orientation="horizontal">
-
+        android:orientation="horizontal"
+        android:background="@android:color/transparent"
+        android:id="@+id/video_content_parent"
+        >
+        <FrameLayout
+            android:id="@+id/video_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start|center_vertical"
+            android:background="@null"
+            />
         <LinearLayout
+            android:id="@+id/info_content"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_gravity="end|center_vertical"
             android:background="@null"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true"
+            >
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="marquee"
-                android:gravity="start|center_vertical"
-                android:singleLine="true"
-                android:textColor="@color/textColor_black"
-                android:textSize="14sp" />
-
-            <TextView
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:ellipsize="end"
-                android:gravity="start|center_vertical"
-                android:maxLines="1"
-                android:textColor="@color/textColor_dark"
-                android:textSize="12sp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:orientation="vertical"
+                android:padding="10dp">
 
-                />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="marquee"
+                    android:gravity="start|center_vertical"
+                    android:singleLine="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:textColor="@color/textColor_black"
+                    android:textSize="14sp"
+                    android:id="@+id/title"
+                    />
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:ellipsize="end"
+                    android:gravity="start|center_vertical"
+                    android:singleLine="true"
+                    android:textColor="@color/textColor_black_medium"
+                    android:textSize="12sp"
+                    android:id="@+id/user"
+                    />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/btn_play"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="center"
+                android:src="@drawable/ic_play_arrow_24dp"
+                android:foreground="@drawable/ripple_click"
+                android:tint="@color/textColor_black_medium"
+                tools:ignore="Suspicious0dp" />
+
+            <ImageView
+                android:id="@+id/btn_close"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="center"
+                android:src="@drawable/ic_close_24dp"
+                android:foreground="@drawable/ripple_click"
+                android:tint="@color/textColor_black_medium"
+                tools:ignore="Suspicious0dp" />
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/btn_play"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center_vertical"
-            android:foreground="@drawable/ripple_click"
-            android:clickable="true"
-            android:focusable="true"
-            android:scaleType="center"
-            android:src="@drawable/ic_pause_black_24dp"
-            tools:ignore="Suspicious0dp" />
-
-        <ImageView
-            android:id="@+id/btn_close"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center_vertical"
-            android:foreground="@drawable/ripple_click"
-            android:clickable="true"
-            android:focusable="true"
-            android:scaleType="center"
-            android:src="@drawable/ic_close_black_24dp"
-            tools:ignore="Suspicious0dp" />
     </LinearLayout>
 
-</LinearLayout>
+
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:id="@+id/progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progressDrawable="@drawable/scale_progress_drawable"
+        android:max="1000"
+        android:layout_alignBottom="@id/video_content_parent"
+        android:visibility="gone"
+        />
+
+</RelativeLayout>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhkrb.dragvideo.widget.CutCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:TopLeftCut="true"
+    app:TopRightCut="true"
+    app:TopLeftCutRadius="@dimen/cut_9dp"
+    app:TopRightCutRadius="@dimen/cut_9dp"
+    app:CutElevation="@dimen/elevation_4dp"
+    app:cardBackgroundColor="@color/textColor"
+    app:cardCornerRadius="0dp"
+    android:background="@android:color/transparent"
+    >
+
+
+<com.zhkrb.dragvideo.widget.advRecyclerView
+    android:layout_marginTop="@dimen/dialog_margin_top"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/recycler_view"
+    app:maxHeight1="200dp"
+    android:overScrollMode="never"
+    />
+</com.zhkrb.dragvideo.widget.CutCardView>

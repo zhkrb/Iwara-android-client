@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhkrb.dragvideo.widget.CutCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:AllCut="true"
+    app:AllCutRadius="@dimen/cut_9dp"
+    app:CutElevation="@dimen/elevation_0dp"
+    android:layout_gravity="center"
+    app:cardBackgroundColor="@color/black_alpha"
+    app:cardCornerRadius="0dp"
+    android:background="@android:color/transparent"
+    >
+
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="55dp"
+    android:minWidth="105dp"
+    android:paddingStart="@dimen/card_default_margin"
+    android:paddingEnd="@dimen/card_default_margin"
+    android:background="@android:color/transparent"
+    android:layout_gravity="center"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_current"
+        android:textColor="@color/textColor"
+        android:textSize="15sp"
+        android:layout_centerVertical="true"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_duration"
+        android:textColor="@color/textColor"
+        android:textSize="15sp"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/tv_current"
+        />
+
+</RelativeLayout>
+</com.zhkrb.dragvideo.widget.CutCardView>

@@ -4,4 +4,24 @@
         <attr name="view_layout" format="reference"/>
         <attr name="target_width" format="dimension"/>
     </declare-styleable>
+    <declare-styleable name="VideoPlayView">
+        <attr name="appear_animation" format="reference"/>
+    </declare-styleable>
+    <declare-styleable name="CutCardView">
+        <attr name="AllCut" format="boolean"/>
+        <attr name="TopLeftCut" format="boolean"/>
+        <attr name="TopRightCut" format="boolean"/>
+        <attr name="BottomLeftCut" format="boolean"/>
+        <attr name="BottomRightCut" format="boolean"/>
+        <attr name="CutElevation" format="dimension"/>
+        <attr name="TopLeftCutRadius" format="dimension"/>
+        <attr name="TopRightCutRadius" format="dimension"/>
+        <attr name="BottomLeftRadius" format="dimension"/>
+        <attr name="BottomRightRadius" format="dimension"/>
+        <attr name="AllCutRadius" format="dimension"/>
+        <attr name="CutForeground" format="reference"/>
+    </declare-styleable>
+    <declare-styleable name="advRecyclerView">
+        <attr name="maxHeight1" format="dimension"/>
+    </declare-styleable>
 </resources>

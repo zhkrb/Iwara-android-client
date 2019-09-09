@@ -1,13 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@null"
-    android:paddingBottom="5dp"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    >
 <com.zhkrb.iwara.custom.CutCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
@@ -18,10 +9,14 @@
     app:CutForeground="@drawable/ripple_click"
     app:cardBackgroundColor="@color/secondaryLight"
     android:background="@null"
-    app:CutElevation="2dp"
+    app:CutElevation="@dimen/elevation_2dp"
     android:clickable="true"
     app:cardCornerRadius="0dp"
-    android:focusable="true">
+    android:focusable="true"
+    android:stateListAnimator="@animator/card_button_floating_anim"
+    android:clipChildren="true"
+    android:clipToPadding="true"
+    >
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -106,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/user"
                 android:textSize="12sp"
-                android:textColor="@color/textColor_dark"
+                android:textColor="@color/textColor_black_medium"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="3dp"
                 android:gravity="center_vertical"
@@ -117,5 +112,3 @@
 
     </RelativeLayout>
 </com.zhkrb.iwara.custom.CutCardView>
-
-</RelativeLayout>

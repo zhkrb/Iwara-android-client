@@ -3,6 +3,7 @@ package com.zhkrb.netowrk.retrofit;
 import com.alibaba.fastjson.support.retrofit.Retrofit2ConverterFactory;
 import com.zhkrb.netowrk.retrofit.bean.GetBean;
 import com.zhkrb.netowrk.retrofit.bean.PostBean;
+import com.zhkrb.netowrk.retrofit.manager.RequestManager;
 import com.zhkrb.netowrk.retrofit.model.GetModel;
 import com.zhkrb.netowrk.retrofit.model.PostModel;
 
@@ -60,23 +61,33 @@ public class HttpClient {
                 .build();
     }
 
-    Observable<ResponseBody> get(String apiName, String tag, GetBean bean){
+    public void reSet(String url) {
+        mUrl = url;
+        mRetrofit = new Retrofit.Builder()
+                .baseUrl(mUrl)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(mOkHttpClient)
+                .build();
+    }
+
+    Observable<ResponseBody> get(String apiName, GetBean bean){
         GetModel getModel = mRetrofit.create(GetModel.class);
         String a = "";
         if (bean!=null){
             a = bean.create();
         }
-        return getModel.get(mUrl+apiName+a).compose(SchedulerProvider.getInstance().applaySchedulers());
+        return getModel.get(mUrl+apiName+a).compose(SchedulerProvider.getInstance().applaySchedulers()).retry(1);
     }
 
-    Observable<ResponseBody> post(String apiName, String tag, PostBean bean){
+    Observable<ResponseBody> post(String apiName, PostBean bean){
         PostModel postModel = mRetrofit.create(PostModel.class);
         RequestBody body = null;
         if (bean!=null&&!bean.isEmpry()){
             body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),bean.create());
         }
-        return postModel.post(apiName,body).compose(SchedulerProvider.getInstance().applaySchedulers());
+        return postModel.post(mUrl+apiName,body).compose(SchedulerProvider.getInstance().applaySchedulers()).retry(1);
     }
+
 
 
 }

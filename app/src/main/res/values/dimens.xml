@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    //elevation 阴影
+    <dimen name="elevation_0dp">0dp</dimen>
+    <dimen name="elevation_1dp">1dp</dimen>
+    <dimen name="elevation_2dp">2dp</dimen>
+    <dimen name="elevation_3dp">3dp</dimen>
+    <dimen name="elevation_4dp">4dp</dimen>
+    <dimen name="elevation_5dp">5dp</dimen>
+    <dimen name="elevation_8dp">8dp</dimen>
+    <dimen name="elevation_9dp">9dp</dimen>
+    <dimen name="elevation_12dp">12dp</dimen>
+    <dimen name="elevation_16dp">16dp</dimen>
+    <dimen name="elevation_24dp">24dp</dimen>
+
+    //cut dimens 切角大小
+    <dimen name="cut_4dp">4dp</dimen>
+    <dimen name="cut_9dp">9dp</dimen>
+    <dimen name="cut_12dp">12dp</dimen>
+    <dimen name="cut_16dp">16dp</dimen>
+    
+    //文字大小
+    <dimen name="h5">24.29sp</dimen>
+    <dimen name="h6">20.2sp</dimen>
+    <dimen name="body1">16.19sp</dimen>
+    <dimen name="body2">14.2sp</dimen>
+    <dimen name="subtitle1">16.16sp</dimen>
+    <dimen name="subtitle2">14.17sp</dimen>
+    <dimen name="button">14.14sp</dimen>
+    <dimen name="caption">12.12sp</dimen>
+    <dimen name="overline">@dimen/caption</dimen>
+    
+    //文字间距
+    <dimen name="h5_ls">0</dimen>
+    <dimen name="h6_ls">0.25</dimen>
+    <dimen name="body1_ls">0.5</dimen>
+    <dimen name="body2_ls">0.25</dimen>
+    <dimen name="subtitle1_ls">0.15</dimen>
+    <dimen name="subtitle2_ls">0.1</dimen>
+    <dimen name="button_ls">1.25</dimen>
+    <dimen name="caption_ls">0.4</dimen>
+    <dimen name="overline_ls">2</dimen>
+
+    
+</resources>
