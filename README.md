@@ -4,6 +4,8 @@
 ![image](https://img.shields.io/github/issues/zhkrb/Iwara-android-client)
 ![image](https://img.shields.io/github/v/release/zhkrb/Iwara-android-client)
 
+![image](https://travis-ci.org/zhkrb/Iwara-android-client.svg?branch=master)
+
 
 ## 说明  
 ---
@@ -17,8 +19,8 @@ Iwara非官方安卓客户端，完全使用Material Design设计，Youtube like
 Appbar目前仅为测试用，并非最终设计(-_,-……)
 
 ![screenshot_1](art/screenshot_1.png)
-![screenshot_2](art/screenshot_2.png)
-![screenshot_3](art/screenshot_3.png)
+![screenshot_2](art/Screenshot_2.png)
+![screenshot_3](art/Screenshot_3.png)
 
 ## 进度
 ### 已完成
