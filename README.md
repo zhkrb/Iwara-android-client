@@ -8,7 +8,6 @@
 
 
 ## 说明  
----
 Iwara非官方安卓客户端，完全使用Material Design设计，Youtube like播放器，目前仅完成视频列表和播放器以及一些简单的功能。
 
 ## 下载
