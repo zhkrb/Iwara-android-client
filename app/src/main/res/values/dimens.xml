@@ -38,7 +38,7 @@
     <dimen name="subtitle1_ls">0.15</dimen>
     <dimen name="subtitle2_ls">0.1</dimen>
     <dimen name="button_ls">1.25</dimen>
-    <dimen name="caption_ls">0.4</dimen>
+    <dimen name="caption_ls">0.1</dimen>
     <dimen name="overline_ls">2</dimen>
 
     

@@ -34,7 +34,7 @@ import com.zhkrb.iwara.utils.ImgLoader;
 import com.zhkrb.iwara.utils.L;
 import com.zhkrb.iwara.utils.ToastUtil;
 import com.zhkrb.iwara.utils.WordUtil;
-import com.zhkrb.netowrk.NetworkCallback;
+import com.zhkrb.iwara.netowrk.NetworkCallback;
 
 import java.util.ArrayList;
 import java.util.List;

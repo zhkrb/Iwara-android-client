@@ -51,7 +51,8 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:textColor="@color/textColor_black"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/caption"
+                    android:letterSpacing="@dimen/caption_ls"
                     android:id="@+id/title"
                     />
 
@@ -62,7 +63,8 @@
                     android:gravity="start|center_vertical"
                     android:singleLine="true"
                     android:textColor="@color/textColor_black_medium"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/caption"
+                    android:letterSpacing="@dimen/caption_ls"
                     android:id="@+id/user"
                     />
 
@@ -77,7 +79,7 @@
                 android:focusable="true"
                 android:scaleType="center"
                 android:src="@drawable/ic_play_arrow_24dp"
-                android:foreground="@drawable/ripple_click"
+                android:foreground="@drawable/ripple_click_pople"
                 android:tint="@color/textColor_black_medium"
                 tools:ignore="Suspicious0dp" />
 
@@ -90,7 +92,7 @@
                 android:focusable="true"
                 android:scaleType="center"
                 android:src="@drawable/ic_close_24dp"
-                android:foreground="@drawable/ripple_click"
+                android:foreground="@drawable/ripple_click_pople"
                 android:tint="@color/textColor_black_medium"
                 tools:ignore="Suspicious0dp" />
         </LinearLayout>

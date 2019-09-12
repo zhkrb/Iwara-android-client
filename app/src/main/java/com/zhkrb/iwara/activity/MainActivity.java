@@ -32,6 +32,7 @@ import com.zhkrb.iwara.base.FragmentFrame;
 import com.zhkrb.iwara.bean.VideoListBean;
 import com.zhkrb.iwara.fragment.GalleryFragment;
 import com.zhkrb.iwara.utils.ToastUtil;
+import com.zhkrb.iwara.utils.UpdateUtil;
 import com.zhkrb.iwara.utils.VideoNetWorkUtil;
 
 
@@ -49,6 +50,7 @@ public class MainActivity extends AbsActivity implements View.OnClickListener, V
     @Override
     protected void main() {
         super.main();
+        UpdateUtil.checkUpdate(mContext,false);
         loadRootFragment(new FragmentFrame(GalleryFragment.class));
         mVideoPlayerLayout = findViewById(R.id.video_layout);
 

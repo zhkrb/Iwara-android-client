@@ -37,8 +37,8 @@ import com.zhkrb.iwara.custom.refreshView.ScaleRecyclerView;
 import com.zhkrb.iwara.utils.SpUtil;
 import com.zhkrb.iwara.utils.ToastUtil;
 import com.zhkrb.iwara.utils.VibrateUtil;
-import com.zhkrb.netowrk.NetworkCallback;
-import com.zhkrb.netowrk.jsoup.JsoupUtil;
+import com.zhkrb.iwara.netowrk.NetworkCallback;
+import com.zhkrb.iwara.netowrk.jsoup.JsoupUtil;
 
 import java.util.ArrayList;
 import java.util.List;

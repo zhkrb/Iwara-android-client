@@ -24,9 +24,9 @@ import android.os.Bundle;
 
 
 import com.zhkrb.iwara.utils.L;
-import com.zhkrb.netowrk.jsoup.JsoupUtil;
-import com.zhkrb.netowrk.retrofit.HttpUtil;
-import com.zhkrb.netowrk.retrofit.manager.RequestManager;
+import com.zhkrb.iwara.netowrk.jsoup.JsoupUtil;
+import com.zhkrb.iwara.netowrk.retrofit.HttpUtil;
+import com.zhkrb.iwara.netowrk.retrofit.manager.RequestManager;
 
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;

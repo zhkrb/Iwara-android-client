@@ -50,7 +50,8 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:textColor="@color/textColor_black"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/caption"
+                    android:letterSpacing="@dimen/caption_ls"
                     android:id="@+id/title"
                     />
 
@@ -61,7 +62,8 @@
                     android:gravity="start|center_vertical"
                     android:singleLine="true"
                     android:textColor="@color/textColor_black_medium"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/caption"
+                    android:letterSpacing="@dimen/caption_ls"
                     android:id="@+id/user"
                     />
 

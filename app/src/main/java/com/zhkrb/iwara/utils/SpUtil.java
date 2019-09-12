@@ -41,6 +41,9 @@ public class SpUtil {
     public static final String VIEW_VIDEO_LIST_MODE = "indexvideolistmode";
     public static final String LIKE_VIDEO_LIST_MODE = "indexvideolistmode";
     public static final String GALLERY_MODE = "gallery_mode";
+    public static final String SHOW_LIKE_BG = "show_like_bg";
+    public static final String VERSION_CODE = "version_code";
+    public static final String IGNORE_VERSION = "ignore_version";
 
 
     private static SpUtil sInstance;
@@ -199,4 +202,13 @@ public class SpUtil {
         editor.apply();
     }
 
+    public void setLongValue(String key, long value) {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putLong(key,value);
+        editor.apply();
+    }
+
+    public long getLongValue(String key,long defValue){
+        return mSharedPreferences.getLong(key,defValue);
+    }
 }

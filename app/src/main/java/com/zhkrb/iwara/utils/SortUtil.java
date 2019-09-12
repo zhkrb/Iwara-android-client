@@ -54,20 +54,6 @@ public class SortUtil {
             }
         }
         int bgSize = bgList.size();
-//        VideoListBean bean = beanList.get(beanList.size()-1);
-//        if (single
-//                && (Integer.valueOf(list.get(list.size()-1).getLike())>likeBg)){
-//            if (Integer.valueOf(bean.getLike())>likeBg){
-//                list.add(bean);
-//                bgSize = bgList.size()+1;
-//            }else {
-//                list.add(list.size()-bgList.size(),bean);
-//                single = false;
-//            }
-//            list.add(list.size()-2,beanList.get(beanList.size()-1));
-//        }else {
-//            list.add(beanList.get(beanList.size()-1));
-//        }
         bgList.clear();
         return new result(list,single,bgSize);
     }

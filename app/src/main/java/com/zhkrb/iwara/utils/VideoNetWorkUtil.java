@@ -22,8 +22,8 @@ import com.alibaba.fastjson.JSON;
 import com.zhkrb.dragvideo.NetworkUtil;
 import com.zhkrb.dragvideo.bean.UrlBean;
 import com.zhkrb.iwara.AppConfig;
-import com.zhkrb.netowrk.retrofit.HttpUtil;
-import com.zhkrb.netowrk.retrofit.RetrofitCallback;
+import com.zhkrb.iwara.netowrk.retrofit.HttpUtil;
+import com.zhkrb.iwara.netowrk.retrofit.RetrofitCallback;
 
 import java.util.List;
 
@@ -68,7 +68,6 @@ public class VideoNetWorkUtil extends NetworkUtil {
         public void onError(int code, String msg) {
             if (mCallback!=null){
                 mCallback.onFailed(msg);
-                return;
             }
         }
     };

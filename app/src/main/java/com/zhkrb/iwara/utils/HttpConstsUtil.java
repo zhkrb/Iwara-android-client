@@ -22,4 +22,5 @@ public class HttpConstsUtil {
 
     public static final String GET_VIDEO_URL_LIST = "get_video_url_list";
 
+    public static final String CHECK_UPDATE = "check_update";
 }

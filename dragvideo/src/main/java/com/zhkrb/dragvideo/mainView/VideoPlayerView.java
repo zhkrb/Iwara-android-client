@@ -362,7 +362,7 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
                 float deltaY1 = y - mDownMotionY;
                 if (mScrollState == SCROLL_STATE_NOM){
                     int prog3 = (int) (((float)deltaY1/(float) mDropDistance)*10000);
-                    if (prog3 > 3000 || yv > 80){
+                    if (prog3 > 3000 || yv > 40){
                         mScrollState = SCROLL_STATE_SMILL;
                         scrollToSmill(prog3,yv);
                     }else {
@@ -372,7 +372,7 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
                 }else {
                     if (mScrollOrient == ORIGIN_UP){
                         int prog4 = (int) ((1f-((float)-deltaY1/(float) mDropDistance))*10000);
-                        if (prog4 < 7000 || yv < -15){
+                        if (prog4 < 7000 || yv < 0){
                             mScrollState = SCROLL_STATE_NOM;
                             scrollToNom(prog4,yv);
                         }else {
@@ -382,7 +382,7 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
                     }else {
                         deltaY1 = event.getRawY() - mDownRawY;
                         int prog2 = (int) (((float)deltaY1/(float) mDropHideDistance)*100);
-                        if (prog2 > 30 || yv > 80){
+                        if (prog2 > 30 || yv > 40){
                             hideView(prog2,yv);
                         }else {
                             notHideView(prog2,yv);

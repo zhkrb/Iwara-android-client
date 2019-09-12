@@ -18,13 +18,18 @@
 
 package com.zhkrb.iwara;
 
+import com.zhkrb.iwara.utils.SpUtil;
+
 public class AppConfig {
 
     //域名
     public static final String HOST = "https://ecchi.iwara.tv";
     public static final String GET_VIDEO_API = "/api/video/";
+    public static final String UPDATE_URL = "https://iw.zhkrb.com/update";
 
     private static AppConfig sInstance;
+
+    private static final int showLikeBg = 300;
 
     private AppConfig() {
 
@@ -41,13 +46,28 @@ public class AppConfig {
         return sInstance;
     }
 
-    private int showLikeBg = 300;
-
     public int getShowLikeBg() {
-        return showLikeBg;
+        return SpUtil.getInstance().getIntValue(SpUtil.SHOW_LIKE_BG,showLikeBg);
     }
 
+    //喜好数大于多少时显示大图
     public void setShowLikeBg(int showLikeBg) {
-        this.showLikeBg = showLikeBg;
+        SpUtil.getInstance().setIntValue(SpUtil.SHOW_LIKE_BG,showLikeBg);
+    }
+
+    public long getVersionCode(){
+        return SpUtil.getInstance().getLongValue(SpUtil.VERSION_CODE,0);
+    }
+
+    public void setVersionCode(long code){
+        SpUtil.getInstance().setLongValue(SpUtil.VERSION_CODE,code);
+    }
+
+    public void putIgnoreVersion(int version) {
+        SpUtil.getInstance().setIntValue(SpUtil.IGNORE_VERSION,version);
+    }
+
+    public int getIgnoreVersion(){
+        return SpUtil.getInstance().getIntValue(SpUtil.IGNORE_VERSION,0);
     }
 }

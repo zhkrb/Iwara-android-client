@@ -14,4 +14,11 @@
     <string name="socket_time_out">Time out</string>
     <string name="url_is_empty">URL is empty</string>
     <string name="main_click_next_exit">Press button again to return</string>
+    <string name="get_update_fail">Get update info failed</string>
+    <string name="is_new">Currently the latest version</string>
+    <string name="update">更新</string>
+    <string name="update_info">版本号: %1$s\\n大小: %2$s\\n\\n更新详情:\\n%3$s</string>
+    <string name="ignore">忽略</string>
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
 </resources>

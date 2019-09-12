@@ -32,8 +32,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
+        android:layout_height="match_parent"
+        android:background="@color/textColor_black_medium"
         android:id="@+id/layout_top"
         >
 
@@ -53,7 +53,7 @@
         <TextView
             android:id="@+id/title"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="35dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="40dp"
@@ -62,8 +62,8 @@
             android:singleLine="true"
             android:gravity="center_vertical"
             android:textColor="@color/textColor"
-            android:textSize="@dimen/subtitle1"
-            android:letterSpacing="@dimen/subtitle1_ls"/>
+            android:textSize="@dimen/subtitle2"
+            android:letterSpacing="@dimen/subtitle2_ls"/>
 
         <ImageView
             android:layout_width="35dp"
