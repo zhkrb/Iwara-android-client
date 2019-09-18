@@ -22,16 +22,19 @@ Appbar目前仅为测试用，并非最终设计(-_,-……)
 ![screenshot_3](art/Screenshot_3.png)
 
 ## 进度
+
+查看更新日志请移步[Change_log](Change_log.md)
+
 ### 已完成
 - [x] 单页框架
 - [x] 视频列表
 - [x] 视频列表手势缩放
 - [x] YouTube like播放器
 - [x] 一些简单的播放器设置
+- [x] 版本管理
 
 ### TODO
 - [ ] 重新修改Appbar
-- [ ] 版本管理
 - [ ] 播放器底部视频详情页
 - [ ] 用户详情页
 - [ ] 帐号相关功能
