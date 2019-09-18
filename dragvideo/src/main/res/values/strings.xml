@@ -12,4 +12,5 @@
     <string name="speed_setting_item">%1$f 倍</string>
     <string name="speed_item">%1$s 倍</string>
     <string name="url_get_failed">获取视频链接失败</string>
+    <string name="url_get_failed_2">获取视频链接失败\n或者当前版本不支持Youtube外链播放</string>
 </resources>

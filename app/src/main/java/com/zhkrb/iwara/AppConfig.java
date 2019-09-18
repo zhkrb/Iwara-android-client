@@ -26,6 +26,7 @@ public class AppConfig {
     public static final String HOST = "https://ecchi.iwara.tv";
     public static final String GET_VIDEO_API = "/api/video/";
     public static final String UPDATE_URL = "https://iw.zhkrb.com/update";
+    public static final String UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36";
 
     private static AppConfig sInstance;
 
@@ -69,5 +70,18 @@ public class AppConfig {
 
     public int getIgnoreVersion(){
         return SpUtil.getInstance().getIntValue(SpUtil.IGNORE_VERSION,0);
+    }
+
+    public int getGalleryMode() {
+        return SpUtil.getInstance().getIntValue(SpUtil.GALLERY_MODE,0);
+    }
+
+    public int getGalleryListMode(int mode) {
+        return SpUtil.getInstance().getIntValue(SpUtil.INDEX_VIDEO_LIST_MODE,
+                mode == 0 ? 2 : 0);
+    }
+
+    public void putGalleryListMode(String key, int mode) {
+        SpUtil.getInstance().setIntValue(key,mode);
     }
 }

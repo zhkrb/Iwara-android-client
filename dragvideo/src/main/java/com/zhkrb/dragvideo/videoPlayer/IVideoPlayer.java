@@ -30,6 +30,10 @@ public interface IVideoPlayer {
     int VIEW_STATE_SMILL= 0x00011;  //拖动
     int VIEW_STATE_DOWN = 0x00012;  //下滑隐藏
 
+    //画面缩放
+    int SCALE_DEFAULT = 0x000020;
+    int SACLE_CROP = 0x000021;
+
 
     /**
      * 释放
@@ -83,4 +87,10 @@ public interface IVideoPlayer {
     boolean isFullScreen();
 
     void exitFullScreen();
+
+    void setLoading(boolean b);
+
+    void setFailed(String text);
+
+    void setscaleType(int scaleDefault);
 }

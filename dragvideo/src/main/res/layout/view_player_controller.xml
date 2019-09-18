@@ -6,7 +6,7 @@
     android:background="#000000"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout
+    <FrameLayout
         android:id="@+id/surface_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -164,6 +164,7 @@
         android:maxWidth="300dp"
         android:textColor="@color/textColor"
         android:textSize="14sp"
+        android:textAlignment="center"
         android:id="@+id/text_error_info"
         android:visibility="visible"
         />

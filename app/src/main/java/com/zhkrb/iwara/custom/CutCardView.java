@@ -18,6 +18,7 @@
 
 package com.zhkrb.iwara.custom;
 
+import android.animation.StateListAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -138,6 +139,14 @@ public class CutCardView extends MaterialCardView {
             return;
         }
         mShapeDrawable.setInterpolation(progress);
+
+    }
+
+    public float getCutProgress(){
+        if (mShapeDrawable==null){
+            return 0;
+        }
+        return mShapeDrawable.getInterpolation();
     }
 
 

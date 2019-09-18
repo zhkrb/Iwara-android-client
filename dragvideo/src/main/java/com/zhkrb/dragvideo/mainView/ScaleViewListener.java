@@ -30,4 +30,6 @@ public interface ScaleViewListener {
     void onClickViewToNom();
 
     void onClickViewClose();
+
+    void onReload();
 }

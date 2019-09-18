@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layoutDescription="@xml/scene_01"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showPaths="true"
     >
     <com.zhkrb.iwara.custom.CutCardView
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:id="@+id/appBarLayout"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         >
 
 
@@ -21,9 +21,6 @@
     <com.zhkrb.iwara.custom.refreshView.RefreshView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="50dp"
         android:id="@+id/refreshView"
         />
 

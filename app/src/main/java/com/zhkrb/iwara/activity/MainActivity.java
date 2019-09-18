@@ -20,7 +20,6 @@ package com.zhkrb.iwara.activity;
 
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -51,6 +50,7 @@ public class MainActivity extends AbsActivity implements View.OnClickListener, V
     protected void main() {
         super.main();
         UpdateUtil.checkUpdate(mContext,false);
+//        loadRootFragment(new FragmentFrame(MotionFragment.class));
         loadRootFragment(new FragmentFrame(GalleryFragment.class));
         mVideoPlayerLayout = findViewById(R.id.video_layout);
 
@@ -81,6 +81,8 @@ public class MainActivity extends AbsActivity implements View.OnClickListener, V
         bundle.putString("title",bean.getTitle());
         bundle.putString("thumb",bean.getThumb());
         bundle.putString("user",bean.getUser_name());
+        bundle.putString("referer",AppConfig.HOST+"/");
+        bundle.putString("ua",AppConfig.UA);
         mPlayerView.show();
         mPlayerView.load(bundle);
     }

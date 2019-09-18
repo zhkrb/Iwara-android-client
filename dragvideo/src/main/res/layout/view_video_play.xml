@@ -6,19 +6,20 @@
     android:background="@color/black_alpha"
     android:id="@+id/parent"
     android:clipChildren="false"
-    android:clipToPadding="false"
     >
 
-    <FrameLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/view_header"
         android:id="@+id/view_desc"
         android:background="@color/surfaceDark2"
+        android:clickable="true"
+        android:focusable="true"
         >
 
 
-    </FrameLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <RelativeLayout
         android:layout_width="match_parent"

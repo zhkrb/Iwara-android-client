@@ -13,28 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Create by zhkrb on 2019/9/7 22:12
+ * Create by zhkrb on 2019/9/15 10:10
  */
 
-package com.zhkrb.dragvideo.videoPlayer;
+package com.zhkrb.iwara.fragment;
 
-public interface PlayerStateListener {
+import android.os.Bundle;
 
-    int PLAY = 0x00011;
-    int PAUSE = 0x00012;
-    int LOADING = 0x00014;
+import com.zhkrb.iwara.R;
+import com.zhkrb.iwara.base.AbsFragment;
 
-    void onStateChange(int state);
+public class MotionFragment extends AbsFragment {
+    @Override
+    protected void main() {
 
-    void onVideoFirstPrepared(int width,int height);
+    }
 
-    void onBtnViewDown();
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment_motiontest_base;
+    }
 
-    void onProgressUpdate(int progress,int secProgress);
+    @Override
+    public void onNewArguments(Bundle args) {
 
-    void onBtnMore();
-
-    void onClickViewToNom();
-
-    void onReload();
+    }
 }

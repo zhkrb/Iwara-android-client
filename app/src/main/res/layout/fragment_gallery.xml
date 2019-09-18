@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/appBarLayout"
         app:liftOnScroll="true"
-        android:background="@null"
+        android:background="@android:color/transparent"
         android:elevation="@dimen/elevation_4dp"
         >
 

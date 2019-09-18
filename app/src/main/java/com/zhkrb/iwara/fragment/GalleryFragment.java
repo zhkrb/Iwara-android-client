@@ -24,6 +24,7 @@ import android.view.View;
 
 import com.alibaba.fastjson.JSON;
 import com.google.android.material.button.MaterialButton;
+import com.zhkrb.iwara.AppConfig;
 import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.activity.MainActivity;
 import com.zhkrb.iwara.adapter.VideoListAdapter;
@@ -70,9 +71,8 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
         mButtons.add(btn_time);
         mButtons.add(btn_play);
         mButtons.add(btn_like);
-        mGalleryMode = SpUtil.getInstance().getIntValue(SpUtil.GALLERY_MODE,0);
-        mListViewMode = SpUtil.getInstance().getIntValue(SpUtil.INDEX_VIDEO_LIST_MODE,
-                mGalleryMode == 0 ? 2 : 0);
+        mGalleryMode = AppConfig.getInstance().getGalleryMode();
+        mListViewMode = AppConfig.getInstance().getGalleryListMode(mGalleryMode);
         mRefreshView = mRootView.findViewById(R.id.refreshView);
         final GridLayoutManager manager = new GridLayoutManager(mContext,2, RecyclerView.VERTICAL,false);
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -84,6 +84,7 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
         });
         mRefreshView.setLayoutManager(manager);
         ItemDecoration decoration = new ItemDecoration(mContext, 0x00000000,5,5);
+        decoration.setDrawBorderLeftAndRight(true);
         mRefreshView.setItemDecoration(decoration);
         mRefreshView.setOnScaleListener(this);
 
@@ -159,25 +160,18 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
         if (pos == mGalleryMode){
             return;
         }
+        targetMode(pos);
+    }
+
+    private void targetMode(int pos) {
         mGalleryMode = pos;
+        mListViewMode = AppConfig.getInstance().getGalleryListMode(pos);
+        mAdapter.setListMode(mListViewMode);
         mRefreshView.initData();
     }
 
     @Override
     public void onBackPressed() {
-        String key = "";
-        switch (mGalleryMode){
-            case 0:
-                key = SpUtil.INDEX_VIDEO_LIST_MODE;
-                break;
-            case 1:
-                key = SpUtil.VIEW_VIDEO_LIST_MODE;
-                break;
-            case 2:
-                key = SpUtil.LIKE_VIDEO_LIST_MODE;
-                break;
-        }
-        SpUtil.getInstance().setIntValue(key,mListViewMode);
         super.onBackPressed();
     }
 
@@ -195,6 +189,7 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
                 break;
         }
         VibrateUtil.Short();
+        saveListMode();
         mAdapter.setListMode(mListViewMode);
     }
 
@@ -212,7 +207,24 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
                 break;
         }
         VibrateUtil.Short();
+        saveListMode();
         mAdapter.setListMode(mListViewMode);
+    }
+
+    private void saveListMode(){
+        String key = "";
+        switch (mGalleryMode){
+            case 0:
+                key = SpUtil.INDEX_VIDEO_LIST_MODE;
+                break;
+            case 1:
+                key = SpUtil.VIEW_VIDEO_LIST_MODE;
+                break;
+            case 2:
+                key = SpUtil.LIKE_VIDEO_LIST_MODE;
+                break;
+        }
+        AppConfig.getInstance().putGalleryListMode(key,mListViewMode);
     }
 
 

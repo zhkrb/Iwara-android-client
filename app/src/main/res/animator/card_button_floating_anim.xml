@@ -4,7 +4,7 @@
         <objectAnimator android:duration="@android:integer/config_shortAnimTime"
             android:interpolator="@anim/decelerate_anim_1_5"
             android:propertyName="translationZ"
-            android:valueTo="@dimen/elevation_12dp"
+            android:valueTo="@dimen/elevation_5dp"
             android:valueType="floatType"/>
     </item>
     <item>

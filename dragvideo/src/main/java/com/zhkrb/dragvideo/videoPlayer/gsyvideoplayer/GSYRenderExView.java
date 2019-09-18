@@ -16,18 +16,15 @@
  * Create by zhkrb on 2019/9/7 22:12
  */
 
-package com.zhkrb.dragvideo.videoPlayer;
+package com.zhkrb.dragvideo.videoPlayer.gsyvideoplayer;
 
 import android.content.Context;
 import android.graphics.SurfaceTexture;
-import android.view.Surface;
 import android.view.ViewGroup;
 
 import com.shuyu.gsyvideoplayer.render.GSYRenderView;
 import com.shuyu.gsyvideoplayer.render.glrender.GSYVideoGLViewBaseRender;
-import com.shuyu.gsyvideoplayer.render.view.GSYTextureView;
 import com.shuyu.gsyvideoplayer.render.view.GSYVideoGLView;
-import com.shuyu.gsyvideoplayer.render.view.IGSYRenderView;
 import com.shuyu.gsyvideoplayer.render.view.listener.IGSYSurfaceListener;
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
 import com.shuyu.gsyvideoplayer.utils.MeasureHelper;

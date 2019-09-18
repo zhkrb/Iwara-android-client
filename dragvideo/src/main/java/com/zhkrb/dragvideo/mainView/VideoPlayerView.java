@@ -23,7 +23,9 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -36,22 +38,20 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.customview.widget.ViewDragHelper;
 import androidx.fragment.app.DialogFragment;
 
 import com.zhkrb.dragvideo.NetworkUtil;
 import com.zhkrb.dragvideo.R;
 import com.zhkrb.dragvideo.ViewWrapper;
-import com.zhkrb.dragvideo.adapter.SettingAdapter;
 import com.zhkrb.dragvideo.bean.SettingBean;
 import com.zhkrb.dragvideo.bean.UrlBean;
 import com.zhkrb.dragvideo.bean.ValueSelectBean;
@@ -65,18 +65,16 @@ import com.zhkrb.dragvideo.widget.SettingSelectDialogFragment;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class VideoPlayerView extends FrameLayout implements ScaleViewListener, PlayerSettingDialogFragment.onItemClickListener {
 
     private Context mContext;
-
-    private static float scale;
     private int mAppearAnimId;
 
     private RelativeLayout mHeaderView;
-    private FrameLayout mDescView;
+    private NestedScrollView mDescView;
     private RelativeLayout mParentLayout;
     private ViewWrapper mHeaderWrapper;
     private ViewWrapper mDescWrapper;
@@ -98,6 +96,11 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
     private int mDropHideDistance;  //完整滑动隐藏控件所需的距离 小控件高度/2到底部15dp的距离
     private int mFullCurrentHeaderHeight; //完整大小时 header的高度
 
+    private int mVerticalFullHeight;    //视频为竖屏时最大高度
+    private int mVerticalSmillHeight;   //视频为竖屏时最小高度
+    private boolean isVerticalVideo = false;
+    private boolean isScrollTop = true;
+
     private boolean isFirstUpdate = true;
 
     private ViewDragHelper mDragHelper;
@@ -110,8 +113,6 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
     private List<UrlBean> mVideoUrlList;
     private int mSelectUrlPos = 0;
     private String mainUrl;
-    private ProgressBar mLoadingProgress;
-    private ImageView mFailIcon;
 
 
     public VideoPlayerView(@NonNull Context context) {
@@ -124,7 +125,6 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
 
     public VideoPlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        scale = context.getResources().getDisplayMetrics().density;
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.VideoPlayView);
         mAppearAnimId = ta.getResourceId(R.styleable.VideoPlayView_appear_animation,R.anim.bottom_to_top);
         ta.recycle();
@@ -146,6 +146,7 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
         addView(view);
         mHeaderView = view.findViewById(R.id.view_header);
         mDescView = view.findViewById(R.id.view_desc);
+        mDescView.setOnScrollChangeListener(mScrollChangeListener);
         mParentLayout = view.findViewById(R.id.parent);
         mHeaderWrapper = new ViewWrapper(mHeaderView);
         mDescWrapper = new ViewWrapper(mDescView);
@@ -222,10 +223,14 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
         String thumb = bundle.getString("thumb","");
         String user = bundle.getString("user","");
         mScaleVideoView.initData(mainUrl,title,thumb,user);
-        showLoadProgress(true);
+        Map<String,String> header = new ArrayMap<>();
+        header.put("Referer",bundle.getString("referer",""));
+        header.put("User-Agent",bundle.getString("ua",""));
+        mScaleVideoView.setHeader(header);
+        mScaleVideoView.getVideoView().setLoading(true);
         if (mNetworkUtil != null){
-            mNetworkUtil.getUrlList(mainUrl);
             mNetworkUtil.setGetPlayUrlCallback(mCallback);
+            mNetworkUtil.getUrlList(mainUrl);
         }else {
             throw new RuntimeException("must set NetworkUtil");
         }
@@ -248,6 +253,10 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
                                             - (dp2px(mSmillWidgetHeight)/2);
                 mDropHideDistance = dp2px(mSmillWidgetHeight) + dp2px(mSmillBottomHeight)
                                         -dp2px(15);
+                //当视频为竖屏时，进行滚动 最大高度=屏幕宽度/0.7
+                //最小高度=屏幕宽度/0.8
+                mVerticalFullHeight = (int) (mMaxWidth/0.7f);
+                mVerticalSmillHeight = (int) (mMaxWidth/1.0f);
             }
         }
     };
@@ -260,6 +269,7 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
     private float mDownRawY;
     private boolean isVerticalScroll = false;
     private boolean isHorizontalScroll = false;
+    private boolean isDescVerticalScroll = false;
 
     private boolean canUsingEvent = false;
 
@@ -270,7 +280,29 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
         final float y = ev.getY();
         final float rawy = ev.getRawY();
         final int action = ev.getAction();
-        if (!isViewHit(mHeaderView,(int) x,(int) y)){
+        if ((isVerticalVideo && isViewHit(mDescView,(int) x,(int) y)) || isDescVerticalScroll){
+            switch (action){
+                case MotionEvent.ACTION_DOWN:
+                    mDownMotionX = x;
+                    mDownMotionY = y;
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    float deltaX = Math.abs(x - mDownMotionX);
+                    float deltaY = Math.abs(y - mDownMotionY);
+                    if (deltaY < mTouchSlop){
+                        return false;
+                    }
+                    float moveY = y - mDownMotionY;
+                    if ((moveY < 0 && isScrollTop && mHeaderWrapper.getHeight() != mVerticalSmillHeight) ||
+                            moveY > 0 && isScrollTop){
+                        intercept = true;
+                        isDescVerticalScroll = true;
+                    }
+                    break;
+            }
+            return intercept;
+        }
+        if (!isViewHit(mHeaderView,(int) x,(int) y) && ! isVerticalScroll){
             return false;
         }
         switch (action){
@@ -315,6 +347,26 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if ((isVerticalVideo && isViewHit(mDescView,(int) event.getX(),(int) event.getY())) || isDescVerticalScroll){
+            int action = event.getAction();
+            float y = event.getY();
+            switch (action){
+                case MotionEvent.ACTION_DOWN:
+                    isDescVerticalScroll = true;
+                    return true;
+                case MotionEvent.ACTION_MOVE:
+                    float scrollY = y - mDownMotionY;
+                    if ((scrollY > 0 && isScrollTop) || scrollY < 0){
+                        scrollDescView((int) scrollY);
+                        return true;
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    isDescVerticalScroll = false;
+                    break;
+            }
+            return false;
+        }
         if (!canUsingEvent){
             return false;
         }
@@ -335,7 +387,7 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
                 float deltaY = y - mDownMotionY;
                 switch (mScrollState){
                     case SCROLL_STATE_NOM:
-                        int prog = (int) (((float)deltaY/(float) mDropDistance)*10000);
+                        int prog = (int) ((deltaY/(float) mDropDistance)*10000);
                         dropUpdate(prog);
                         break;
                     case SCROLL_STATE_SMILL:
@@ -346,11 +398,11 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
                             mScrollOrient = deltaY<0 ? ORIGIN_UP : ORIGIN_DOWN;
                         }
                         if (mScrollOrient == ORIGIN_UP){
-                            int prog1 = (int) ((1f-((float)-deltaY/(float) mDropDistance))*10000);
+                            int prog1 = (int) ((1f-(-deltaY/(float) mDropDistance))*10000);
                             dropUpdate(prog1);
                         }else {
                             deltaY = event.getRawY() - mDownRawY;
-                            int prog2 = (int) (((float)deltaY/(float) mDropHideDistance)*100);
+                            int prog2 = (int) ((deltaY/(float) mDropHideDistance)*100);
                             updateThird(prog2);
                         }
                         break;
@@ -361,8 +413,8 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
                 float yv = mTracker.getYVelocity();
                 float deltaY1 = y - mDownMotionY;
                 if (mScrollState == SCROLL_STATE_NOM){
-                    int prog3 = (int) (((float)deltaY1/(float) mDropDistance)*10000);
-                    if (prog3 > 3000 || yv > 40){
+                    int prog3 = (int) ((deltaY1/(float) mDropDistance)*10000);
+                    if (prog3 > 1000 || yv > 40){
                         mScrollState = SCROLL_STATE_SMILL;
                         scrollToSmill(prog3,yv);
                     }else {
@@ -371,8 +423,8 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
                     }
                 }else {
                     if (mScrollOrient == ORIGIN_UP){
-                        int prog4 = (int) ((1f-((float)-deltaY1/(float) mDropDistance))*10000);
-                        if (prog4 < 7000 || yv < 0){
+                        int prog4 = (int) ((1f-(-deltaY1/(float) mDropDistance))*10000);
+                        if (prog4 < 9000 || yv < 0){
                             mScrollState = SCROLL_STATE_NOM;
                             scrollToNom(prog4,yv);
                         }else {
@@ -381,7 +433,7 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
                         }
                     }else {
                         deltaY1 = event.getRawY() - mDownRawY;
-                        int prog2 = (int) (((float)deltaY1/(float) mDropHideDistance)*100);
+                        int prog2 = (int) ((deltaY1/(float) mDropHideDistance)*100);
                         if (prog2 > 30 || yv > 40){
                             hideView(prog2,yv);
                         }else {
@@ -401,7 +453,7 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
 
 
     private int computeSettleDuration(int dy, int yvel,int range) {
-        float i = (float) reflectDragMethod("clampMag",true,yvel,  mMinVelocity, mMaxVelocity);
+        float i = (float) reflectDragMethod("clampMag", yvel,  mMinVelocity, mMaxVelocity);
         yvel = (int) i;
 
         final int absDy = Math.abs(dy);
@@ -410,28 +462,20 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
         final float yweight = yvel != 0 ? (float) absYVel / absYVel :
                 (float) absDy / absDy;
 
-        int yduration = (int) reflectDragMethod("computeAxisDuration",true,dy, yvel, range);
+        int yduration = (int) reflectDragMethod("computeAxisDuration", dy, yvel, range);
 
         return (int) (yduration * yweight);
     }
 
-    private Object reflectDragMethod(String name, boolean needReturn, Object... args) {
+    private Object reflectDragMethod(String name, Object... args) {
         for (Method method : mDragHelper.getClass().getDeclaredMethods()) {
             method.setAccessible(true);
             try {
                 if (method.getName().equals(name)) {
                     if (args.length == 0) {
-                        if (needReturn) {
-                            return method.invoke(mDragHelper);
-                        }else {
-                            method.invoke(mDragHelper);
-                        }
+                        return method.invoke(mDragHelper);
                     } else {
-                        if (needReturn) {
-                            return method.invoke(mDragHelper,args);
-                        }else {
-                            method.invoke(mDragHelper,args);
-                        }
+                        return method.invoke(mDragHelper,args);
                     }
                 }
             } catch (IllegalAccessException | InvocationTargetException e) {
@@ -440,6 +484,11 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
         }
         return null;
     }
+
+
+    private NestedScrollView.OnScrollChangeListener mScrollChangeListener = (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+       isScrollTop = scrollY == 0;
+    };
 
 
     private void notHideView(int i, float velocity) {
@@ -558,11 +607,13 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
         }
         if (dis > 0){
             mScaleVideoView.setPlayerState(IVideoPlayer.VIEW_STATE_SMILL);
+            mParentLayout.setClipChildren(true);
             if (mHideFragmentListener != null){
                 mHideFragmentListener.onHide(false);
             }
         }else {
             mScaleVideoView.setPlayerState(IVideoPlayer.VIEW_STATE_NOM);
+            mParentLayout.setClipChildren(false);
             if (mHideFragmentListener != null){
                 mHideFragmentListener.onHide(true);
             }
@@ -653,6 +704,29 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
         mHeaderView.setAlpha(1 - prog);
     }
 
+    //当视频为竖屏时，进行滚动 最大高度=屏幕宽度/0.7
+    //最小高度=屏幕宽度/0.8
+    //大于 0向下  小于 0向上
+    private void scrollDescView(int px){
+        if (px > 0 && mHeaderWrapper.getHeight() >= mVerticalFullHeight){
+            return;
+        }
+        if (px < 0 && mHeaderWrapper.getHeight() <= mVerticalSmillHeight){
+            return;
+        }
+        int height = mHeaderWrapper.getHeight() + px;
+        if (height < mVerticalSmillHeight){
+            height = mVerticalSmillHeight;
+        }
+        if (height > mVerticalFullHeight){
+            height = mVerticalFullHeight;
+        }
+
+        mHeaderWrapper.setHeight(height);
+        mHeaderView.requestLayout();
+        mDescView.requestLayout();
+    }
+
 
     private int dp2px(int dpVal) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal,
@@ -671,6 +745,13 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
     @Override
     public void onVideoFirstPrepared(int width, int height) {
         int currentHeight = (int) (mMaxWidth / ((float)width/(float)height));
+        if (currentHeight > mVerticalFullHeight){
+            isVerticalVideo = true;
+            currentHeight = mVerticalFullHeight;
+        }else {
+            isVerticalVideo = false;
+        }
+
         if (mScrollState != SCROLL_STATE_NOM){
             mFullCurrentHeaderHeight = currentHeight;
         }else {
@@ -688,6 +769,8 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
         ((ViewGroup)getParent()).removeView(this);
         mScaleVideoView.release();
         mScaleVideoView = null;
+//        showLoadProgress(false);
+//        showFailedIcon(false);
         if (mTracker != null){
             mTracker.recycle();
         }
@@ -712,52 +795,6 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
         fragment.show(((AppCompatActivity)mContext).getSupportFragmentManager(),"PlayerSettingDialogFragment");
     }
 
-    private void showLoadProgress(boolean show){
-        if (show){
-            if (mLoadingProgress == null){
-                mLoadingProgress = new ProgressBar(mContext);
-                mLoadingProgress.setProgressTintList(mContext.getResources().getColorStateList(R.color.colorAccent));
-            }
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(dp2px(45),dp2px(45));
-            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-            mLoadingProgress.setLayoutParams(layoutParams);
-            mHeaderView.addView(mLoadingProgress);
-            mLoadingProgress.bringToFront();
-        }else {
-            if (mLoadingProgress != null && mLoadingProgress.getParent() != null){
-                ((ViewGroup)mLoadingProgress.getParent()).removeView(mLoadingProgress);
-                mLoadingProgress = null;
-            }
-        }
-    }
-
-    private void showFailedIcon(boolean show){
-        if (show){
-            if (mFailIcon == null){
-                mFailIcon = new ImageView(mContext);
-                mFailIcon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                mFailIcon.setImageTintList(mContext.getResources().getColorStateList(R.color.textColor));
-            }
-            showLoadProgress(false);
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(dp2px(45),dp2px(45));
-            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-            mFailIcon.setLayoutParams(layoutParams);
-            mFailIcon.setOnClickListener(mFailClickListener);
-            mHeaderView.addView(mFailIcon);
-            mFailIcon.bringToFront();
-        }else {
-            if (mFailIcon != null && mFailIcon.getParent() != null){
-                ((ViewGroup)mFailIcon.getParent()).removeView(mFailIcon);
-                mFailIcon = null;
-            }
-        }
-    }
-
-    private View.OnClickListener mFailClickListener = v ->{
-        mNetworkUtil.getUrlList(mainUrl);
-    };
-
-
     @Override
     public void onClickViewToNom() {
         scrollToNom(10000,0);
@@ -768,25 +805,33 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
         hideView(0,0);
     }
 
+    @Override
+    public void onReload() {
+        mNetworkUtil.getUrlList(mainUrl);
+        mScaleVideoView.getVideoView().setLoading(true);
+    }
+
     public void setNetworkUtil(NetworkUtil networkUtil) {
         mNetworkUtil = networkUtil;
-
     }
 
     private NetworkUtil.GetPlayUrlCallback mCallback = new NetworkUtil.GetPlayUrlCallback() {
         @Override
         public void onSuccess(List<UrlBean> list) {
             mVideoUrlList = list;
-            showLoadProgress(false);
-            mScaleVideoView.playUrl(mVideoUrlList.get(mSelectUrlPos).getUri());
+            mScaleVideoView.getVideoView().setLoading(false);
+            mScaleVideoView.playUrl(mVideoUrlList.get(mSelectUrlPos).getUri(),
+                    mScaleVideoView.getVideoView().getPlayingPos());
         }
 
         @Override
         public void onFailed(String result) {
             ToastUtil.show(mContext,R.string.url_get_failed);
-            showFailedIcon(true);
+            mScaleVideoView.getVideoView().setFailed((String) mContext.getText(R.string.url_get_failed_2));
         }
     };
+
+
 
 
     @Override
@@ -807,21 +852,21 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
     private void getUrlList() {
 //        NetworkUtil networkUtil = mNetworkUtil.clone();
         mNetworkUtil.setGetPlayUrlCallback(new NetworkUtil.GetPlayUrlCallback() {
-            @Override
-            public void onSuccess(List<UrlBean> list) {
-                mVideoUrlList = list;
-                openSelectDialog(SettingListUtil.getUrlList(mVideoUrlList),
-                        String.valueOf(mSelectUrlPos),
-                        mUrlSelectListener);
-            }
+                    @Override
+                    public void onSuccess(List<UrlBean> list) {
+                        mVideoUrlList = list;
+                        openSelectDialog(SettingListUtil.getUrlList(mVideoUrlList),
+                                String.valueOf(mSelectUrlPos),
+                                mUrlSelectListener);
+                    }
 
-            @Override
-            public void onFailed(String result) {
-                ToastUtil.show(mContext,R.string.url_get_failed);
-            }
-        });
+                    @Override
+                    public void onFailed(String result) {
+                        ToastUtil.show(mContext,R.string.url_get_failed);
+                    }
+                }
+        );
         mNetworkUtil.getUrlList(mainUrl);
-
     }
 
     private void openSelectDialog(List<ValueSelectBean> list,String value,SettingSelectDialogFragment.onItemClickListener listener){

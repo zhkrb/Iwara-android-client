@@ -1,17 +1,44 @@
 apply plugin: 'com.android.application'
 
+static def gitVersionCode() {
+    def cmd = 'git rev-list HEAD --first-parent --count'
+    cmd.execute().text.trim().toInteger()
+}
+
+static def gitVersionTag(boolean isPattern) {
+    def cmd = 'git describe --tags'
+    def version = cmd.execute().text.trim()
+
+    if (isPattern){
+        def pattern = "-(\\d+)-g"
+        def matcher = version =~ pattern
+
+        if (matcher) {
+            version = version.substring(0, matcher.start()) + "." + matcher[0][1]
+        } else {
+            version = version + ".0"
+        }
+    }
+
+    return version
+}
+
 android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.zhkrb.iwara"
         minSdkVersion 22
         targetSdkVersion 28
-        versionCode 1
-        versionName "0.0.1"
+        versionCode 2
+        versionName "0.0.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
+        debug {
+            // 为了不和 release 版本冲突
+            applicationIdSuffix ".debug"
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -21,6 +48,22 @@ android {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
+
+    applicationVariants.all{ variant ->
+        if (variant.buildType.name == 'release') {
+            variant.outputs.each { output ->
+                output.versionNameOverride = gitVersionTag(true)
+                output.versionCodeOverride = gitVersionCode()
+            }
+        }else if (variant.buildType.name == 'debug') {
+            variant.outputs.each { output ->
+                output.versionNameOverride = gitVersionTag(false)+'-debug'
+                output.versionCodeOverride = gitVersionCode()
+            }
+        }
+    }
+
+
 }
 
 repositories {
@@ -40,6 +83,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0-alpha10'
     implementation 'com.android.support:support-annotations:28.0.0'
     implementation 'com.android.support:swiperefreshlayout:28.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
 
     //glide
     implementation 'com.github.bumptech.glide:glide:4.8.0'
@@ -51,6 +95,8 @@ dependencies {
 
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+
+
 
     implementation 'org.jsoup:jsoup:1.11.3'
     api project(':dragvideo')

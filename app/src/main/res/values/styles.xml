@@ -9,12 +9,13 @@
         <item name="android:colorBackground">@color/surfaceDark</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
-    <style name="AppTheme" parent="BaseAppTheme">
         <item name="shapeAppearanceSmallComponent">@style/CustomCutSmallShapeAppearence</item>
         <item name="shapeAppearanceMediumComponent">@style/CustomCutMediumShapeAppearence</item>
         <item name="shapeAppearanceLargeComponent">@style/CustomCutLargeShapeAppearence</item>
+    </style>
+
+    <style name="AppTheme" parent="BaseAppTheme">
+
     </style>
     <style name="LaunchTheme" parent="BaseAppTheme">
         <item name="android:windowEnterAnimation">@anim/fade_anim</item>

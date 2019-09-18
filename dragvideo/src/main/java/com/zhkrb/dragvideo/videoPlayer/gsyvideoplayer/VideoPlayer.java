@@ -16,7 +16,7 @@
  * Create by zhkrb on 2019/9/7 22:12
  */
 
-package com.zhkrb.dragvideo.videoPlayer;
+package com.zhkrb.dragvideo.videoPlayer.gsyvideoplayer;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -29,7 +29,6 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -66,10 +65,13 @@ import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 import com.zhkrb.dragvideo.R;
+import com.zhkrb.dragvideo.videoPlayer.IVideoPlayer;
+import com.zhkrb.dragvideo.videoPlayer.PlayerStateListener;
 import com.zhkrb.dragvideo.widget.ImgLoader;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import moe.codeest.enviews.ENDownloadView;
 
 import static com.shuyu.gsyvideoplayer.utils.CommonUtil.getActionBarHeight;
 import static com.shuyu.gsyvideoplayer.utils.CommonUtil.getStatusBarHeight;
@@ -78,7 +80,7 @@ import static com.shuyu.gsyvideoplayer.utils.CommonUtil.hideSupportActionBar;
 import static com.shuyu.gsyvideoplayer.utils.CommonUtil.showNavKey;
 import static com.shuyu.gsyvideoplayer.utils.CommonUtil.showSupportActionBar;
 
-public class VideoPlayer extends StandardGSYVideoPlayer implements VideoAllCallBack, DefaultLifecycleObserver, IVideoPlayer, GSYVideoProgressListener {
+public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBack, DefaultLifecycleObserver, IVideoPlayer, GSYVideoProgressListener {
 
     private Context mContext;
     private String mShareUrl;
@@ -88,9 +90,7 @@ public class VideoPlayer extends StandardGSYVideoPlayer implements VideoAllCallB
     protected boolean isPlay;
     protected boolean isPause;
 
-    private SurfaceTexture mSaveSurface = null;
-    private ViewGroup msaveContainer;
-    private ViewGroup.LayoutParams msaveLayoutPraams;
+
     private PlayerStateListener mPlayerStateListener;
 
     //拖动时 控件状态
@@ -139,7 +139,6 @@ public class VideoPlayer extends StandardGSYVideoPlayer implements VideoAllCallB
         setVideoAllCallBack(this);
         orientationUtils = new OrientationUtils((Activity) mContext, this);
         orientationUtils.setEnable(false);
-
         ImageView imageView = new ImageView(mContext);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         setThumbImageView(imageView);
@@ -199,6 +198,7 @@ public class VideoPlayer extends StandardGSYVideoPlayer implements VideoAllCallB
         GSYVideoType.enableMediaCodecTexture();
         setSeekRatio(0.1f);
         setGSYVideoProgressListener(this);
+        GSYVideoManager.instance().setTimeOut(30000,true);
     }
 
     //扩大Seekbar点击范围
@@ -212,7 +212,10 @@ public class VideoPlayer extends StandardGSYVideoPlayer implements VideoAllCallB
         }
     }
 
-
+    @Override
+    public boolean isAutoFullWithSize() {
+        return true;
+    }
 
     @Override
     public void onPause(@NonNull LifecycleOwner owner) {
@@ -268,205 +271,7 @@ public class VideoPlayer extends StandardGSYVideoPlayer implements VideoAllCallB
 
     }
 
-    @Override
-    public GSYBaseVideoPlayer startWindowFullscreen(final Context context, boolean actionBar, boolean statusBar) {
 
-        mSystemUiVisibility = ((Activity) context).getWindow().getDecorView().getSystemUiVisibility();
-
-        hideSupportActionBar(context, actionBar, statusBar);
-
-        if (mHideKey) {
-            hideNavKey(context);
-        }
-
-        this.mActionBar = actionBar;
-
-        this.mStatusBar = statusBar;
-
-        mListItemRect = new int[2];
-
-        mListItemSize = new int[2];
-
-        final ViewGroup vp = getViewGroup();
-
-        removeVideo(vp, getFullId());
-
-        //处理暂停的逻辑
-        pauseFullCoverLogic();
-
-        if (mTextureViewContainer.getChildCount() > 0) {
-            mTextureViewContainer.removeAllViews();
-        }
-//
-        saveLocationStatus(context, statusBar, actionBar);
-//
-//        //切换时关闭非全屏定时器
-//        cancelProgressTimer();
-//
-//        boolean hadNewConstructor = true;
-
-        setId(getFullId());
-        setIfCurrentIsFullscreen(true);
-//        setVideoAllCallBack(mVideoAllCallBack);
-
-        if (getFullscreenButton() != null) {
-            getFullscreenButton().setImageDrawable(mContext.getResources().getDrawable(getShrinkImageRes(),mContext.getTheme()));
-            getFullscreenButton().setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mBackFromFullScreenListener == null) {
-                        clearFullscreenLayout();
-                    } else {
-                        mBackFromFullScreenListener.onClick(v);
-                    }
-                }
-            });
-        }
-
-        if (getBackButton() != null) {
-            getBackButton().setVisibility(VISIBLE);
-            getBackButton().setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mBackFromFullScreenListener == null) {
-                        clearFullscreenLayout();
-                    } else {
-                        mBackFromFullScreenListener.onClick(v);
-                    }
-                }
-            });
-        }
-
-        final LayoutParams lpParent = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        final FrameLayout frameLayout = new FrameLayout(context);
-        frameLayout.setBackgroundColor(Color.BLACK);
-
-        if (mShowFullAnimation){
-            mFullAnimEnd = false;
-            LayoutParams lp = new LayoutParams(getWidth(), getHeight());
-            lp.setMargins(mListItemRect[0], mListItemRect[1], 0, 0);
-            msaveContainer = (ViewGroup) getParent();
-            msaveContainer.removeView(this);
-            frameLayout.addView(this, lp);
-            vp.addView(frameLayout, lpParent);
-            postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    TransitionManager.beginDelayedTransition(vp);
-                    resolveFullVideoShow(context, VideoPlayer.this, frameLayout);
-                    mFullAnimEnd = true;
-                }
-            }, 300);
-        }else {
-            LayoutParams lp = new LayoutParams(getWidth(), getHeight());
-            msaveContainer = (ViewGroup) getParent();
-            msaveContainer.removeView(this);
-            frameLayout.addView(this, lp);
-            vp.addView(frameLayout, lpParent);
-//        setVisibility(INVISIBLE);
-//        frameLayout.setVisibility(INVISIBLE);
-            resolveFullVideoShow(context, this, frameLayout);
-
-        }
-
-
-
-//        mSaveSurface = ((GSYTextureExView)mTextureView.getShowView()).getSaveSurfaceTexture();
-//
-        addTextureView();
-//        mTextureViewContainer.setVisibility(GONE);
-//        frameLayout.setVisibility(GONE);
-//
-//        startProgressTimer();
-        checkoutState();
-
-        return null;
-    }
-
-    @Override
-    protected void resolveNormalVideoShow(View oldF, ViewGroup vp, GSYVideoPlayer gsyVideoPlayer) {
-        if (oldF != null && oldF.getParent() != null) {
-            ViewGroup viewGroup = (ViewGroup) oldF.getParent();
-            vp.removeView(viewGroup);
-        }
-        if (mTextureViewContainer.getChildCount() > 0) {
-            mTextureViewContainer.removeAllViews();
-        }
-
-        ((ViewGroup)getParent()).removeView(this);
-        msaveContainer.addView(this,msaveLayoutPraams);
-
-        setStateAndUi(mCurrentState);
-
-        addTextureView();
-        mSaveChangeViewTIme = System.currentTimeMillis();
-        if (mVideoAllCallBack != null) {
-            Debuger.printfError("onQuitFullscreen");
-            mVideoAllCallBack.onQuitFullscreen(mOriginUrl, mTitle, this);
-        }
-        mIfCurrentIsFullscreen = false;
-        if (mHideKey) {
-            showNavKey(mContext, mSystemUiVisibility);
-        }
-        showSupportActionBar(mContext, mActionBar, mStatusBar);
-        if(getFullscreenButton() != null) {
-            getFullscreenButton().setImageDrawable(mContext.getResources().getDrawable(getEnlargeImageRes(),mContext.getTheme()));
-            getFullscreenButton().setOnClickListener(this);
-        }
-
-
-    }
-
-    private ViewGroup getViewGroup() {
-        return (ViewGroup) (CommonUtil.scanForActivity(getContext())).findViewById(Window.ID_ANDROID_CONTENT);
-    }
-
-    /**
-     * 移除没用的
-     */
-    private void removeVideo(ViewGroup vp, int id) {
-        View old = vp.findViewById(id);
-        if (old != null) {
-            if (old.getParent() != null) {
-                ViewGroup viewGroup = (ViewGroup) old.getParent();
-                vp.removeView(viewGroup);
-            }
-        }
-    }
-
-    /**
-     * 全屏的暂停的时候返回页面不黑色
-     */
-    private void pauseFullCoverLogic() {
-        if (mCurrentState == GSYVideoPlayer.CURRENT_STATE_PAUSE && mTextureView != null
-                && (mFullPauseBitmap == null || mFullPauseBitmap.isRecycled()) && mShowPauseCover) {
-            try {
-                initCover();
-            } catch (Exception e) {
-                e.printStackTrace();
-                mFullPauseBitmap = null;
-            }
-        }
-    }
-
-    /**
-     * 保存大小和状态
-     */
-    private void saveLocationStatus(Context context, boolean statusBar, boolean actionBar) {
-        getLocationOnScreen(mListItemRect);
-        int statusBarH = getStatusBarHeight(context);
-        int actionBerH = getActionBarHeight((Activity) context);
-        if (statusBar) {
-            mListItemRect[1] = mListItemRect[1] - statusBarH;
-        }
-        if (actionBar) {
-            mListItemRect[1] = mListItemRect[1] - actionBerH;
-        }
-        mListItemSize[0] = getWidth();
-        mListItemSize[1] = getHeight();
-        msaveLayoutPraams = getLayoutParams();
-
-    }
 
 
     @Override
@@ -529,12 +334,12 @@ public class VideoPlayer extends StandardGSYVideoPlayer implements VideoAllCallB
                     mErrorTextView.setVisibility(VISIBLE);
                 }
                 break;
-            default:
-                if (mErrorTextView.getVisibility()!=GONE){
-                    mErrorTextView.setVisibility(GONE);
-                }
-                mErrorTextView.setText("");
-                break;
+        }
+        if (mCurrentState != CURRENT_STATE_ERROR){
+            if (mErrorTextView.getVisibility()!=GONE){
+                mErrorTextView.setVisibility(GONE);
+            }
+            mErrorTextView.setText("");
         }
     }
 
@@ -556,13 +361,28 @@ public class VideoPlayer extends StandardGSYVideoPlayer implements VideoAllCallB
             shareUrl();
         }else if (v.getId() == R.id.fullscreen){
             showFull();
+        }else if (v.getId() == R.id.surface_container && mCurrentState == CURRENT_STATE_ERROR) {
+            if (mVideoAllCallBack != null) {
+                Debuger.printfLog("onClickStartError");
+                mVideoAllCallBack.onClickStartError(mOriginUrl, mTitle, this);
+            }
+            mPlayerStateListener.onReload();
         }else {
             super.onClick(v);
         }
 
     }
 
-
+    @Override
+    protected void clickStartIcon() {
+        if (mCurrentState == CURRENT_STATE_ERROR){
+            if (mPlayerStateListener != null){
+                mPlayerStateListener.onReload();
+            }
+            return;
+        }
+        super.clickStartIcon();
+    }
 
     private void showFull() {
         if (orientationUtils.getIsLand() != 1) {
@@ -581,22 +401,7 @@ public class VideoPlayer extends StandardGSYVideoPlayer implements VideoAllCallB
         mBrightness = false;
     }
 
-    @Override
-    protected void addTextureView() {
-        if (mTextureView == null){
-            mTextureView = new GSYRenderExView();
-            ((GSYRenderExView)mTextureView).addViewEx(getContext(), mTextureViewContainer, mRotate, this, this, mEffectFilter, mMatrixGL, mRenderer, mMode,mSaveSurface);
 
-        }else {
-            ((GSYRenderExView)mTextureView).reAddView(mTextureViewContainer, mRotate, (GSYTextureExView) mTextureView.getShowView());
-        }
-   //        mSaveSurface = ((GSYTextureExView)mTextureView.getShowView()).getSaveSurfaceTexture();
-    }
-
-    @Override
-    public void release() {
-        super.release();
-    }
 
 
 
@@ -786,7 +591,7 @@ public class VideoPlayer extends StandardGSYVideoPlayer implements VideoAllCallB
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();
-                startPlayLogic();
+                startButtonLogic();
             }
         });
     }
@@ -876,6 +681,23 @@ public class VideoPlayer extends StandardGSYVideoPlayer implements VideoAllCallB
                 setViewShowState(mThumbImageViewLayout, INVISIBLE);
             }
             setViewShowState(mStartButton, INVISIBLE);
+        }
+    }
+
+    @Override
+    protected void changeUiToPrepareingClear() {
+        Debuger.printfLog("changeUiToPrepareingClear");
+
+        setViewShowState(mTopContainer, INVISIBLE);
+        setViewShowState(mBottomContainer, INVISIBLE);
+        setViewShowState(mStartButton, INVISIBLE);
+        setViewShowState(mLoadingProgressBar, VISIBLE);
+        setViewShowState(mThumbImageViewLayout, INVISIBLE);
+        setViewShowState(mBottomProgressBar, INVISIBLE);
+        setViewShowState(mLockScreen, GONE);
+
+        if (mLoadingProgressBar instanceof ENDownloadView) {
+            ((ENDownloadView) mLoadingProgressBar).reset();
         }
     }
 
@@ -1123,7 +945,7 @@ public class VideoPlayer extends StandardGSYVideoPlayer implements VideoAllCallB
 
     @Override
     public long getPlayingPos() {
-        return mCurrentPosition;
+        return getCurrentPositionWhenPlaying();
     }
 
 
@@ -1181,6 +1003,30 @@ public class VideoPlayer extends StandardGSYVideoPlayer implements VideoAllCallB
     public void exitFullScreen() {
         if (isIfCurrentIsFullscreen()){
             clearFullscreenLayout();
+        }
+    }
+
+    @Override
+    public void setLoading(boolean b) {
+        if (b){
+            setStateAndUi(CURRENT_STATE_PREPAREING);
+        }else {
+            setStateAndUi(CURRENT_STATE_NORMAL);
+        }
+    }
+
+    @Override
+    public void setFailed(String text) {
+        setStateAndUi(CURRENT_STATE_ERROR);
+        mErrorTextView.setText(text);
+    }
+
+    @Override
+    public void setscaleType(int scale) {
+        if (scale == IVideoPlayer.SCALE_DEFAULT){
+            GSYVideoType.setShowType(GSYVideoType.SCREEN_TYPE_DEFAULT);
+        }else if (scale == IVideoPlayer.SACLE_CROP){
+            GSYVideoType.setShowType(GSYVideoType.SCREEN_TYPE_FULL);
         }
     }
 }

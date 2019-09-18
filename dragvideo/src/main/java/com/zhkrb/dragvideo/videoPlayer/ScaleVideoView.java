@@ -38,6 +38,7 @@ import com.zhkrb.dragvideo.R;
 import com.zhkrb.dragvideo.R.styleable;
 import com.zhkrb.dragvideo.ViewWrapper;
 import com.zhkrb.dragvideo.mainView.ScaleViewListener;
+import com.zhkrb.dragvideo.videoPlayer.gsyvideoplayer.VideoPlayer;
 
 import java.util.Map;
 
@@ -234,7 +235,13 @@ public class ScaleVideoView extends FrameLayout implements OnClickListener,Playe
     @Override
     public void onVideoFirstPrepared(int width, int height) {
         if (mVideoPlayer!=null&&((View)mVideoPlayer).getLayoutParams()!=null){
-            mTargetWidth = (((float)width/(float)height)) * dp2px(55);
+            float rate = ((float)width/(float)height);
+            if (rate > 1f) {
+                mTargetWidth = rate* dp2px(55);
+                mVideoPlayer.setscaleType(IVideoPlayer.SCALE_DEFAULT);
+            }else {
+                mVideoPlayer.setscaleType(IVideoPlayer.SACLE_CROP);
+            }
             if (mScaleViewListener!=null){
                 mScaleViewListener.onVideoFirstPrepared(width,height);
             }
@@ -265,6 +272,13 @@ public class ScaleVideoView extends FrameLayout implements OnClickListener,Playe
     public void onClickViewToNom() {
         if (mScaleViewListener!=null){
             mScaleViewListener.onClickViewToNom();
+        }
+    }
+
+    @Override
+    public void onReload() {
+        if (mScaleViewListener != null){
+            mScaleViewListener.onReload();
         }
     }
 
