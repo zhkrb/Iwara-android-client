@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@+id/appBarLayout"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            />
+        <Constraint
+            android:id="@+id/frame_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="50dp"
+            />
+    </ConstraintSet>
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@+id/appBarLayout"
+            android:layout_height="0dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_width="130dp"
+            />
+        <Constraint
+            android:id="@+id/frame_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="0dp"
+            />
+    </ConstraintSet>
+    <Transition
+        motion:constraintSetStart="@id/start"
+        motion:constraintSetEnd="@id/end"
+        motion:duration="3000"
+        >
+        <OnSwipe
+            motion:touchAnchorId="@id/frame_layout"
+            motion:touchAnchorSide="top"
+            motion:dragDirection="dragUp"
+            />
+    </Transition>
+
+</MotionScene>

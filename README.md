@@ -42,7 +42,7 @@ Appbar目前仅为测试用，并非最终设计(-_,-……)
 - [ ] 设置
 - [ ] 搜索以及自定义筛选
 - [ ] 下载管理
-- [ ] 安全管理
+- [ ] 隐私设置
 - [ ] ...
 
 ## 依赖
@@ -53,8 +53,7 @@ Appbar目前仅为测试用，并非最终设计(-_,-……)
 - [ijkplayer](https://github.com/bilibili/ijkplayer)
 - [RxJava](https://github.com/ReactiveX/RxJava)
 - [fastjson](https://github.com/alibaba/fastjson)
-- [RxJava](https://github.com/bumptech/glide)
-- [glide](https://github.com/ReactiveX/RxJava)
+- [glide](https://github.com/bumptech/glide)
 
 
 以及参考了许多[EhViewer](https://github.com/seven332/EhViewer)在基础框架上的实现

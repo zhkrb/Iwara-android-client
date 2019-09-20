@@ -8,23 +8,35 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity"
     android:fitsSystemWindows="true"
-    android:background="@null"
+    android:background="@android:color/transparent"
     >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/parent_layout"
-        android:background="@null"
+        android:background="@android:color/transparent"
         >
-        <FrameLayout
-            android:id="@+id/frame_layout"
+        <androidx.constraintlayout.motion.widget.MotionLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/transparent"
+            android:id="@+id/motion_layout"
+            android:background="@color/textColor"
+            app:layoutDescription="@xml/main_scene"
             >
-
-        </FrameLayout>
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:id="@+id/appBarLayout"
+                android:background="@color/colorAccent"
+                />
+        <FrameLayout
+            android:id="@+id/frame_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@android:color/transparent"
+            />
+        </androidx.constraintlayout.motion.widget.MotionLayout>
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -38,7 +50,7 @@
     <com.google.android.material.navigation.NavigationView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
+        android:background="@color/textColor"
         android:fitsSystemWindows="true"
         app:insetForeground="@android:color/transparent"
         android:id="@+id/nav_view"

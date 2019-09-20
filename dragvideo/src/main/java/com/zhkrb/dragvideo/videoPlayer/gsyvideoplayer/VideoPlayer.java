@@ -384,6 +384,8 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
         super.clickStartIcon();
     }
 
+
+
     private void showFull() {
         if (orientationUtils.getIsLand() != 1) {
             //直接横屏
@@ -774,7 +776,11 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
         }
     }
 
-
+    private void clearShowTime() {
+        mProgressBar.setProgress(0);
+        mProgressBar.setEnabled(false);
+        mCurrentTimeTextView.setText(mContext.getString(R.string.zero_time));
+    }
 
     @Override
     public void onClickStartIcon(String url, Object... objects) {
@@ -818,7 +824,7 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
 
     @Override
     public void onAutoComplete(String url, Object... objects) {
-
+        clearShowTime();
     }
 
     @Override

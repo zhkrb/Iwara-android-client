@@ -20,11 +20,12 @@ package com.zhkrb.iwara.custom;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 
-public class MaterialAppBarLayout extends LinearLayout {
+public class MaterialAppBarLayout extends FrameLayout {
 
     public MaterialAppBarLayout(Context context) {
         this(context,null);
@@ -37,6 +38,8 @@ public class MaterialAppBarLayout extends LinearLayout {
     public MaterialAppBarLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
+
+
 
 
 }

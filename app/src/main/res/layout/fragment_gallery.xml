@@ -15,6 +15,7 @@
         app:liftOnScroll="true"
         android:background="@android:color/transparent"
         android:elevation="@dimen/elevation_4dp"
+        android:visibility="gone"
         >
 
 
