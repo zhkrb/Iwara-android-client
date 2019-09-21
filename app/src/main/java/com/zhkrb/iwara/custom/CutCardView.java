@@ -24,11 +24,14 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 
 import com.google.android.material.card.MaterialCardView;
@@ -44,7 +47,6 @@ import com.zhkrb.iwara.utils.DpUtil;
 
 public class CutCardView extends MaterialCardView {
 
-    private final Context mcontext;
     private ShapeAppearanceModel.Builder mShapeAppearanceModel;
     private MaterialShapeDrawable mShapeDrawable;
 
@@ -72,7 +74,6 @@ public class CutCardView extends MaterialCardView {
 
     public CutCardView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mcontext = context;
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.CutCardView);
         isAllCut = ta.getBoolean(R.styleable.CutCardView_AllCut, false);
         isTopLeftCut = ta.getBoolean(R.styleable.CutCardView_TopLeftCut, false);
@@ -126,7 +127,6 @@ public class CutCardView extends MaterialCardView {
 //        mShapeDrawable.setTint(getResources().getColor(R.color.textColor_black_medium));
         mShapeDrawable.setElevation(CutElevation);
         mShapeDrawable.setShadowCompatibilityMode(MaterialShapeDrawable.SHADOW_COMPAT_MODE_DEFAULT);
-
         setBackground(mShapeDrawable);
         if (mForegoundDrawable!=null){
             setForeground(mForegoundDrawable);
@@ -139,7 +139,6 @@ public class CutCardView extends MaterialCardView {
             return;
         }
         mShapeDrawable.setInterpolation(progress);
-
     }
 
     public float getCutProgress(){

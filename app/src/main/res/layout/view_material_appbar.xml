@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/all_parent"
+    app:layoutDescription="@xml/main_appbar_scene"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    >
+
+    <com.zhkrb.iwara.custom.CutCardView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/cardView"
+        app:CutElevation="@dimen/elevation_4dp"
+        app:BottomRightCut="true"
+        app:BottomRightRadius="@dimen/cut_9dp"
+        app:cardBackgroundColor="@color/secondaryLight"
+        app:cardCornerRadius="0dp"
+        android:background="@null"
+
+        >
+
+        <androidx.constraintlayout.motion.widget.MotionLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/view_parent"
+            app:layoutDescription="@xml/main_appbar_child_scene"
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:id="@+id/first_layout"
+                android:orientation="horizontal"
+                android:background="@android:color/transparent"
+                >
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/margin_start"
+                    android:id="@+id/btn_bar_first"
+                    android:scaleType="centerCrop"
+                    />
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/margin_start"
+                    android:layout_marginEnd="@dimen/margin_end"
+                    android:id="@+id/btn_bar_second"
+                    android:src="@mipmap/bar_icon"
+                    android:scaleType="centerCrop"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:id="@+id/second_layout"
+                android:orientation="horizontal"
+                android:background="@android:color/transparent"
+                />
+        </androidx.constraintlayout.motion.widget.MotionLayout>
+    </com.zhkrb.iwara.custom.CutCardView>
+
+</androidx.constraintlayout.motion.widget.MotionLayout>

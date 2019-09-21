@@ -41,5 +41,10 @@
     <dimen name="caption_ls">0.1</dimen>
     <dimen name="overline_ls">2</dimen>
 
-    
+
+    //控件间距
+    <dimen name="margin_start">10dp</dimen>
+    <dimen name="margin_end">@dimen/margin_start</dimen>
+
+
 </resources>

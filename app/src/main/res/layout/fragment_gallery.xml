@@ -4,106 +4,106 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/surfaceDark"
+    android:background="@android:color/transparent"
     android:clipChildren="false"
     >
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/appBarLayout"
-        app:liftOnScroll="true"
-        android:background="@android:color/transparent"
-        android:elevation="@dimen/elevation_4dp"
-        android:visibility="gone"
-        >
+<!--    <com.google.android.material.appbar.AppBarLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/appBarLayout"-->
+<!--        app:liftOnScroll="true"-->
+<!--        android:background="@android:color/transparent"-->
+<!--        android:elevation="@dimen/elevation_4dp"-->
+<!--        android:visibility="gone"-->
+<!--        >-->
 
 
-        <com.zhkrb.iwara.custom.CutCardView
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:id="@+id/cardView"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
-            app:TopLeftCut="true"
-            app:TopRightCut="true"
-            app:TopLeftCutRadius="@dimen/cut_9dp"
-            app:TopRightCutRadius="@dimen/cut_9dp"
-            app:CutElevation="@dimen/elevation_4dp"
-            app:cardBackgroundColor="@color/textColor"
-            app:cardCornerRadius="0dp"
-            android:background="@android:color/transparent"
-            >
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                >
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="上传时间"
-                android:textAlignment="center"
-                android:gravity="center_vertical"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:id="@+id/btn_time"
-                android:elevation="@dimen/elevation_2dp"
-                android:textColor="@color/textColor"
-                />
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    />
-                <com.google.android.material.button.MaterialButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="播放数"
-                    android:textAlignment="center"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:id="@+id/btn_play"
-                    android:elevation="@dimen/elevation_2dp"
-                    android:textColor="@color/textColor"
-                    />
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    />
-                <com.google.android.material.button.MaterialButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Likes"
-                    android:textAlignment="center"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:id="@+id/btn_like"
-                    android:elevation="@dimen/elevation_2dp"
-                    android:textColor="@color/textColor"
-                    />
-
-
-
-            </LinearLayout>
-
-        </com.zhkrb.iwara.custom.CutCardView>
+<!--        <com.zhkrb.iwara.custom.CutCardView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:id="@+id/cardView"-->
+<!--            app:layout_scrollFlags="scroll|enterAlways|snap"-->
+<!--            app:TopLeftCut="true"-->
+<!--            app:TopRightCut="true"-->
+<!--            app:TopLeftCutRadius="@dimen/cut_9dp"-->
+<!--            app:TopRightCutRadius="@dimen/cut_9dp"-->
+<!--            app:CutElevation="@dimen/elevation_4dp"-->
+<!--            app:cardBackgroundColor="@color/textColor"-->
+<!--            app:cardCornerRadius="0dp"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            >-->
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:paddingStart="20dp"-->
+<!--                android:paddingEnd="20dp"-->
+<!--                >-->
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:text="上传时间"-->
+<!--                android:textAlignment="center"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:paddingStart="10dp"-->
+<!--                android:paddingEnd="10dp"-->
+<!--                android:id="@+id/btn_time"-->
+<!--                android:elevation="@dimen/elevation_2dp"-->
+<!--                android:textColor="@color/textColor"-->
+<!--                />-->
+<!--                <View-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    />-->
+<!--                <com.google.android.material.button.MaterialButton-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:text="播放数"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:gravity="center_vertical"-->
+<!--                    android:paddingStart="10dp"-->
+<!--                    android:paddingEnd="10dp"-->
+<!--                    android:id="@+id/btn_play"-->
+<!--                    android:elevation="@dimen/elevation_2dp"-->
+<!--                    android:textColor="@color/textColor"-->
+<!--                    />-->
+<!--                <View-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    />-->
+<!--                <com.google.android.material.button.MaterialButton-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:text="Likes"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:gravity="center_vertical"-->
+<!--                    android:paddingStart="10dp"-->
+<!--                    android:paddingEnd="10dp"-->
+<!--                    android:id="@+id/btn_like"-->
+<!--                    android:elevation="@dimen/elevation_2dp"-->
+<!--                    android:textColor="@color/textColor"-->
+<!--                    />-->
 
 
 
+<!--            </LinearLayout>-->
 
-    </com.google.android.material.appbar.AppBarLayout>
+<!--        </com.zhkrb.iwara.custom.CutCardView>-->
+
+
+
+
+<!--    </com.google.android.material.appbar.AppBarLayout>-->
 
     <com.zhkrb.iwara.custom.refreshView.RefreshView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:id="@+id/refreshView"
-        android:background="@null"
+        android:background="@android:color/transparent"
         android:paddingTop="5dp"
         >
 

@@ -3,14 +3,6 @@
     xmlns:motion="http://schemas.android.com/apk/res-auto">
     <ConstraintSet android:id="@+id/start">
         <Constraint
-            android:id="@+id/appBarLayout"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            motion:layout_constraintTop_toTopOf="parent"
-            motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintEnd_toEndOf="parent"
-            />
-        <Constraint
             android:id="@+id/frame_layout"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -22,13 +14,6 @@
             />
     </ConstraintSet>
     <ConstraintSet android:id="@+id/end">
-        <Constraint
-            android:id="@+id/appBarLayout"
-            android:layout_height="0dp"
-            motion:layout_constraintTop_toTopOf="parent"
-            motion:layout_constraintStart_toStartOf="parent"
-            android:layout_width="130dp"
-            />
         <Constraint
             android:id="@+id/frame_layout"
             android:layout_width="0dp"
@@ -43,7 +28,7 @@
     <Transition
         motion:constraintSetStart="@id/start"
         motion:constraintSetEnd="@id/end"
-        motion:duration="3000"
+        motion:duration="300"
         >
         <OnSwipe
             motion:touchAnchorId="@id/frame_layout"

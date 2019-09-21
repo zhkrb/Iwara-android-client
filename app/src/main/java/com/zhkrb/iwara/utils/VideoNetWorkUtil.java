@@ -36,6 +36,11 @@ public class VideoNetWorkUtil extends NetworkUtil {
         HttpUtil.getVideoUrlList(url,HttpConstsUtil.GET_VIDEO_URL_LIST,mUrlCallback);
     }
 
+    @Override
+    public void cancel() {
+        HttpUtil.cancel(HttpConstsUtil.GET_VIDEO_URL_LIST);
+    }
+
     private RetrofitCallback mUrlCallback = new RetrofitCallback() {
         @Override
         public void onStart() {

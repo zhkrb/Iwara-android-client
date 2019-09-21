@@ -38,6 +38,10 @@ public  class NetworkUtil implements Cloneable {
 
     }
 
+    public void cancel(){
+
+    }
+
     public NetworkUtil clone()
     {
         NetworkUtil o = null;

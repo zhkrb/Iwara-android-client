@@ -771,6 +771,9 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
         mScaleVideoView = null;
 //        showLoadProgress(false);
 //        showFailedIcon(false);
+        if (mNetworkUtil!=null){
+            mNetworkUtil.cancel();
+        }
         if (mTracker != null){
             mTracker.recycle();
         }

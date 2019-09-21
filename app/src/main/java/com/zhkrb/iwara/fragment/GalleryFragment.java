@@ -61,16 +61,16 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
     protected void main() {
         ((AbsActivity)mContext).getWindow().setBackgroundDrawable(null);
         Bundle bundle = getArguments();
-        MaterialButton btn_time = mRootView.findViewById(R.id.btn_time);
-        MaterialButton btn_play = mRootView.findViewById(R.id.btn_play);
-        MaterialButton btn_like = mRootView.findViewById(R.id.btn_like);
-        btn_time.setOnClickListener(this);
-        btn_play.setOnClickListener(this);
-        btn_like.setOnClickListener(this);
+//        MaterialButton btn_time = mRootView.findViewById(R.id.btn_time);
+//        MaterialButton btn_play = mRootView.findViewById(R.id.btn_play);
+//        MaterialButton btn_like = mRootView.findViewById(R.id.btn_like);
+//        btn_time.setOnClickListener(this);
+//        btn_play.setOnClickListener(this);
+//        btn_like.setOnClickListener(this);
         mButtons = new ArrayList<>(3);
-        mButtons.add(btn_time);
-        mButtons.add(btn_play);
-        mButtons.add(btn_like);
+//        mButtons.add(btn_time);
+//        mButtons.add(btn_play);
+//        mButtons.add(btn_like);
         mGalleryMode = AppConfig.getInstance().getGalleryMode();
         mListViewMode = AppConfig.getInstance().getGalleryListMode(mGalleryMode);
         mRefreshView = mRootView.findViewById(R.id.refreshView);
@@ -145,22 +145,22 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
-        int pos = 0;
-        switch (view.getId()){
-            case R.id.btn_time:
-                pos =  0;
-                break;
-            case R.id.btn_play:
-                pos =  1;
-                break;
-            case R.id.btn_like:
-                pos =  2;
-                break;
-        }
-        if (pos == mGalleryMode){
-            return;
-        }
-        targetMode(pos);
+//        int pos = 0;
+//        switch (view.getId()){
+//            case R.id.btn_time:
+//                pos =  0;
+//                break;
+//            case R.id.btn_play:
+//                pos =  1;
+//                break;
+//            case R.id.btn_like:
+//                pos =  2;
+//                break;
+//        }
+//        if (pos == mGalleryMode){
+//            return;
+//        }
+//        targetMode(pos);
     }
 
     private void targetMode(int pos) {

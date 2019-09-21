@@ -26,7 +26,6 @@ import android.widget.FrameLayout;
 import com.zhkrb.dragvideo.mainView.VideoPlayerView;
 import com.zhkrb.iwara.AppConfig;
 import com.zhkrb.iwara.R;
-import com.zhkrb.iwara.base.AbsActivity;
 import com.zhkrb.iwara.base.FragmentFrame;
 import com.zhkrb.iwara.bean.VideoListBean;
 import com.zhkrb.iwara.fragment.GalleryFragment;
@@ -35,7 +34,7 @@ import com.zhkrb.iwara.utils.UpdateUtil;
 import com.zhkrb.iwara.utils.VideoNetWorkUtil;
 
 
-public class MainActivity extends AbsActivity implements View.OnClickListener, VideoPlayerView.onHideFragmentListener {
+public class MainActivity extends AppbarActivity implements VideoPlayerView.onHideFragmentListener {
 
     private FrameLayout mVideoPlayerLayout;
     private VideoPlayerView mPlayerView;
@@ -60,13 +59,7 @@ public class MainActivity extends AbsActivity implements View.OnClickListener, V
         return R.id.frame_layout;
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
 
-
-        }
-    }
 
     //TODO 播放错误修改
     public void playVideo(VideoListBean bean) {

@@ -51,7 +51,7 @@ import androidx.fragment.app.FragmentTransaction;
 public abstract class AbsActivity extends AppCompatActivity {
 
     protected Context mContext;
-    private List<String> mFragmentStack;
+    protected List<String> mFragmentStack;
 
 
     @Override
