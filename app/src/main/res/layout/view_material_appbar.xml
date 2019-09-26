@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/all_parent"
     app:layoutDescription="@xml/main_appbar_scene"
-    android:clipChildren="false"
-    android:clipToPadding="false"
+    android:background="@android:color/transparent"
     >
 
     <com.zhkrb.iwara.custom.CutCardView
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="50dp"
         android:id="@+id/cardView"
-        app:CutElevation="@dimen/elevation_4dp"
+        app:CutElevation="@dimen/elevation_3dp"
         app:BottomRightCut="true"
         app:BottomRightRadius="@dimen/cut_9dp"
         app:cardBackgroundColor="@color/secondaryLight"
         app:cardCornerRadius="0dp"
         android:background="@null"
-
         >
 
         <androidx.constraintlayout.motion.widget.MotionLayout

@@ -19,7 +19,7 @@ public class HttpClient {
 
     private static String mUrl;
     private static HttpClient mClient;
-    private static final int TIMEOUT = 60000;
+    private static final int TIMEOUT = 30000;
     private static OkHttpClient mOkHttpClient;
     private static Retrofit mRetrofit;
 
@@ -73,7 +73,7 @@ public class HttpClient {
         if (bean!=null){
             a = bean.create();
         }
-        return getModel.get(mUrl+apiName+a).compose(SchedulerProvider.getInstance().applaySchedulers()).retry(1);
+        return getModel.get(mUrl+apiName+a).compose(SchedulerProvider.getInstance().applaySchedulers());
     }
 
     Observable<ResponseBody> getFullUrl(String url, GetBean bean){
@@ -82,7 +82,7 @@ public class HttpClient {
         if (bean!=null){
             a = bean.create();
         }
-        return getModel.get(url+a).compose(SchedulerProvider.getInstance().applaySchedulers()).retry(1);
+        return getModel.get(url+a).compose(SchedulerProvider.getInstance().applaySchedulers());
     }
 
     Observable<ResponseBody> post(String apiName, PostBean bean){
@@ -91,7 +91,7 @@ public class HttpClient {
         if (bean!=null&&!bean.isEmpry()){
             body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),bean.create());
         }
-        return postModel.post(mUrl+apiName,body).compose(SchedulerProvider.getInstance().applaySchedulers()).retry(1);
+        return postModel.post(mUrl+apiName,body).compose(SchedulerProvider.getInstance().applaySchedulers());
     }
 
 

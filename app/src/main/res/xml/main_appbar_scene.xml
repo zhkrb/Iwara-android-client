@@ -7,11 +7,12 @@
         <Constraint
             android:id="@+id/cardView"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="50dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="2dp"
             >
             <CustomAttribute
                 app:attributeName="cutProgress"
@@ -38,11 +39,12 @@
         <Constraint
             android:id="@+id/cardView"
             android:layout_width="90dp"
-            android:layout_height="0dp"
+            android:layout_height="50dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintBottom_toBottomOf="parent"
-
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="5dp"
             >
             <CustomAttribute
                 app:attributeName="cutProgress"

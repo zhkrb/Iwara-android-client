@@ -23,9 +23,11 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.graphics.Paint;
+import android.view.Gravity;
 import android.view.View;
 
 import androidx.constraintlayout.motion.widget.MotionLayout;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import com.zhkrb.iwara.R;
@@ -34,6 +36,7 @@ import com.zhkrb.iwara.base.FragmentFrame;
 import com.zhkrb.iwara.base.TransitionHelper;
 import com.zhkrb.iwara.custom.DrawerArrowDrawable;
 import com.zhkrb.iwara.custom.MaterialAppBarLayout;
+import com.zhkrb.iwara.utils.L;
 
 @SuppressLint("Registered")
 public class AppbarActivity extends AbsActivity {
@@ -63,7 +66,7 @@ public class AppbarActivity extends AbsActivity {
         }
         if (mBarLayout != null){
             mArrowDrawable = new DrawerArrowDrawable(mContext.getResources());
-            mArrowDrawable.setStrokeColor(mContext.getResources().getColor(R.color.textColor_black_medium));
+            mArrowDrawable.setStrokeColor(mContext.getResources().getColor(R.color.textColor_disable));
             mBarLayout.setFirstBtnDrawable(mArrowDrawable);
         }
 
@@ -95,6 +98,10 @@ public class AppbarActivity extends AbsActivity {
         super.finish(tag, transitionHelper);
     }
 
+    public boolean canClickBackup(){
+        return mFragmentStack.size() > 2;
+    }
+
     private MotionLayout.TransitionListener mTransitionListener = new MotionLayout.TransitionListener() {
         @Override
         public void onTransitionStarted(MotionLayout motionLayout, int i, int i1) {
@@ -103,7 +110,6 @@ public class AppbarActivity extends AbsActivity {
 
         @Override
         public void onTransitionChange(MotionLayout motionLayout, int i, int i1, float v) {
-
         }
 
         @Override
@@ -163,5 +169,11 @@ public class AppbarActivity extends AbsActivity {
         mMainMotionLayout.transitionToStart();
     }
 
+    public void openSlideLayout(){
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        if (drawerLayout != null){
+            drawerLayout.openDrawer(Gravity.LEFT);
+        }
+    }
 
 }

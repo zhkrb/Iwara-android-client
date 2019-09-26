@@ -32,6 +32,7 @@ import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.utils.ContextLocalWrapper;
 import com.zhkrb.iwara.utils.L;
 import com.zhkrb.iwara.utils.SpUtil;
+import com.zhkrb.iwara.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,6 +54,7 @@ public abstract class AbsActivity extends AppCompatActivity {
     protected Context mContext;
     protected List<String> mFragmentStack;
 
+    private long mLastClickBackTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -250,6 +252,12 @@ public abstract class AbsActivity extends AppCompatActivity {
         }
 
         if (mFragmentStack.size()==1){
+            long curTime = System.currentTimeMillis();
+            if (curTime - mLastClickBackTime > 2000) {
+                mLastClickBackTime = curTime;
+                ToastUtil.show(R.string.main_click_next_exit);
+                return;
+            }
             L.i("finish activity");
             finish();
             return;

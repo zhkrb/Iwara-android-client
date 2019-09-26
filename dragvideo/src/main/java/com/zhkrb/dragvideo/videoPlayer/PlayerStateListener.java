@@ -37,4 +37,6 @@ public interface PlayerStateListener {
     void onClickViewToNom();
 
     void onReload();
+
+    void onVideoAutoComplete();
 }

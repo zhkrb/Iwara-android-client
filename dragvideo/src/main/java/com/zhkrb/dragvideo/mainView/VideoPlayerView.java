@@ -19,10 +19,12 @@
 package com.zhkrb.dragvideo.mainView;
 
 import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.ArrayMap;
@@ -30,6 +32,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.TouchDelegate;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -81,6 +84,7 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
     private ViewGroup mContentView;
     private IContent mInfoView;
     private ScaleVideoView mScaleVideoView;
+    private SeekBar seekBar;
     private VelocityTracker mTracker = null;
 
     //一些参数 单位 dp
@@ -113,6 +117,8 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
     private List<UrlBean> mVideoUrlList;
     private int mSelectUrlPos = 0;
     private String mainUrl;
+    private boolean isSeekBarTouch;
+    private ViewWrapper mSeekBarWrapper;
 
 
     public VideoPlayerView(@NonNull Context context) {
@@ -150,7 +156,8 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
         mParentLayout = view.findViewById(R.id.parent);
         mHeaderWrapper = new ViewWrapper(mHeaderView);
         mDescWrapper = new ViewWrapper(mDescView);
-        SeekBar seekBar = view.findViewById(R.id.progress);
+        seekBar = view.findViewById(R.id.progress);
+        mSeekBarWrapper = new ViewWrapper(seekBar);
 
         if (mInfoView != null){
             ((AppCompatActivity)mContext).getLifecycle().addObserver(mInfoView);
@@ -258,8 +265,19 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
                 mVerticalFullHeight = (int) (mMaxWidth/0.7f);
                 mVerticalSmillHeight = (int) (mMaxWidth/1.0f);
             }
+            setSeekBarDelegate();
         }
     };
+
+    //扩大Seekbar点击范围
+    private void setSeekBarDelegate() {
+        Rect touchRect = new Rect();
+        seekBar.getHitRect(touchRect);
+        touchRect.top -= dp2px(8);
+        touchRect.bottom += dp2px(10);
+        TouchDelegate mSeekTouchDelegate = new TouchDelegate(touchRect,seekBar);
+        ((ViewGroup)seekBar.getParent()).setTouchDelegate(mSeekTouchDelegate);
+    }
 
     //    private int mDropDistance;      //完整变换滑动所需的距离 header高度/2到小控件模式高度/2的距离
     //    private int mFullCurrentHeaderHeight; //完整大小时 header的高度
@@ -280,6 +298,9 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
         final float y = ev.getY();
         final float rawy = ev.getRawY();
         final int action = ev.getAction();
+        if (isViewHit(seekBar,(int) x,(int) y) && mScrollState == SCROLL_STATE_NOM){
+            return false;
+        }
         if ((isVerticalVideo && isViewHit(mDescView,(int) x,(int) y)) || isDescVerticalScroll){
             switch (action){
                 case MotionEvent.ACTION_DOWN:
@@ -347,6 +368,20 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if ((isViewHit(seekBar,(int) event.getX(),(int) event.getY()) && mScrollState == SCROLL_STATE_NOM)||isSeekBarTouch) {
+            event.setLocation(event.getX(),seekBar.getTop()+((seekBar.getBottom()-seekBar.getTop())/2));
+            switch (event.getAction()){
+                case MotionEvent.ACTION_DOWN:
+                    isSeekBarTouch = true;
+                    break;
+                case MotionEvent.ACTION_UP:
+                    isSeekBarTouch = false;
+                    break;
+            }
+            if (seekBar.onTouchEvent(event)) {
+                return true;
+            }
+        }
         if ((isVerticalVideo && isViewHit(mDescView,(int) event.getX(),(int) event.getY())) || isDescVerticalScroll){
             int action = event.getAction();
             float y = event.getY();
@@ -591,8 +626,8 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
         }
         return x >= view.getLeft()
                 && x < view.getRight()
-                && y >= view.getTop()
-                && y < view.getBottom();
+                && y >= (view instanceof SeekBar ? view.getTop() - dp2px(8) : view.getTop())
+                && y < (view instanceof SeekBar ? view.getTop() + dp2px(20) :  view.getBottom());
     }
 
     //根据拖动距离的百分比进行变化 0-9000 9000-10000
@@ -642,6 +677,8 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
         mHeaderWrapper.setRightMargin(leftRightMargin);
         mDescWrapper.setLeftMargin(leftRightMargin);
         mDescWrapper.setRightMargin(leftRightMargin);
+        mSeekBarWrapper.setLeftMargin(leftRightMargin);
+        mSeekBarWrapper.setRightMargin(leftRightMargin);
         int bottomMargin = (int) (dp2px(mSmillBottomHeight) * prog);
         mDescWrapper.setBottomMargin(bottomMargin);
         //一阶段变换为header小控件的高度+50dp
@@ -751,13 +788,29 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
         }else {
             isVerticalVideo = false;
         }
-
         if (mScrollState != SCROLL_STATE_NOM){
             mFullCurrentHeaderHeight = currentHeight;
         }else {
-            mHeaderWrapper.setHeight(currentHeight);
-            mHeaderView.requestLayout();
+            transHeaderLayout(currentHeight);
         }
+    }
+
+    @Override
+    public void onVideoAutoComplete() {
+        if (isVerticalVideo && mScrollState == SCROLL_STATE_NOM){
+            transHeaderLayout(mVerticalSmillHeight);
+        }
+    }
+
+    private void transHeaderLayout(int height){
+        if (height == mHeaderWrapper.getHeight() || mScrollState != SCROLL_STATE_NOM){
+            return;
+        }
+        ObjectAnimator animator = ObjectAnimator.ofInt(mHeaderWrapper,"height",height);
+        animator.setAutoCancel(true);
+        animator.setDuration(500);
+        animator.addUpdateListener(animation -> mHeaderView.requestLayout());
+        animator.start();
     }
 
     public void release(){

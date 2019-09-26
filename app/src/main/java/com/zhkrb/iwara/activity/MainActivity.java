@@ -29,7 +29,6 @@ import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.base.FragmentFrame;
 import com.zhkrb.iwara.bean.VideoListBean;
 import com.zhkrb.iwara.fragment.GalleryFragment;
-import com.zhkrb.iwara.utils.ToastUtil;
 import com.zhkrb.iwara.utils.UpdateUtil;
 import com.zhkrb.iwara.utils.VideoNetWorkUtil;
 
@@ -38,7 +37,6 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
 
     private FrameLayout mVideoPlayerLayout;
     private VideoPlayerView mPlayerView;
-    private long mLastClickBackTime;
 
     @Override
     protected int getLayoutId() {
@@ -60,8 +58,6 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
     }
 
 
-
-    //TODO 播放错误修改
     public void playVideo(VideoListBean bean) {
         if (mPlayerView == null){
             mPlayerView = new VideoPlayerView(mContext).setContentView(mVideoPlayerLayout);
@@ -89,12 +85,6 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
                 mPlayerView.toSmill();
                 return;
             }
-        }
-        long curTime = System.currentTimeMillis();
-        if (curTime - mLastClickBackTime > 2000) {
-            mLastClickBackTime = curTime;
-            ToastUtil.show(R.string.main_click_next_exit);
-            return;
         }
         super.onBackPressed();
     }

@@ -100,7 +100,7 @@
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="3dp"
+        android:layout_marginBottom="8dp"
         android:id="@+id/layout_bottom"
         android:background="@android:color/transparent"
 

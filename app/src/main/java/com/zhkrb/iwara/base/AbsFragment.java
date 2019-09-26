@@ -121,7 +121,9 @@ public abstract class AbsFragment extends Fragment {
     protected void finish(TransitionHelper helper){
         if (mContext instanceof AbsActivity){
             ((AbsActivity) mContext).finish(this,helper);
-            mContext = null;
+            if (((AbsActivity) mContext).mFragmentStack.size() > 1){
+                mContext = null;
+            }
         }
     }
 

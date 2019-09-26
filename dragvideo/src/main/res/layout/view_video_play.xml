@@ -27,23 +27,20 @@
         android:id="@+id/view_header"
         android:clipChildren="false"
         android:background="@color/textColor"
-        >
-
-        <SeekBar
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:layout_alignParentBottom="true"
-            android:id="@+id/progress"
-            android:layout_marginTop="4dp"
-            android:thumbTint="@color/colorAccent"
-            android:thumb="@drawable/seekbar_thumb"
-            android:progressDrawable="@drawable/scale_progress_drawable"
-            android:paddingStart="0dp"
-            android:paddingEnd="0dp"
-            style="@android:style/Widget.Material.SeekBar"
-            android:splitTrack="false"
-            android:max="1000"
-            />
-
-    </RelativeLayout>
+        />
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_alignBottom="@id/view_header"
+        android:id="@+id/progress"
+        android:layout_marginTop="4dp"
+        android:thumbTint="@color/colorAccent"
+        android:thumb="@drawable/seekbar_thumb"
+        android:progressDrawable="@drawable/scale_progress_drawable"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        style="@android:style/Widget.Material.SeekBar"
+        android:splitTrack="false"
+        android:max="1000"
+        />
 </RelativeLayout>

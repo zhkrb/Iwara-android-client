@@ -9,27 +9,27 @@
     tools:context=".activity.MainActivity"
     android:fitsSystemWindows="true"
     android:background="@color/surfaceDark"
-    android:clipChildren="false"
     >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/parent_layout"
-        android:background="@android:color/transparent"
+        android:background="@null"
+
         >
         <androidx.constraintlayout.motion.widget.MotionLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/motion_layout"
-            android:background="@android:color/transparent"
+            android:background="@null"
             app:layoutDescription="@xml/main_scene"
             >
         <FrameLayout
             android:id="@+id/frame_layout"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@android:color/transparent"
+            android:background="@null"
             />
             <com.zhkrb.iwara.custom.MaterialAppBarLayout
                 android:layout_width="0dp"

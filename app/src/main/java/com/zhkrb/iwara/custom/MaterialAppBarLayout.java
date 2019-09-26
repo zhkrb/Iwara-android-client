@@ -97,7 +97,11 @@ public class MaterialAppBarLayout extends FrameLayout implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_bar_first:
-
+                if (((AppbarActivity)mContext).canClickBackup()){
+                    ((AppbarActivity) mContext).onBackPressed();
+                }else {
+                    ((AppbarActivity) mContext).openSlideLayout();
+                }
                 break;
             case R.id.btn_bar_second:
                 ((AppbarActivity)mContext).expandAll();

@@ -102,7 +102,6 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
     private Animation mFadeOutAdd;
     private ValueAnimator mScaleShow;
     private ValueAnimator mScaleHide;
-    private boolean isFirstLoad = true;
 
     private Map<String,String> mHeader;
 
@@ -201,16 +200,7 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
         GSYVideoManager.instance().setTimeOut(30000,true);
     }
 
-    //扩大Seekbar点击范围
-    private void setSeekBarDelegate() {
-        Rect touchRect = new Rect();
-        mProgressBar.getHitRect(touchRect);
-        touchRect.top += mContext.getResources().getDimensionPixelOffset(R.dimen.cut_4dp);
-        TouchDelegate mSeekTouchDelegate = new TouchDelegate(touchRect,mProgressBar);
-        if (mProgressBar.getParent() instanceof View){
-            ((View) mProgressBar.getParent()).setTouchDelegate(mSeekTouchDelegate);
-        }
-    }
+
 
     @Override
     public boolean isAutoFullWithSize() {
@@ -271,9 +261,6 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
 
     }
 
-
-
-
     @Override
     public int getShrinkImageRes() {
         return R.drawable.ic_fullscreen_exit_black_24dp;
@@ -305,10 +292,6 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
             imageView.setImageResource(R.drawable.ic_play_arrow_24dp);
         }
     }
-
-
-
-
 
     @Override
     protected void setStateAndUi(int state) {
@@ -384,8 +367,6 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
         super.clickStartIcon();
     }
 
-
-
     private void showFull() {
         if (orientationUtils.getIsLand() != 1) {
             //直接横屏
@@ -403,10 +384,6 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
         mBrightness = false;
     }
 
-
-
-
-
     @Override
     public void releasePlayer() {
         release();
@@ -415,7 +392,6 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
     @Override
     public void load(String shareUrl,String title,String thumb) {
         ImgLoader.display(mContext,thumb, (ImageView) getThumbImageView());
-        isFirstLoad = true;
         mShareUrl = shareUrl;
         mTitle = title;
     }
@@ -428,6 +404,7 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
         if (mHeader!=null&&!mHeader.isEmpty()){
             setHeader(mHeader);
         }
+        url = "http://192.168.0.6/test1.mp4";
         setUp(url,false,mTitle);
         startPlayLogic();
     }
@@ -509,10 +486,9 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
         orientationUtils.setEnable(!isAutoFullWithSize());
         GSYVideoManager.instance().getVideoHeight();
         isPlay = true;
-        if (mPlayerStateListener!=null&& isFirstLoad){
+        if (mPlayerStateListener!=null){
             mPlayerStateListener.onVideoFirstPrepared(GSYVideoManager.instance().getVideoWidth(),
                     GSYVideoManager.instance().getVideoHeight());
-            isFirstLoad = false;
         }
     }
 
@@ -825,6 +801,9 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
     @Override
     public void onAutoComplete(String url, Object... objects) {
         clearShowTime();
+        if (mPlayerStateListener != null){
+            mPlayerStateListener.onVideoAutoComplete();
+        }
     }
 
     @Override
@@ -931,7 +910,6 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
         mProgressBar = seekbar;
         mProgressBar.setOnSeekBarChangeListener(this);
         mProgressBar.setOnTouchListener(this);
-        setSeekBarDelegate();
     }
 
     @Override
@@ -1027,12 +1005,13 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
         mErrorTextView.setText(text);
     }
 
+    //是否在垂直视频的时候裁剪
     @Override
     public void setscaleType(int scale) {
-        if (scale == IVideoPlayer.SCALE_DEFAULT){
-            GSYVideoType.setShowType(GSYVideoType.SCREEN_TYPE_DEFAULT);
-        }else if (scale == IVideoPlayer.SACLE_CROP){
-            GSYVideoType.setShowType(GSYVideoType.SCREEN_TYPE_FULL);
-        }
+//        if (scale == IVideoPlayer.SCALE_DEFAULT){
+//            GSYVideoType.setShowType(GSYVideoType.SCREEN_TYPE_DEFAULT);
+//        }else if (scale == IVideoPlayer.SACLE_CROP){
+//            GSYVideoType.setShowType(GSYVideoType.SCREEN_TYPE_FULL);
+//        }
     }
 }

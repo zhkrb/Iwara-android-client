@@ -8,7 +8,7 @@
     app:cardBackgroundColor="@color/secondaryLight"
     app:CutElevation="@dimen/elevation_2dp"
     app:cardCornerRadius="0dp"
-    android:background="@null"
+    android:background="@android:color/transparent"
     app:BottomRightCut="true"
     app:BottomRightRadius="15dp"
     app:CutForeground="@drawable/ripple_click"
@@ -29,6 +29,7 @@
             android:id="@+id/thumb"
             app:rate="0.68"
             android:scaleType="center"
+            android:background="@null"
             />
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,6 +49,7 @@
                 android:layout_gravity="center_vertical"
                 android:textAlignment="center"
                 android:textSize="14sp"
+                android:background="@null"
                 />
             <Space
                 android:layout_width="0dp"
@@ -63,6 +65,7 @@
                 android:textAlignment="center"
                 android:textSize="14sp"
                 android:layout_marginEnd="5dp"
+                android:background="@null"
                 />
             <ImageView
                 android:layout_width="20dp"
@@ -71,6 +74,7 @@
                 android:src="@drawable/ic_favorite_black_24dp"
                 android:tint="@color/textColor"
                 android:layout_gravity="center_vertical"
+                android:background="@null"
                 />
         </LinearLayout>
         <LinearLayout
@@ -82,6 +86,7 @@
             android:paddingEnd="10dp"
             android:orientation="vertical"
             android:layout_below="@id/thumb"
+            android:background="@null"
             >
 
             <TextView
@@ -94,6 +99,7 @@
                 android:textSize="14sp"
                 android:id="@+id/title"
                 android:lineSpacingExtra="3dp"
+                android:background="@null"
                 />
 
             <TextView
@@ -105,6 +111,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="3dp"
                 android:gravity="center_vertical"
+                android:background="@null"
                 />
 
         </LinearLayout>

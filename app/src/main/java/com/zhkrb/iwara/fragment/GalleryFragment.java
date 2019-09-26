@@ -85,6 +85,7 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
         mRefreshView.setLayoutManager(manager);
         ItemDecoration decoration = new ItemDecoration(mContext, 0x00000000,5,5);
         decoration.setDrawBorderLeftAndRight(true);
+        decoration.setOnlySetItemOffsetsButNoDraw(true);
         mRefreshView.setItemDecoration(decoration);
         mRefreshView.setOnScaleListener(this);
 

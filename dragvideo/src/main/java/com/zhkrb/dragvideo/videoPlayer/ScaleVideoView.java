@@ -282,6 +282,13 @@ public class ScaleVideoView extends FrameLayout implements OnClickListener,Playe
         }
     }
 
+    @Override
+    public void onVideoAutoComplete() {
+        if (mScaleViewListener != null){
+            mScaleViewListener.onVideoAutoComplete();
+        }
+    }
+
     public void setViewListener(ScaleViewListener listener){
         mScaleViewListener = listener;
     }

@@ -32,4 +32,6 @@ public interface ScaleViewListener {
     void onClickViewClose();
 
     void onReload();
+
+    void onVideoAutoComplete();
 }

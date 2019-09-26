@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
     android:clipChildren="false"
+    android:clipToPadding="false"
     >
 
 <!--    <com.google.android.material.appbar.AppBarLayout-->
@@ -103,7 +104,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:id="@+id/refreshView"
-        android:background="@android:color/transparent"
+        android:background="@null"
         android:paddingTop="5dp"
         >
 

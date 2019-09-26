@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent"
+<RelativeLayout
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@null"
     >
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     android:id="@+id/refresh_layout"
@@ -17,8 +19,7 @@
         android:overScrollMode="never"
         android:visibility="gone"
         android:background="@null"
-        android:clipChildren="false"
-        android:clipToPadding="false"
+
         />
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <RelativeLayout

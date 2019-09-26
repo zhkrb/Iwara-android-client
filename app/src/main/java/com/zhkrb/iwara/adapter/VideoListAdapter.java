@@ -48,14 +48,39 @@ public class VideoListAdapter extends RefreshAdapter<VideoListBean> {
     private static int mListMode = 0;
     private int mLastBgSize = 0;
 
-    private onItemClickListener mClickListener;
+    private onItemClickListener mItemClickListener;
+    private View.OnClickListener mClickListener;
+    private View.OnLongClickListener mLongClickListener;
+
+    private static final int mScreenWidth = DpUtil.getScreenWidth();
 
     public VideoListAdapter(Context context) {
-        super(context);
+        this(context,null);
     }
 
     public VideoListAdapter(Context context, List<VideoListBean> list) {
         super(context, list);
+        mClickListener = v -> {
+            Object tag = v.getTag();
+            if (tag != null) {
+                int position = (int) tag;
+                VideoListBean bean = mList.get(position);
+                if (mItemClickListener != null) {
+                    mItemClickListener.itemClick(bean);
+                }
+            }
+        };
+        mLongClickListener = v -> {
+            Object tag = v.getTag();
+            if (tag != null) {
+                int position = (int) tag;
+                VideoListBean bean = mList.get(position);
+                if (mItemClickListener != null&&mItemClickListener instanceof onItemLongClickListener){
+                    ((onItemLongClickListener) mItemClickListener).itemLongClick(bean);
+                }
+            }
+            return true;
+        };
     }
 
     public void setListMode(int mListMode) {
@@ -156,7 +181,7 @@ public class VideoListAdapter extends RefreshAdapter<VideoListBean> {
     }
 
     public void setClickListener(onItemClickListener clickListener) {
-        mClickListener = clickListener;
+        mItemClickListener = clickListener;
     }
 
     class Vh extends RecyclerView.ViewHolder {
@@ -181,9 +206,10 @@ public class VideoListAdapter extends RefreshAdapter<VideoListBean> {
             if (videoListBean==null){
                 return;
             }
+            itemView.setTag(position);
             pos = position;
             if (getViewType(pos) == TYPE_BIG){
-                thumb.setMaxWidth(DpUtil.getScreenWidth());
+                thumb.setMaxWidth(mScreenWidth);
                 ImgLoader.displayTryThumbnail(videoListBean.getThumb(),thumb);
             }else {
                 ImgLoader.display(videoListBean.getThumb(),thumb);
@@ -192,16 +218,21 @@ public class VideoListAdapter extends RefreshAdapter<VideoListBean> {
             user.setText(videoListBean.getUser_name());
             views.setText(String.format("%s %s", videoListBean.getView(), WordUtil.getString(R.string.video_view)));
             like.setText(videoListBean.getLike());
-            itemView.setOnClickListener(v -> {
-                if (mClickListener!=null){
-                    mClickListener.itemClick(videoListBean);
+            if (!itemView.hasOnClickListeners()){
+                itemView.setOnClickListener(mClickListener);
+                if (mItemClickListener instanceof onItemLongClickListener){
+                    itemView.setOnLongClickListener(mLongClickListener);
                 }
-            });
+            }
         }
     }
 
     public interface onItemClickListener{
         void itemClick(VideoListBean bean);
+    }
+
+    public interface onItemLongClickListener extends onItemClickListener{
+        void itemLongClick(VideoListBean bean);
     }
 
 }
