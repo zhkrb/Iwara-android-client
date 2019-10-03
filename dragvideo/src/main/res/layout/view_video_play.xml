@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black_alpha"
+    android:background="@null"
     android:id="@+id/parent"
     android:clipChildren="false"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="android.widget.RelativeLayout"
     >
 
     <androidx.core.widget.NestedScrollView
@@ -16,6 +18,7 @@
         android:background="@color/surfaceDark2"
         android:clickable="true"
         android:focusable="true"
+        android:fillViewport="true"
         >
 
 
@@ -43,4 +46,4 @@
         android:splitTrack="false"
         android:max="1000"
         />
-</RelativeLayout>
+</merge>

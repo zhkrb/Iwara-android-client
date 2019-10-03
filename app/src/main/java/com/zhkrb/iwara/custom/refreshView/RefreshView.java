@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhkrb.iwara.R;
@@ -44,7 +45,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-public class RefreshView extends FrameLayout implements View.OnClickListener {
+public class RefreshView extends RelativeLayout implements View.OnClickListener {
 
     private  boolean mEnableLoadMore;
     private  boolean mEnableRefresh;
@@ -85,21 +86,19 @@ public class RefreshView extends FrameLayout implements View.OnClickListener {
     protected void onFinishInflate() {
         super.onFinishInflate();
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(mLayoutRes,this,false);
-        addView(view);
+        View view = inflater.inflate(mLayoutRes,this,true);
         mNo_data = view.findViewById(R.id.no_data);
         mNo_data_img = view.findViewById(R.id.no_data_img);
         mHintText = view.findViewById(R.id.hint);
         mRefreshLayout = view.findViewById(R.id.refresh_layout);
         mRecyclerView = view.findViewById(R.id.recyclerView);
-        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemViewCacheSize(4);
         mRecyclerView.setOnFlingListener(new RecyclerView.OnFlingListener() {
             @Override
             public boolean onFling(int velocityX, int velocityY) {
                 L.e("Fling", String.valueOf(Math.abs(velocityY)));
                 if (Math.abs(velocityY)>4000){
-                    ImgLoader.pause();
+//                    ImgLoader.pause();
                 }
                 return false;
             }

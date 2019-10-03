@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/all_parent"
-    app:layoutDescription="@xml/main_appbar_scene"
-    android:background="@android:color/transparent"
+    android:background="@null"
     >
 
     <com.zhkrb.iwara.custom.CutCardView
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:id="@+id/cardView"
         app:CutElevation="@dimen/elevation_3dp"
@@ -17,21 +16,24 @@
         app:BottomRightRadius="@dimen/cut_9dp"
         app:cardBackgroundColor="@color/secondaryLight"
         app:cardCornerRadius="0dp"
+        app:CutProgress="0"
         android:background="@null"
+        android:layout_marginBottom="5dp"
         >
 
-        <androidx.constraintlayout.motion.widget.MotionLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/view_parent"
-            app:layoutDescription="@xml/main_appbar_child_scene"
+            android:background="@null"
             >
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:id="@+id/first_layout"
                 android:orientation="horizontal"
-                android:background="@android:color/transparent"
+                android:background="@null"
+                android:visibility="gone"
                 >
                 <ImageView
                     android:layout_width="30dp"
@@ -40,6 +42,7 @@
                     android:layout_marginStart="@dimen/margin_start"
                     android:id="@+id/btn_bar_first"
                     android:scaleType="centerCrop"
+                    android:background="@null"
                     />
                 <ImageView
                     android:layout_width="30dp"
@@ -50,16 +53,17 @@
                     android:id="@+id/btn_bar_second"
                     android:src="@mipmap/bar_icon"
                     android:scaleType="centerCrop"
+                    android:background="@null"
                     />
             </LinearLayout>
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:id="@+id/second_layout"
                 android:orientation="horizontal"
                 android:background="@android:color/transparent"
                 />
-        </androidx.constraintlayout.motion.widget.MotionLayout>
+        </FrameLayout>
     </com.zhkrb.iwara.custom.CutCardView>
 
-</androidx.constraintlayout.motion.widget.MotionLayout>
+</merge>

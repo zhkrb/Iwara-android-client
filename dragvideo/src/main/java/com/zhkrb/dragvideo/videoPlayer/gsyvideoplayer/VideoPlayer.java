@@ -404,7 +404,7 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
         if (mHeader!=null&&!mHeader.isEmpty()){
             setHeader(mHeader);
         }
-        url = "http://192.168.0.6/test1.mp4";
+//        url = "http://192.168.0.6/test1.mp4";
         setUp(url,false,mTitle);
         startPlayLogic();
     }

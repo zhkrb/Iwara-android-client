@@ -71,14 +71,15 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
-public class VideoPlayerView extends FrameLayout implements ScaleViewListener, PlayerSettingDialogFragment.onItemClickListener {
+public class VideoPlayerView extends RelativeLayout implements ScaleViewListener, PlayerSettingDialogFragment.onItemClickListener {
 
     private Context mContext;
     private int mAppearAnimId;
 
     private RelativeLayout mHeaderView;
     private NestedScrollView mDescView;
-    private RelativeLayout mParentLayout;
+    private ViewGroup mParentLayout;
+//    private RelativeLayout mParentLayout;
     private ViewWrapper mHeaderWrapper;
     private ViewWrapper mDescWrapper;
     private ViewGroup mContentView;
@@ -148,12 +149,12 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
             removeAllViews();
         }
         LayoutInflater inflater = LayoutInflater.from(this.mContext);
-        View view = inflater.inflate(R.layout.view_video_play, this, false);
-        addView(view);
+        View view = inflater.inflate(R.layout.view_video_play, this, true);
         mHeaderView = view.findViewById(R.id.view_header);
         mDescView = view.findViewById(R.id.view_desc);
         mDescView.setOnScrollChangeListener(mScrollChangeListener);
-        mParentLayout = view.findViewById(R.id.parent);
+
+//        mParentLayout = view.findViewById(R.id.parent);
         mHeaderWrapper = new ViewWrapper(mHeaderView);
         mDescWrapper = new ViewWrapper(mDescView);
         seekBar = view.findViewById(R.id.progress);
@@ -265,6 +266,7 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
                 mVerticalFullHeight = (int) (mMaxWidth/0.7f);
                 mVerticalSmillHeight = (int) (mMaxWidth/1.0f);
             }
+            mParentLayout = ((ViewGroup)getParent());
             setSeekBarDelegate();
         }
     };
@@ -814,6 +816,9 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
     }
 
     public void release(){
+        if (mHideFragmentListener != null){
+            mHideFragmentListener.onRemove();
+        }
         setTranslationY(0);
         setAlpha(1f);
         mHeaderWrapper.setHeight(dp2px(195));
@@ -978,6 +983,21 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
         mHideFragmentListener = hideFragmentListener;
     }
 
+    public boolean canBackPressed() {
+        if (isFullScreen()){
+            exitFullScreen();
+            return false;
+        }
+//        else if (mDescView.canBackUp()){
+//            return false;
+//        }
+        else if (isNom()){
+            toSmill();
+            return false;
+        }
+        return true;
+    }
+
 
     private class dragViewCallback extends ViewDragHelper.Callback {
         @Override
@@ -988,6 +1008,7 @@ public class VideoPlayerView extends FrameLayout implements ScaleViewListener, P
 
     public interface onHideFragmentListener{
         void onHide(boolean hide);
+        void onRemove();
     }
 
 

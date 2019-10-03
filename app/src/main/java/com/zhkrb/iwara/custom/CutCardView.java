@@ -63,6 +63,7 @@ public class CutCardView extends MaterialCardView {
     private float mBottomLeftRadius;
     private float mBottomRightRadius;
     private Drawable mForegoundDrawable;
+    private int mDefaultProgress;
 
     public CutCardView(Context context) {
         this(context,null);
@@ -87,6 +88,7 @@ public class CutCardView extends MaterialCardView {
         mBottomLeftRadius = ta.getDimension(R.styleable.CutCardView_BottomLeftRadius,0);
         mBottomRightRadius = ta.getDimension(R.styleable.CutCardView_BottomRightRadius,0);
         mForegoundDrawable = ta.getDrawable(R.styleable.CutCardView_CutForeground);
+        mDefaultProgress = ta.getInt(R.styleable.CutCardView_CutProgress,1);
 //        mForegoundDrawable = getForeground();
         backgoundColor = getCardBackgroundColor();
         ta.recycle();
@@ -127,6 +129,7 @@ public class CutCardView extends MaterialCardView {
 //        mShapeDrawable.setTint(getResources().getColor(R.color.textColor_black_medium));
         mShapeDrawable.setElevation(CutElevation);
         mShapeDrawable.setShadowCompatibilityMode(MaterialShapeDrawable.SHADOW_COMPAT_MODE_DEFAULT);
+        mShapeDrawable.setInterpolation(mDefaultProgress);
         setBackground(mShapeDrawable);
         if (mForegoundDrawable!=null){
             setForeground(mForegoundDrawable);

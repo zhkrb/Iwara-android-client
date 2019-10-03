@@ -58,7 +58,7 @@ public abstract class OnScrollEndlessListener extends RecyclerView.OnScrollListe
         int visibleCount = manager.getChildCount();
         int totleCount = manager.getItemCount();
         if (totleCount>0 && newState == RecyclerView.SCROLL_STATE_IDLE){
-            ImgLoader.resume();
+//            ImgLoader.resume();
         }
         if (visibleCount>0 && newState == RecyclerView.SCROLL_STATE_IDLE && mLastVisibleItemPos==totleCount-1){
             onLoadMore();

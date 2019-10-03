@@ -115,10 +115,10 @@ public class AppbarActivity extends AbsActivity {
         @Override
         public void onTransitionCompleted(MotionLayout motionLayout, int i) {
             if (i == R.id.end){
-                setBarCollse(true);
+                mBarLayout.setBarCollse(true);
                 isExpand = false;
             }else if (i == R.id.start){
-                setBarCollse(false);
+                mBarLayout.setBarCollse(false);
                 isExpand = true;
             }
         }
@@ -128,39 +128,6 @@ public class AppbarActivity extends AbsActivity {
 
         }
     };
-
-    private void setBarCollse(boolean b) {
-        if (mBarLayout == null || (b&&mBarLayout.getProgress() == 1000) || (!b&&mBarLayout.getProgress() == 0)){
-            return;
-        }
-        mBarLayout.setLayerType(View.LAYER_TYPE_HARDWARE, (Paint)null);
-        ObjectAnimator animator = ObjectAnimator.ofInt(mBarLayout,"progress",b?1000:0);
-        animator.setAutoCancel(true);
-        animator.setDuration(555);
-        animator.setInterpolator(new FastOutSlowInInterpolator());
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mBarLayout.setLayerType(View.LAYER_TYPE_NONE, (Paint)null);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                mBarLayout.setLayerType(View.LAYER_TYPE_NONE, (Paint)null);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        animator.start();
-    }
 
     public void expandAll(){
         if (isExpand){

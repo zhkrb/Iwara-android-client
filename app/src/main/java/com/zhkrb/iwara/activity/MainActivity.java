@@ -31,6 +31,7 @@ import com.zhkrb.iwara.bean.VideoListBean;
 import com.zhkrb.iwara.fragment.GalleryFragment;
 import com.zhkrb.iwara.utils.UpdateUtil;
 import com.zhkrb.iwara.utils.VideoNetWorkUtil;
+//import com.zhkrb.dragvideo.contentView.AbsContent;
 
 
 public class MainActivity extends AppbarActivity implements VideoPlayerView.onHideFragmentListener {
@@ -62,7 +63,11 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
         if (mPlayerView == null){
             mPlayerView = new VideoPlayerView(mContext).setContentView(mVideoPlayerLayout);
             mPlayerView.setNetworkUtil(new VideoNetWorkUtil());
+//            mPlayerView.setInfoView(new AbsContent(mContext));
             mPlayerView.setHideFragmentListener(this);
+        }
+        if (mVideoPlayerLayout.getVisibility() != View.VISIBLE){
+            mVideoPlayerLayout.setVisibility(View.VISIBLE);
         }
         Bundle bundle = new Bundle();
         bundle.putString("url", AppConfig.HOST+bean.getHref());
@@ -78,11 +83,7 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
     @Override
     public void onBackPressed() {
         if (mPlayerView != null){
-            if (mPlayerView.isFullScreen()){
-                mPlayerView.exitFullScreen();
-                return;
-            }else if (mPlayerView.isNom()){
-                mPlayerView.toSmill();
+            if (!mPlayerView.canBackPressed()){
                 return;
             }
         }
@@ -91,7 +92,7 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
 
     @Override
     public void onHide(boolean hide) {
-        View view = findViewById(getContentView());
+        View view = findViewById(R.id.motion_layout);
         if (hide){
             if (view.getVisibility() != View.GONE){
                 view.setVisibility(View.GONE);
@@ -100,6 +101,13 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
             if (view.getVisibility() != View.VISIBLE){
                 view.setVisibility(View.VISIBLE);
             }
+        }
+    }
+
+    @Override
+    public void onRemove() {
+        if (mVideoPlayerLayout.getVisibility() != View.GONE){
+            mVideoPlayerLayout.setVisibility(View.GONE);
         }
     }
 }
