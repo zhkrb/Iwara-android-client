@@ -34,7 +34,6 @@ public class LaunchActivity extends AppCompatActivity implements View.OnClickLis
 
     private Context mContext;
     private boolean mSafeMode;
-    private Handler mHandler;
     private int i = 0;
 
 
@@ -45,13 +44,8 @@ public class LaunchActivity extends AppCompatActivity implements View.OnClickLis
         mContext = this;
         findViewById(R.id.btn_launcher_1).setOnClickListener(this);
         mSafeMode = SpUtil.getInstance().getBooleanValue(SpUtil.SAFEMODE);
-        mHandler = new Handler();
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                forward();
-            }
-        },1000);
+        Handler handler = new Handler();
+        handler.postDelayed(this::forward,1000);
     }
 
 
@@ -71,7 +65,14 @@ public class LaunchActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void forward(){
-        mContext.startActivity(new Intent(mContext,MainActivity.class));
+        Intent intent = getIntent();
+        if (intent != null ){
+            if (Intent.ACTION_MAIN.equals(intent.getAction())){
+                mContext.startActivity(new Intent(mContext,MainActivity.class).setAction(Intent.ACTION_MAIN));
+            }else {
+                mContext.startActivity(intent.setClass(mContext,MainActivity.class));
+            }
+        }
         finish();
     }
 

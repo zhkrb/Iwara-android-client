@@ -197,7 +197,7 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
         GSYVideoType.enableMediaCodecTexture();
         setSeekRatio(0.1f);
         setGSYVideoProgressListener(this);
-        GSYVideoManager.instance().setTimeOut(30000,true);
+        GSYVideoManager.instance().setTimeOut(60000,true);
     }
 
 

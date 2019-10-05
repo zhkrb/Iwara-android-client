@@ -20,6 +20,8 @@ package com.zhkrb.iwara.base;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.drm.DrmStore;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.text.TextUtils;
@@ -52,9 +54,26 @@ import androidx.fragment.app.FragmentTransaction;
 public abstract class AbsActivity extends AppCompatActivity {
 
     protected Context mContext;
-    protected List<String> mFragmentStack;
+    protected ArrayList<String> mFragmentStack;
+    private AtomicInteger mInteger = new AtomicInteger(0);
+    private static final HashMap<Class<?>,Integer> mFragmentMode = new HashMap<>(0);
 
     private long mLastClickBackTime;
+
+    private static final String FRAGMENT_STACK = "fragment_stack";
+
+    public int getLaunchMode(Class<?> clazz) {
+        Integer integer = mFragmentMode.get(clazz);
+        if (integer == null) {
+            throw new RuntimeException("Not register " + clazz.getName());
+        } else {
+            return integer;
+        }
+    }
+
+    public static void setLaunchMode(Class<?> clazz, @AbsFragment.LaunchMode int mode){
+        mFragmentMode.put(clazz,mode);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,18 +81,36 @@ public abstract class AbsActivity extends AppCompatActivity {
         setContentView(getLayoutId());
         mContext = this;
         mFragmentStack = new ArrayList<>();
+        if (savedInstanceState != null){
+            ArrayList<String> list = savedInstanceState.getStringArrayList(FRAGMENT_STACK);
+            if (list != null){
+                mFragmentStack.addAll(list);
+            }
+        }
+
         main(savedInstanceState);
+
+        Intent intent = getIntent();
+        if (savedInstanceState == null){
+            if (intent != null){
+                String action = intent.getAction();
+                if (Intent.ACTION_MAIN.equals(action)){
+                    FragmentFrame frame = getLaunchFrame();
+                    if (frame != null) {
+                        startFragment(frame);
+                        return;
+                    }
+                }
+            }
+        }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-
-        super.onSaveInstanceState(outState, outPersistentState);
-    }
+    protected abstract FragmentFrame getLaunchFrame();
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onRestoreInstanceState(savedInstanceState, persistentState);
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList(FRAGMENT_STACK,mFragmentStack);
     }
 
     protected abstract int getLayoutId();
@@ -85,81 +122,177 @@ public abstract class AbsActivity extends AppCompatActivity {
     protected void main() {
     }
 
-    protected void loadRootFragment(FragmentFrame frame){
-        loadRootFragment(frame,AbsFragment.LAUNCH_MODE_STANDARD);
-    }
 
-    protected void loadRootFragment(FragmentFrame frame, @AbsFragment.LaunchMode int launchMode){
-        FragmentManager manager = getSupportFragmentManager();
-        Class clazz = frame.getClazz();
+    protected void reLoadRootFragment(FragmentFrame frame){
+        Class<?> clazz = frame.getClazz();
         Bundle args = frame.getArgs();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        int launchMode = getLaunchMode(clazz);
+        boolean forceNewScene = launchMode == AbsFragment.LAUNCH_MODE_STANDARD;
+        boolean createNewScene = true;
+        boolean findScene = false;
+        AbsFragment fragment = null;
 
-        if (manager.getBackStackEntryCount()>0){
-            manager.popBackStack(null,1);
-        }
-        FragmentTransaction fragmentTransaction = manager.beginTransaction();
-        Fragment fragment = createFragment(clazz);
-        if (fragment==null){
-            return;
-        }
-        if (args!=null){
-            fragment.setArguments(args);
-        }
-        fragmentTransaction.replace(getContentView(),fragment,clazz.getName());
-        mFragmentStack.add(clazz.getName());
-        fragmentTransaction.commitAllowingStateLoss();
-    }
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-    public void startFragment(FragmentFrame frame, @AbsFragment.LaunchMode int launchMode){
-        FragmentManager manager = getSupportFragmentManager();
-        Class clazz = frame.getClazz();
-        Bundle args = frame.getArgs();
-        TransitionHelper helper = frame.getHelper();
-        int stackSize = mFragmentStack.size();
+        // Set default animation
+        transaction.setCustomAnimations(R.anim.bottomtop_enter, R.anim.bottomtop_exit);
 
-        if (launchMode==AbsFragment.LAUNCH_MODE_SINGLE_TOP&&stackSize>1){
-            Fragment topFragment = manager.findFragmentByTag(mFragmentStack.get(stackSize-1));
-            if (topFragment!=null&&topFragment.getClass().getName().equals(clazz.getName())){
-                ((AbsFragment)topFragment).onNewArguments(args);
-                return;
+        String findSceneTag = null;
+        for (int i = 0, n = mFragmentStack.size(); i < n; i++) {
+            String tag = mFragmentStack.get(i);
+            Fragment currentFragment = fragmentManager.findFragmentByTag(tag);
+            if (currentFragment == null) {
+                L.e("AbsActivity", "Can't find fragment with tag: " + tag);
+                continue;
+            }
+
+            // Clear shared element
+            currentFragment.setSharedElementEnterTransition(null);
+            currentFragment.setSharedElementReturnTransition(null);
+            currentFragment.setEnterTransition(null);
+            currentFragment.setExitTransition(null);
+
+            // Check is target scene
+            if (!forceNewScene && !findScene && clazz.isInstance(currentFragment) &&
+                    (launchMode == AbsFragment.LAUNCH_MODE_SINGLE_TASK || !currentFragment.isDetached())) {
+                fragment = (AbsFragment) currentFragment;
+                findScene = true;
+                createNewScene = false;
+                findSceneTag = tag;
+                if (currentFragment.isDetached()) {
+                    transaction.attach(currentFragment);
+                }
+            } else {
+                // Remove it
+                transaction.remove(currentFragment);
             }
         }
 
-        if (launchMode==AbsFragment.LAUNCH_MODE_SINGLE_TASK&&stackSize>1){
-            manager.popBackStack(mFragmentStack.get(0),1);
-            mFragmentStack.subList(0,stackSize-1).clear();
-            stackSize = 1;
+        // Handle tag list
+        mFragmentStack.clear();
+        if (null != findSceneTag) {
+            mFragmentStack.add(findSceneTag);
         }
+
+        if (createNewScene) {
+            fragment = createFragment(clazz);
+            fragment.setArguments(args);
+
+            // Create scene tag
+            String tag = Integer.toString(mInteger.getAndIncrement());
+
+            // Add tag to list
+            mFragmentStack.add(tag);
+
+            // Add scene
+            transaction.add(getContentView(), fragment, tag);
+        }
+
+        // Commit
+        transaction.commitAllowingStateLoss();
+
+        if (!createNewScene && args != null) {
+            fragment.onNewArguments(args);
+        }
+    }
+
+    public void startFragment(FragmentFrame frame){
+        FragmentManager manager = getSupportFragmentManager();
+        Class clazz = frame.getClazz();
+        Bundle args = frame.getArgs();
+        int launchMode = getLaunchMode(frame.getClazz());
+        TransitionHelper helper = frame.getHelper();
+        int stackSize = mFragmentStack.size();
+
+        if (launchMode==AbsFragment.LAUNCH_MODE_SINGLE_TASK && stackSize>1){
+            for (int i = 0; i<stackSize;i++){
+                String tag = mFragmentStack.get(i);
+                Fragment fragment = manager.findFragmentByTag(tag);
+                if (fragment == null){
+                    L.e("can't find tag: "+tag);
+                    continue;
+                }
+                if (clazz.isInstance(fragment)){
+                    FragmentTransaction fragmentTransaction = manager.beginTransaction();
+                    fragmentTransaction.setCustomAnimations(R.anim.bottomtop_enter,R.anim.bottomtop_exit);
+
+                    for (int j = i+1; j<stackSize;j++){
+                        String topTag = mFragmentStack.get(j);
+                        Fragment topFragment = manager.findFragmentByTag(topTag);
+                        if (topFragment == null){
+                            L.e("can't find tag: "+tag);
+                            continue;
+                        }
+                        topFragment.setSharedElementEnterTransition(null);
+                        topFragment.setSharedElementReturnTransition(null);
+                        topFragment.setEnterTransition(null);
+                        topFragment.setExitTransition(null);
+                        fragmentTransaction.remove(topFragment);
+                    }
+
+                    mFragmentStack.subList(i + 1, stackSize).clear();
+
+                    if (fragment.isDetached()) {
+                        fragmentTransaction.attach(fragment);
+                    }
+
+                    fragmentTransaction.commitAllowingStateLoss();
+                    if (args != null) {
+                        ((AbsFragment)fragment).onNewArguments(args);
+                    }
+                    return;
+                }
+            }
+        }
+
+        AbsFragment currentFragment = null;
+        if (stackSize > 0){
+            String tag = mFragmentStack.get(stackSize-1);
+            Fragment fragment = manager.findFragmentByTag(tag);
+            if (fragment != null && AbsFragment.class.isInstance(fragment)){
+                currentFragment = (AbsFragment) fragment;
+            }
+        }
+
+        if (launchMode==AbsFragment.LAUNCH_MODE_SINGLE_TOP && clazz.isInstance(currentFragment)){
+            if (args!=null){
+                ((AbsFragment)currentFragment).onNewArguments(args);
+            }
+            return;
+        }
+
 
         FragmentTransaction fragmentTransaction = manager.beginTransaction();
         AbsFragment fragment = createFragment(clazz);
-        if (fragment==null){
-            return;
-        }
+
         if (args!=null){
             fragment.setArguments(args);
         }
-        Fragment topFrag = manager.findFragmentByTag(mFragmentStack.get(stackSize-1));
-        if (topFrag!=null){
-            if (helper==null||helper.onTransition(mContext,fragmentTransaction,fragment,topFrag)){
+
+
+        if (currentFragment!=null){
+            if (helper==null||helper.onTransition(mContext,fragmentTransaction,fragment,currentFragment)){
                 fragment.setEnterTransition(null);
                 fragment.setExitTransition(null);
                 fragment.setSharedElementReturnTransition(null);
                 fragment.setSharedElementEnterTransition(null);
-                topFrag.setEnterTransition(null);
-                topFrag.setExitTransition(null);
-                topFrag.setSharedElementReturnTransition(null);
-                topFrag.setSharedElementEnterTransition(null);
+                currentFragment.setEnterTransition(null);
+                currentFragment.setExitTransition(null);
+                currentFragment.setSharedElementReturnTransition(null);
+                currentFragment.setSharedElementEnterTransition(null);
 
                 fragmentTransaction.setCustomAnimations(R.anim.bottomtop_enter,R.anim.bottomtop_exit);
             }
-            fragmentTransaction.hide(topFrag);
+            if (!currentFragment.isDetached()){
+                fragmentTransaction.detach(currentFragment);
+            }
         }
-        fragmentTransaction.add(getContentView(),fragment,clazz.getName());
-        fragmentTransaction.addToBackStack(clazz.getName());
+        String tag = String.valueOf(mInteger.getAndIncrement());
+        fragmentTransaction.add(getContentView(),fragment,tag);
         fragmentTransaction.commitAllowingStateLoss();
 
-        mFragmentStack.add(clazz.getName());
+        mFragmentStack.add(tag);
 
         if (frame.getRequestFragment()!=null){
             fragment.addRequest(frame.getRequestFragment().getClass().getName(),frame.getRequestCode());
@@ -193,14 +326,14 @@ public abstract class AbsActivity extends AppCompatActivity {
     private AbsFragment createFragment(Class<?> clazz) {
         try {
             return (AbsFragment) clazz.newInstance();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
         } catch (InstantiationException e) {
-            e.printStackTrace();
-        }catch (ClassCastException e){
-            e.printStackTrace();
+            throw new IllegalStateException("Can't instance " + clazz.getName(), e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException("The constructor of " +
+                    clazz.getName() + " is not visible", e);
+        } catch (ClassCastException e) {
+            throw new IllegalStateException(clazz.getName() + " can not cast to scene", e);
         }
-        return null;
     }
 
     @Override

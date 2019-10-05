@@ -41,36 +41,33 @@ import com.zhkrb.iwara.utils.VibrateUtil;
 import com.zhkrb.iwara.netowrk.NetworkCallback;
 import com.zhkrb.iwara.netowrk.jsoup.JsoupUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class GalleryFragment extends AbsFragment implements View.OnClickListener, ScaleRecyclerView.onScaleListener, VideoListAdapter.onItemClickListener {
 
+    private static final String DATA_LIST = "data_list";
+    private static final String DATA_LOADED = "isdata_loaded";
+    private static final String SAVED_POSITION = "saved_position";
+    private static final String SAVED_POSITION_OFFSET = "saved_position_offset";
     private RefreshView mRefreshView;
     private VideoListAdapter mAdapter;
     private static int mGalleryMode = 0;//0 上传时间 1 播放 2 like
     private static int mListViewMode;// 0 双排 1单排 2 混合(仅首页)
-
-    private List<MaterialButton> mButtons;
+    private boolean isFirstLoad = true;
 
 
     @Override
-    protected void main() {
+    protected void main(Bundle savedInstanceState) {
         ((AbsActivity)mContext).getWindow().setBackgroundDrawable(null);
         Bundle bundle = getArguments();
-//        MaterialButton btn_time = mRootView.findViewById(R.id.btn_time);
-//        MaterialButton btn_play = mRootView.findViewById(R.id.btn_play);
-//        MaterialButton btn_like = mRootView.findViewById(R.id.btn_like);
-//        btn_time.setOnClickListener(this);
-//        btn_play.setOnClickListener(this);
-//        btn_like.setOnClickListener(this);
-        mButtons = new ArrayList<>(3);
-//        mButtons.add(btn_time);
-//        mButtons.add(btn_play);
-//        mButtons.add(btn_like);
+
         mGalleryMode = AppConfig.getInstance().getGalleryMode();
         mListViewMode = AppConfig.getInstance().getGalleryListMode(mGalleryMode);
         mRefreshView = mRootView.findViewById(R.id.refreshView);
@@ -122,16 +119,55 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
 
             @Override
             public void onLoadDataCompleted(int dataCount) {
-
+                isFirstLoad = dataCount<= 0;
             }
 
             @Override
             public int maxPageItemCount() {
                 return 36;
             }
-        });
-        mRefreshView.initData();
+        }).init();
+
+        if (savedInstanceState != null){
+            isFirstLoad = savedInstanceState.getBoolean(DATA_LOADED,true);
+            if (!isFirstLoad){
+                List list = (List) savedInstanceState.getSerializable(DATA_LIST);
+                if (list!=null && list.size()>0){
+                    mRefreshView.restoreData(list);
+                    int pos = savedInstanceState.getInt(SAVED_POSITION,0);
+                    int offset = savedInstanceState.getInt(SAVED_POSITION_OFFSET,0);
+                    if (pos > 0){
+                        manager.scrollToPositionWithOffset(pos, offset);
+                    }
+                }
+            }
+        }
+
+        if (isFirstLoad){
+            mRefreshView.initData();
+        }
     }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (!isFirstLoad){
+            outState.putSerializable(DATA_LIST, (Serializable) mAdapter.getList());
+            int pos = 0,offset = 0;
+            GridLayoutManager layoutManager = ((GridLayoutManager)mRefreshView.getDataHelper().getAdapter().getRecyclerView().getLayoutManager());
+            if (layoutManager != null){
+                pos = layoutManager.findLastVisibleItemPosition();
+                View view = layoutManager.findViewByPosition(pos);
+                if (view != null){
+                    offset = view.getTop();
+                }
+            }
+            outState.putInt(SAVED_POSITION,pos);
+            outState.putInt(SAVED_POSITION_OFFSET,offset);
+        }
+        outState.putBoolean(DATA_LOADED,isFirstLoad);
+    }
+
 
 
     @Override

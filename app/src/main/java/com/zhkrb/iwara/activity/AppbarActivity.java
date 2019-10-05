@@ -23,10 +23,14 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.graphics.Paint;
+import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.Gravity;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.motion.widget.MotionLayout;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
@@ -39,12 +43,15 @@ import com.zhkrb.iwara.custom.MaterialAppBarLayout;
 import com.zhkrb.iwara.utils.L;
 
 @SuppressLint("Registered")
-public class AppbarActivity extends AbsActivity {
+public abstract class AppbarActivity extends AbsActivity {
 
+    private static final String BAR_EXPAND = "bar_expand";
+    private static final String ARROW_DRAWABLE_STATE = "arrow_drawable_state";
     protected MotionLayout mMainMotionLayout;
     protected MaterialAppBarLayout mBarLayout;
     private DrawerArrowDrawable mArrowDrawable;
     private boolean isExpand = true;
+
 
     @Override
     protected int getLayoutId() {
@@ -57,8 +64,8 @@ public class AppbarActivity extends AbsActivity {
     }
 
     @Override
-    protected void main() {
-        super.main();
+    protected void main(Bundle save) {
+        super.main(save);
         mMainMotionLayout = findViewById(R.id.motion_layout);
         mBarLayout = findViewById(R.id.appBarLayout);
         if (mMainMotionLayout != null){
@@ -66,11 +73,17 @@ public class AppbarActivity extends AbsActivity {
         }
         if (mBarLayout != null){
             mArrowDrawable = new DrawerArrowDrawable(mContext.getResources());
-            mArrowDrawable.setStrokeColor(mContext.getResources().getColor(R.color.textColor_disable));
+            mArrowDrawable.setStrokeColor(mContext.getResources().getColor(R.color.textColor_black_disable));
             mBarLayout.setFirstBtnDrawable(mArrowDrawable);
+            if (save == null){
+                mBarLayout.firstInit();
+            }else {
+                onRestore(save);
+            }
         }
-
     }
+
+
 
     @Override
     protected void onDestroy() {
@@ -79,15 +92,10 @@ public class AppbarActivity extends AbsActivity {
     }
 
     @Override
-    public void startFragment(FragmentFrame frame, int launchMode) {
-        mArrowDrawable.setStateWithAnim(false,!isExpand);
-        super.startFragment(frame, launchMode);
-    }
-
-    @Override
-    protected void loadRootFragment(FragmentFrame frame, int launchMode) {
-        mArrowDrawable.setStateWithAnim(true,!isExpand);
-        super.loadRootFragment(frame, launchMode);
+    public void startFragment(FragmentFrame frame) {
+        mArrowDrawable.setStateWithAnim(mFragmentStack.size() <= 1,!isExpand);
+//        mArrowDrawable.setStateWithAnim(false,!isExpand);
+        super.startFragment(frame);
     }
 
     @Override
@@ -96,6 +104,24 @@ public class AppbarActivity extends AbsActivity {
             mArrowDrawable.setStateWithAnim(true,!isExpand);
         }
         super.finish(tag, transitionHelper);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(ARROW_DRAWABLE_STATE,mFragmentStack.size() <= 1);
+        outState.putBoolean(BAR_EXPAND,isExpand);
+    }
+
+    private void onRestore(Bundle save) {
+        isExpand = save.getBoolean(BAR_EXPAND,true);
+        if (isExpand){
+            mMainMotionLayout.setProgress(0);
+        }else {
+            mMainMotionLayout.setProgress(1);
+        }
+        mBarLayout.restoreState(isExpand);
+        mArrowDrawable.setStateWithAnim(save.getBoolean(ARROW_DRAWABLE_STATE,true),false);
     }
 
     public boolean canClickBackup(){
@@ -139,8 +165,16 @@ public class AppbarActivity extends AbsActivity {
     public void openSlideLayout(){
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         if (drawerLayout != null){
-            drawerLayout.openDrawer(Gravity.LEFT);
+            drawerLayout.openDrawer(GravityCompat.START);
         }
+    }
+
+    public void enableSlideLayout(boolean enabled){
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        if (drawerLayout == null){
+            return;
+        }
+        drawerLayout.setDrawerLockMode(enabled ? DrawerLayout.LOCK_MODE_UNLOCKED: DrawerLayout.LOCK_MODE_LOCKED_CLOSED );
     }
 
 }

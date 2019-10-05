@@ -33,7 +33,6 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
 public abstract class AbsFragment extends Fragment {
 
@@ -70,10 +69,16 @@ public abstract class AbsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        main();
+        main(savedInstanceState);
     }
 
-    protected abstract void main();
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mRootView = view;
+    }
+
+    protected abstract void main(Bundle savedInstanceState);
 
     protected abstract int getLayoutId();
 
@@ -106,8 +111,8 @@ public abstract class AbsFragment extends Fragment {
 
     }
 
-    public void startFragment(FragmentFrame frame,@LaunchMode int mode){
-        ((AbsActivity)mContext).startFragment(frame,mode);
+    public void startFragment(FragmentFrame frame){
+        ((AbsActivity)mContext).startFragment(frame);
     }
 
     public void onBackPressed(){
@@ -126,6 +131,8 @@ public abstract class AbsFragment extends Fragment {
             }
         }
     }
+
+
 
     @IntDef({
             LAUNCH_MODE_STANDARD,

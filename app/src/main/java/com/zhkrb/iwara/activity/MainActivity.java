@@ -26,6 +26,7 @@ import android.widget.FrameLayout;
 import com.zhkrb.dragvideo.mainView.VideoPlayerView;
 import com.zhkrb.iwara.AppConfig;
 import com.zhkrb.iwara.R;
+import com.zhkrb.iwara.base.AbsFragment;
 import com.zhkrb.iwara.base.FragmentFrame;
 import com.zhkrb.iwara.bean.VideoListBean;
 import com.zhkrb.iwara.fragment.GalleryFragment;
@@ -39,6 +40,15 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
     private FrameLayout mVideoPlayerLayout;
     private VideoPlayerView mPlayerView;
 
+    static {
+        setLaunchMode(GalleryFragment.class, AbsFragment.LAUNCH_MODE_SINGLE_TOP);
+    }
+
+    @Override
+    protected FragmentFrame getLaunchFrame() {
+        return new FragmentFrame(GalleryFragment.class);
+    }
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main;
@@ -48,9 +58,7 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
     protected void main() {
         super.main();
         UpdateUtil.checkUpdate(mContext,false);
-        loadRootFragment(new FragmentFrame(GalleryFragment.class));
         mVideoPlayerLayout = findViewById(R.id.video_layout);
-
     }
 
     @Override
@@ -97,10 +105,12 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
             if (view.getVisibility() != View.GONE){
                 view.setVisibility(View.GONE);
             }
+            enableSlideLayout(false);
         }else {
             if (view.getVisibility() != View.VISIBLE){
                 view.setVisibility(View.VISIBLE);
             }
+            enableSlideLayout(true);
         }
     }
 

@@ -83,9 +83,17 @@ public class MaterialAppBarLayout extends FrameLayout implements View.OnClickLis
         mFirstBtn.setOnClickListener(this);
         secBtn.setOnClickListener(this);
         requestLayout();
+
+    }
+
+
+    public void firstInit(){
         post(measureRunable);
     }
 
+    public void restoreState(boolean expand){
+        post(() -> setProgress(expand ? 0 : 500));
+    }
 
     private Runnable measureRunable = () -> {
         setProgress(500);

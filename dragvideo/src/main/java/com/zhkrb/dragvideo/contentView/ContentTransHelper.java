@@ -13,45 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Create by zhkrb on 2019/9/7 22:12
+ * Create by zhkrb on 2019/10/2 21:42
  */
 
 package com.zhkrb.dragvideo.contentView;
 
-import android.os.Bundle;
-import android.view.ViewGroup;
+import android.content.Context;
+import android.view.View;
 
-import androidx.lifecycle.DefaultLifecycleObserver;
-import androidx.lifecycle.LifecycleObserver;
+public interface ContentTransHelper {
 
-/**
- * ContentView 接口
- * 承载详情展示之类的页面
- */
-
-public interface IContent extends DefaultLifecycleObserver {
-
-    /**
-     * View初始化
-     */
-    void init(Bundle arg);
-
-    /**
-     * View 释放
-     */
-    void release();
-
-    /**
-     * View 重载
-     */
-    void reload(Bundle arg);
-
-    /**
-     * 添加到父view
-     */
-    void addToParent(ViewGroup parent);
-
-
-
+    boolean onTransition(Context context,boolean isEnter, View view);
 
 }

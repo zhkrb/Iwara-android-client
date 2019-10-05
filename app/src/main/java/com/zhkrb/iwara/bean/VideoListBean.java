@@ -18,9 +18,11 @@
 
 package com.zhkrb.iwara.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
-public class VideoListBean {
+public class VideoListBean implements Parcelable {
 
     public VideoListBean() {
     }
@@ -34,6 +36,7 @@ public class VideoListBean {
     private String user_href;
     private String play_href;
     private int type;
+
 
     public String getLike() {
         if (TextUtils.isEmpty(like)){
@@ -109,4 +112,51 @@ public class VideoListBean {
     public void setPlay_href(String play_href) {
         this.play_href = play_href;
     }
+
+
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.like);
+        dest.writeString(this.view);
+        dest.writeString(this.href);
+        dest.writeString(this.thumb);
+        dest.writeString(this.title);
+        dest.writeString(this.user_name);
+        dest.writeString(this.user_href);
+        dest.writeString(this.play_href);
+        dest.writeInt(this.type);
+    }
+
+    public VideoListBean(Parcel in) {
+        this.like = in.readString();
+        this.view = in.readString();
+        this.href = in.readString();
+        this.thumb = in.readString();
+        this.title = in.readString();
+        this.user_name = in.readString();
+        this.user_href = in.readString();
+        this.play_href = in.readString();
+        this.type = in.readInt();
+    }
+
+
+    public static final Parcelable.Creator<VideoListBean> CREATOR = new Creator<VideoListBean>() {
+        @Override
+        public VideoListBean[] newArray(int size) {
+            return new VideoListBean[size];
+        }
+
+        @Override
+        public VideoListBean createFromParcel(Parcel in) {
+            return new VideoListBean(in);
+        }
+    };
+
 }
