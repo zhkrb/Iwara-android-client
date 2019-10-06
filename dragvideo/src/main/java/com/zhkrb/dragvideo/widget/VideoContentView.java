@@ -21,6 +21,7 @@
 //import android.content.Context;
 //import android.os.Parcelable;
 //import android.util.AttributeSet;
+//import android.util.Log;
 //import android.view.animation.AlphaAnimation;
 //
 //import androidx.annotation.NonNull;
@@ -32,9 +33,19 @@
 //import com.zhkrb.dragvideo.contentView.ContentTransHelper;
 //import com.zhkrb.dragvideo.contentView.IContent;
 //
+//import java.lang.reflect.Constructor;
+//import java.lang.reflect.InvocationTargetException;
+//import java.util.ArrayList;
+//import java.util.HashMap;
+//import java.util.List;
+//import java.util.Map;
+//import java.util.concurrent.atomic.AtomicInteger;
+//
 //public class VideoContentView extends NestedScrollView {
 //
-//    private int ViewCount = 0;
+//    private ArrayList<String> mViweStack = new ArrayList<>(0);
+//    private HashMap<String,AbsContent> mViewPool = new HashMap<>(0);
+//    private AtomicInteger mInteger = new AtomicInteger(0);
 //    private Context mContext;
 //
 //    public VideoContentView(@NonNull Context context) {
@@ -52,20 +63,36 @@
 //
 //    public void loadRootContent(ContentFrame frame){
 //        if (getChildCount() > 0){
-//            removeAllViews();
+//            removeAllContent();
 //        }
-//        AbsContent rootContent = createContent(frame.getClazz());
-//        if (rootContent == null){
-//            return;
-//        }
+//        AbsContent rootContent = createContent(frame.getClazz(),mContext);
 //        rootContent.setArgs(frame.getArgs());
 //        rootContent.setContext(mContext);
+//        rootContent.setParent(this);
 //        ContentTransHelper helper = frame.getHelper();
 //        if (helper == null || !helper.onTransition(mContext,true,rootContent)){
 //            addView(rootContent);
 //        }
 //
 //
+//    }
+//
+//    private void removeAllContent() {
+//        if (mViweStack.size() > 0){
+//            for (String id :mViweStack){
+//                AbsContent content = mViewPool.get(id);
+//                if (content == null){
+//                    Log.e("videoContent","Can't find View: "+id);
+//                    continue;
+//                }
+//                content.removeToParent(false);
+//                mViewPool.remove(id);
+//                mViweStack.remove(id);
+//            }
+//        }
+//        if (getChildCount() > 0){
+//            removeAllViews();
+//        }
 //    }
 //
 //    @Override
@@ -78,17 +105,21 @@
 //        return super.onSaveInstanceState();
 //    }
 //
-//    private AbsContent createContent(Class<?> clazz) {
+//    private AbsContent createContent(Class<?> clazz,Context context) {
 //        try {
-//            return (AbsContent) clazz.newInstance();
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
+//            Constructor constructor = clazz.getDeclaredConstructor(Context.class);
+//            constructor.setAccessible(true);
+//            return (AbsContent) constructor.newInstance(context);
 //        } catch (InstantiationException e) {
-//            e.printStackTrace();
-//        }catch (ClassCastException e){
-//            e.printStackTrace();
+//            throw new IllegalStateException("Can't instance " + clazz.getName(), e);
+//        } catch (IllegalAccessException e) {
+//            throw new IllegalStateException("The constructor of " +
+//                    clazz.getName() + " is not visible", e);
+//        } catch (ClassCastException e) {
+//            throw new IllegalStateException(clazz.getName() + " can not cast to scene", e);
+//        } catch (NoSuchMethodException|InvocationTargetException e) {
+//            throw new RuntimeException("method value error");
 //        }
-//        return null;
 //    }
 //
 //    public boolean canBackUp(){

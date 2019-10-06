@@ -35,6 +35,8 @@
 //import androidx.fragment.app.FragmentTransaction;
 //
 //
+//import com.zhkrb.dragvideo.widget.VideoContentView;
+//
 //import java.util.ArrayList;
 //import java.util.List;
 //
@@ -44,6 +46,7 @@
 //    private ProgressBar mLoadingProgress;
 //
 //    protected List<String> mFragmentStack;
+//    private VideoContentView mParent;
 //
 //    public AbsContent(Context context) {
 //        this(context,null);
@@ -109,7 +112,7 @@
 //    }
 //
 //    @Override
-//    public void addToParent(ViewGroup parent) {
+//    public void addToParent() {
 //        if (getParent() == null){
 //            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 //            setLayoutParams(params);
@@ -124,5 +127,14 @@
 //    }
 //
 //    public void setContext(Context context) {
+//        mContext = context;
+//    }
+//
+//    public void removeToParent(boolean useAnim) {
+//        release();
+//    }
+//
+//    public void setParent(VideoContentView videoContentView) {
+//        mParent = videoContentView;
 //    }
 //}

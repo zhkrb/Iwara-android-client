@@ -45,8 +45,13 @@ public class GSYRenderExView extends GSYRenderView {
 
     public void reAddView(ViewGroup textureViewContainer, int rotate, GSYTextureExView renderView){
         renderView.setRotation(rotate);
-        renderView.setSurfaceTexture(renderView.getSaveSurfaceTexture());
+        if (renderView.getSurfaceTexture() != renderView.getSaveSurfaceTexture()){
+            renderView.setSurfaceTexture(renderView.getSaveSurfaceTexture());
+        }
         renderView.getIGSYSurfaceListener().onSurfaceAvailable(renderView.getSurface());
+        if (renderView.getParent() != null){
+            ((ViewGroup)renderView.getParent()).removeView(renderView);
+        }
         GSYRenderView.addToParent(textureViewContainer, renderView);
     }
 

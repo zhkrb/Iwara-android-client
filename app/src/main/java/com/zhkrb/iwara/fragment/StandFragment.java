@@ -13,46 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Create by zhkrb on 2019/9/7 22:12
+ * Create by zhkrb on 2019/10/4 10:52
  */
 
-package com.zhkrb.dragvideo.contentView;
+package com.zhkrb.iwara.fragment;
 
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.lifecycle.DefaultLifecycleObserver;
-import androidx.lifecycle.LifecycleObserver;
+import com.zhkrb.iwara.base.AbsFragment;
 
-/**
- * ContentView 接口
- * 承载详情展示之类的页面
- */
+public class StandFragment extends AbsFragment {
 
-public interface IContent extends DefaultLifecycleObserver {
+    @Override
+    protected void main(Bundle savedInstanceState) {
 
-    /**
-     * View初始化
-     */
-    void init(Bundle arg);
+    }
 
-    /**
-     * View 释放
-     */
-    void release();
+    @Override
+    protected int getLayoutId() {
+        return 0;
+    }
 
-    /**
-     * View 重载
-     */
-    void reload(Bundle arg);
+    @Override
+    public void onNewArguments(Bundle args) {
 
-    /**
-     * 添加到父view
-     */
-    void addToParent(View parent);
-
-
-
-
+    }
 }
