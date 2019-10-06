@@ -25,7 +25,7 @@
     </style>
 
     <style name="dialog_bottom_anim" parent="@android:style/Animation">
-        <item name="android:windowEnterAnimation">@anim/bottom_to_top</item>
-        <item name="android:windowExitAnimation">@anim/top_to_bottom</item>
+        <item name="android:windowEnterAnimation">@anim/bottom_to_top_enter</item>
+        <item name="android:windowExitAnimation">@anim/bottom_to_top_exit</item>
     </style>
 </resources>

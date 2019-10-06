@@ -16,7 +16,7 @@
  * Create by zhkrb on 2019/10/2 21:34
  */
 
-package com.zhkrb.dragvideo.contentView;
+package com.zhkrb.dragvideo.contentViewBase;
 
 import android.os.Bundle;
 
@@ -25,7 +25,7 @@ public class ContentFrame {
     private Class<?> Clazz;
     private Bundle args;
     private ContentTransHelper mHelper;
-    private IContent requestContent;
+    private AbsContent requestContent;
     private int requestCode;
 
     public ContentFrame(Class<?> clazz) {
@@ -53,11 +53,11 @@ public class ContentFrame {
         mHelper = helper;
     }
 
-    public IContent getRequestFragment() {
+    public AbsContent getRequestFragment() {
         return requestContent;
     }
 
-    public void setRequest (IContent requestContent, int requestCode) {
+    public void setRequest (AbsContent requestContent, int requestCode) {
         this.requestContent = requestContent;
         this.requestCode = requestCode;
     }

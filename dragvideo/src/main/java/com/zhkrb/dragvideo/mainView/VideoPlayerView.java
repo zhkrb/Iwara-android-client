@@ -25,7 +25,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.ArrayMap;
 import android.util.AttributeSet;
@@ -40,8 +39,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
-import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
@@ -58,13 +55,14 @@ import com.zhkrb.dragvideo.ViewWrapper;
 import com.zhkrb.dragvideo.bean.SettingBean;
 import com.zhkrb.dragvideo.bean.UrlBean;
 import com.zhkrb.dragvideo.bean.ValueSelectBean;
-import com.zhkrb.dragvideo.contentView.IContent;
+import com.zhkrb.dragvideo.contentViewBase.ContentFrame;
 import com.zhkrb.dragvideo.utils.SettingListUtil;
 import com.zhkrb.dragvideo.utils.ToastUtil;
 import com.zhkrb.dragvideo.videoPlayer.IVideoPlayer;
 import com.zhkrb.dragvideo.videoPlayer.ScaleVideoView;
 import com.zhkrb.dragvideo.widget.PlayerSettingDialogFragment;
 import com.zhkrb.dragvideo.widget.SettingSelectDialogFragment;
+import com.zhkrb.dragvideo.contentViewBase.VideoContentView;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -77,13 +75,12 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
     private int mAppearAnimId;
 
     private RelativeLayout mHeaderView;
-    private NestedScrollView mDescView;
+    private VideoContentView mDescView;
     private ViewGroup mParentLayout;
 //    private RelativeLayout mParentLayout;
     private ViewWrapper mHeaderWrapper;
     private ViewWrapper mDescWrapper;
     private ViewGroup mContentView;
-    private IContent mInfoView;
     private ScaleVideoView mScaleVideoView;
     private SeekBar seekBar;
     private VelocityTracker mTracker = null;
@@ -120,6 +117,7 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
     private String mainUrl;
     private boolean isSeekBarTouch;
     private ViewWrapper mSeekBarWrapper;
+    private Class mRootClazz;
 
 
     public VideoPlayerView(@NonNull Context context) {
@@ -133,7 +131,7 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
     public VideoPlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.VideoPlayView);
-        mAppearAnimId = ta.getResourceId(R.styleable.VideoPlayView_appear_animation,R.anim.bottom_to_top);
+        mAppearAnimId = ta.getResourceId(R.styleable.VideoPlayView_appear_animation,R.anim.bottom_to_top_enter);
         ta.recycle();
         mContext = context;
     }
@@ -160,10 +158,6 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
         seekBar = view.findViewById(R.id.progress);
         mSeekBarWrapper = new ViewWrapper(seekBar);
 
-        if (mInfoView != null){
-            ((AppCompatActivity)mContext).getLifecycle().addObserver(mInfoView);
-            mInfoView.addToParent(mDescView);
-        }
         if (mScaleVideoView != null){
             mScaleVideoView.release();
             mScaleVideoView = null;
@@ -223,8 +217,10 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
      * user
      */
     public void load(Bundle bundle) {
-        if (mInfoView!=null){
-            mInfoView.init(bundle);
+        if (mRootClazz != null){
+            ContentFrame frame = new ContentFrame(mRootClazz);
+            frame.setArgs(bundle);
+            mDescView.loadRootContent(frame);
         }
         mainUrl = bundle.getString("url","");
         String title = bundle.getString("title","");
@@ -773,12 +769,10 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
     }
 
 
-    public IContent getInfoView() {
-        return mInfoView;
-    }
 
-    public void setInfoView(IContent infoView) {
-        mInfoView = infoView;
+
+    public void setRootContentView(Class clazz) {
+        mRootClazz = clazz;
     }
 
     @Override
@@ -987,11 +981,9 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
         if (isFullScreen()){
             exitFullScreen();
             return false;
-        }
-//        else if (mDescView.canBackUp()){
-//            return false;
-//        }
-        else if (isNom()){
+        } else if (mDescView.canBackUp()){
+            return false;
+        } else if (isNom()){
             toSmill();
             return false;
         }

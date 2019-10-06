@@ -16,13 +16,13 @@
  * Create by zhkrb on 2019/10/2 21:42
  */
 
-package com.zhkrb.dragvideo.contentView;
+package com.zhkrb.dragvideo.contentViewBase;
 
 import android.content.Context;
 import android.view.View;
 
 public interface ContentTransHelper {
 
-    boolean onTransition(Context context,boolean isEnter, View view);
+    boolean onTransition(Context context,boolean isEnter, View firstView,View secView);
 
 }

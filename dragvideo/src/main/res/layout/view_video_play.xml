@@ -10,7 +10,7 @@
     tools:parentTag="android.widget.RelativeLayout"
     >
 
-    <androidx.core.widget.NestedScrollView
+    <com.zhkrb.dragvideo.contentViewBase.VideoContentView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/view_header"
@@ -22,7 +22,7 @@
         >
 
 
-    </androidx.core.widget.NestedScrollView>
+    </com.zhkrb.dragvideo.contentViewBase.VideoContentView>
 
     <RelativeLayout
         android:layout_width="match_parent"
