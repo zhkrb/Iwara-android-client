@@ -15,7 +15,7 @@
 
     //cut dimens 切角大小
     <dimen name="cut_4dp">4dp</dimen>
-    <dimen name="cut_9dp">9dp</dimen>
+    <dimen name="cut_8dp">8dp</dimen>
     <dimen name="cut_12dp">12dp</dimen>
     <dimen name="cut_16dp">16dp</dimen>
     
@@ -43,7 +43,7 @@
 
 
     //控件间距
-    <dimen name="margin_start">10dp</dimen>
+    <dimen name="margin_start">8dp</dimen>
     <dimen name="margin_end">@dimen/margin_start</dimen>
 
 

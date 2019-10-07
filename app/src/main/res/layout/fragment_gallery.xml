@@ -105,7 +105,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:id="@+id/refreshView"
         android:background="@null"
-        android:paddingTop="5dp"
+        android:paddingTop="4dp"
         >
 
     </com.zhkrb.iwara.custom.refreshView.RefreshView>

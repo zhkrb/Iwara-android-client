@@ -28,11 +28,12 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 
 
 import com.zhkrb.dragvideo.R;
 
-public abstract class AbsContent extends FrameLayout {
+public abstract class AbsContent extends NestedScrollView {
 
     private Context mContext;
     private ProgressBar mLoadingProgress;

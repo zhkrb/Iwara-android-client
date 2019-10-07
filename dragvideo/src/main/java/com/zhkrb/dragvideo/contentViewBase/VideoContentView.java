@@ -24,6 +24,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,12 +41,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class VideoContentView extends NestedScrollView {
+public class VideoContentView extends FrameLayout {
 
     private ArrayList<String> mViweStack = new ArrayList<>(0);
     private HashMap<String,AbsContent> mViewPool = new HashMap<>(0);
     private AtomicInteger mInteger = new AtomicInteger(0);
     private Context mContext;
+    private NestedScrollView.OnScrollChangeListener mScrollListener;
 
     public VideoContentView(@NonNull Context context) {
         this(context,null);
@@ -76,6 +78,9 @@ public class VideoContentView extends NestedScrollView {
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         rootContent.setLayoutParams(layoutParams);
+        if (mScrollListener != null){
+            rootContent.setOnScrollChangeListener(mScrollListener);
+        }
         addView(rootContent);
         mViweStack.add(tag);
         mViewPool.put(tag,rootContent);
@@ -104,9 +109,11 @@ public class VideoContentView extends NestedScrollView {
         addView(content);
         mViweStack.add(tag);
         mViewPool.put(tag,content);
-        if (currentContent!=null && currentContent.getVisibility() != GONE){
+        if (currentContent!=null ){
+            currentContent.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) null);
             currentContent.setVisibility(GONE);
         }
+        content.setOnScrollChangeListener(mScrollListener);
         content.load();
     }
 
@@ -126,7 +133,9 @@ public class VideoContentView extends NestedScrollView {
             }
             if (nextContent != null){
                 nextContent.setVisibility(VISIBLE);
+                nextContent.setOnScrollChangeListener(mScrollListener);
             }
+            currentContent.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) null);
             removeView(currentContent);
             currentContent.release();
             mViewPool.remove(currentId);
@@ -142,6 +151,7 @@ public class VideoContentView extends NestedScrollView {
                     Log.e("videoContent","Can't find View: "+id);
                     continue;
                 }
+                content.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) null);
                 removeView(content);
                 content.release();
                 mViewPool.remove(id);
@@ -189,5 +199,7 @@ public class VideoContentView extends NestedScrollView {
     }
 
 
-
+    public void setOnScrollTopListener(NestedScrollView.OnScrollChangeListener scrollChangeListener) {
+        mScrollListener = scrollChangeListener;
+    }
 }

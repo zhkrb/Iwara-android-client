@@ -150,7 +150,7 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
         View view = inflater.inflate(R.layout.view_video_play, this, true);
         mHeaderView = view.findViewById(R.id.view_header);
         mDescView = view.findViewById(R.id.view_desc);
-        mDescView.setOnScrollChangeListener(mScrollChangeListener);
+        mDescView.setOnScrollTopListener(mScrollChangeListener);
 
 //        mParentLayout = view.findViewById(R.id.parent);
         mHeaderWrapper = new ViewWrapper(mHeaderView);
@@ -885,9 +885,6 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
             mScaleVideoView.getVideoView().setFailed((String) mContext.getText(R.string.url_get_failed_2));
         }
     };
-
-
-
 
     @Override
     public void onItemClick(DialogFragment fragment, SettingBean bean, int pos) {

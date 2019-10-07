@@ -15,7 +15,7 @@
 
     //cut dimens 切角大小
     <dimen name="cut_4dp">4dp</dimen>
-    <dimen name="cut_9dp">9dp</dimen>
+    <dimen name="cut_8dp">8dp</dimen>
     <dimen name="cut_12dp">12dp</dimen>
     <dimen name="cut_16dp">16dp</dimen>
 
@@ -43,11 +43,11 @@
 
     //dialog
     <dimen name="dialog_margin_top">20dp</dimen>
-    <dimen name="item_height">50dp</dimen>
+    <dimen name="item_height">48dp</dimen>
     <dimen name="item_padding_startend">20dp</dimen>
     <dimen name="item_title_padding_start">40dp</dimen>
-    <dimen name="card_default_margin">15dp</dimen>
-    <dimen name="card_default_margin_top_bottom">10dp</dimen>
+    <dimen name="card_default_margin">16dp</dimen>
+    <dimen name="card_default_margin_top_bottom">12dp</dimen>
 
 
 </resources>

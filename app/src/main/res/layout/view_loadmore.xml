@@ -11,8 +11,8 @@
         android:visibility="visible"
         >
         <androidx.core.widget.ContentLoadingProgressBar
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_centerInParent="true"
             style="@style/Widget.AppCompat.ProgressBar"
             />
@@ -47,14 +47,14 @@
             android:orientation="horizontal"
             >
             <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/ic_error_outline"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="3dp"
+                android:layout_marginStart="4dp"
                 android:id="@+id/error_text"
                 android:textColor="@color/textColor_black_medium"
                 android:textSize="16sp"

@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:AllCut="true"
-    app:AllCutRadius="@dimen/cut_9dp"
+    app:AllCutRadius="@dimen/cut_8dp"
     app:CutElevation="@dimen/elevation_0dp"
     android:layout_gravity="center"
     app:cardBackgroundColor="@color/black_alpha"

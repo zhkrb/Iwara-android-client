@@ -32,6 +32,7 @@ import com.zhkrb.iwara.bean.VideoListBean;
 import com.zhkrb.iwara.fragment.GalleryFragment;
 import com.zhkrb.iwara.utils.UpdateUtil;
 import com.zhkrb.iwara.utils.VideoNetWorkUtil;
+import com.zhkrb.iwara.videoInfoContent.TestContent;
 //import com.zhkrb.dragvideo.contentView.AbsContent;
 
 
@@ -73,6 +74,7 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
             mPlayerView.setNetworkUtil(new VideoNetWorkUtil());
 //            mPlayerView.setInfoView(new AbsContent(mContext));
             mPlayerView.setHideFragmentListener(this);
+            mPlayerView.setRootContentView(TestContent.class);
         }
         if (mVideoPlayerLayout.getVisibility() != View.VISIBLE){
             mVideoPlayerLayout.setVisibility(View.VISIBLE);

@@ -28,7 +28,7 @@
     </style>
     <style name="CustomCutMediumShapeAppearence">
         <item name="cornerFamily">cut</item>
-        <item name="cornerSize">@dimen/cut_9dp</item>
+        <item name="cornerSize">@dimen/cut_8dp</item>
     </style>
     <style name="CustomCutLargeShapeAppearence">
         <item name="cornerFamily">cut</item>

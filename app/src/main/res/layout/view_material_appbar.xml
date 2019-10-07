@@ -9,16 +9,16 @@
 
     <com.zhkrb.iwara.custom.CutCardView
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="48dp"
         android:id="@+id/cardView"
         app:CutElevation="@dimen/elevation_3dp"
         app:BottomRightCut="true"
-        app:BottomRightRadius="@dimen/cut_9dp"
+        app:BottomRightRadius="@dimen/cut_8dp"
         app:cardBackgroundColor="@color/secondaryLight"
         app:cardCornerRadius="0dp"
         app:CutProgress="0"
         android:background="@null"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="4dp"
         >
 
         <FrameLayout
@@ -36,8 +36,8 @@
                 android:visibility="gone"
                 >
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/margin_start"
                     android:id="@+id/btn_bar_first"
@@ -45,8 +45,8 @@
                     android:background="@null"
                     />
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/margin_start"
                     android:layout_marginEnd="@dimen/margin_end"
