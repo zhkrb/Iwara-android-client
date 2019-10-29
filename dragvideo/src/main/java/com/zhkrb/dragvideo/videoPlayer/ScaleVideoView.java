@@ -34,25 +34,30 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.Constraints;
+import androidx.constraintlayout.widget.Group;
+
+import com.zhkrb.dragvideo.ConstViewWrapper;
 import com.zhkrb.dragvideo.R;
 import com.zhkrb.dragvideo.R.styleable;
 import com.zhkrb.dragvideo.ViewWrapper;
+import com.zhkrb.dragvideo.contentViewBase.ReloadListener;
 import com.zhkrb.dragvideo.mainView.ScaleViewListener;
 import com.zhkrb.dragvideo.videoPlayer.gsyvideoplayer.VideoPlayer;
 
 import java.util.Map;
 
-public class ScaleVideoView extends FrameLayout implements OnClickListener,PlayerStateListener{
+public class ScaleVideoView extends ConstraintLayout implements OnClickListener,PlayerStateListener{
     private Context mContext;
     private int mLayoutRes;
     private float mTargetWidth;
     private float mLayoutProgress;
     private FrameLayout mVideoContent;
-    private ViewWrapper mVideoParentWrapper;
-    private ViewWrapper mInfoWrapper;
-    private ViewWrapper mPlayWrapper;
-    private ViewWrapper mCloseWrapper;
-
+    private ConstViewWrapper mVideoParentWrapper;
+    private ConstViewWrapper mPlayWrapper;
+    private ConstViewWrapper mCloseWrapper;
+    private Group mInfoGroup;
     private ProgressBar mProgressBar;
     private ImageView btnPlay;
     private TextView mTitle;
@@ -60,6 +65,9 @@ public class ScaleVideoView extends FrameLayout implements OnClickListener,Playe
     private IVideoPlayer mVideoPlayer;
     private int mVideoPlayState;
     private ScaleViewListener mScaleViewListener;
+    private ReloadListener mReloadListener;
+    private ImageView btnClose;
+    private int mLastWidth;
 
     public ScaleVideoView(@NonNull Context context) {
         this(context, null);
@@ -82,15 +90,15 @@ public class ScaleVideoView extends FrameLayout implements OnClickListener,Playe
     public void initView(@NonNull SeekBar seekBar) {
         if (getChildCount() == 0){
             LayoutInflater inflater = LayoutInflater.from(mContext);
-            View view = inflater.inflate(mLayoutRes, this, false);
-            addView(view);
+            View view = inflater.inflate(mLayoutRes, this, true);
+            setClickable(true);
             mVideoContent = view.findViewById(R.id.video_content);
-            mVideoParentWrapper = new ViewWrapper(mVideoContent);
-            mInfoWrapper = new ViewWrapper(view.findViewById(R.id.info_content));
+            mInfoGroup = view.findViewById(R.id.info_content);
+            mVideoParentWrapper = new ConstViewWrapper(mVideoContent);
             btnPlay =  view.findViewById(R.id.btn_play);
-            mPlayWrapper = new ViewWrapper(btnPlay);
-            ImageView btnClose = view.findViewById(R.id.btn_close);
-            mCloseWrapper = new ViewWrapper(btnClose);
+            mPlayWrapper = new ConstViewWrapper(btnPlay);
+            btnClose = view.findViewById(R.id.btn_close);
+            mCloseWrapper = new ConstViewWrapper(btnClose);
             mProgressBar = view.findViewById(R.id.progress);
             mTitle = view.findViewById(R.id.title);
             mUser = view.findViewById(R.id.user);
@@ -143,40 +151,47 @@ public class ScaleVideoView extends FrameLayout implements OnClickListener,Playe
             return;
         mLayoutProgress = progress;
         Log.e("prog", String.valueOf(mLayoutProgress));
+        if (mLayoutProgress == 0 ||mLayoutProgress == 1){
+            setLayerType(View.LAYER_TYPE_NONE, null);
+        }else {
+            setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        }
         reLayoutView();
     }
 
     public void reLayoutView() {
         int mParentWidth = this.getWidth();
-        mVideoParentWrapper.setWidth(mParentWidth - (int)(((float)mParentWidth - this.mTargetWidth) * this.mLayoutProgress));
+        int newWidth = mParentWidth - (int)(((float)mParentWidth - this.mTargetWidth) * this.mLayoutProgress);
+        if (newWidth == mLastWidth){
+            return;
+        }
+        mLastWidth = newWidth;
+        mVideoParentWrapper.setWidth(mLastWidth);
         Log.e("mParentWidth", String.valueOf(mVideoParentWrapper.getWidth()));
         int deltaX = mParentWidth - this.mVideoParentWrapper.getWidth() < 0 ? 0 : mParentWidth - this.mVideoParentWrapper.getWidth();
-        setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        if (mLayoutProgress>0&&(mInfoWrapper.getVisibile()!=VISIBLE||mProgressBar.getVisibility() != VISIBLE)){
-            mInfoWrapper.setVisibile(VISIBLE);
+        if (mLayoutProgress>0&&(mInfoGroup.getVisibility()!=VISIBLE||mProgressBar.getVisibility() != VISIBLE)){
+            mInfoGroup.setVisibility(VISIBLE);
             mProgressBar.setVisibility(VISIBLE);
-        }else if (mLayoutProgress==0&&(mInfoWrapper.getVisibile()!=GONE||mProgressBar.getVisibility()!=GONE)){
-            mInfoWrapper.setVisibile(GONE);
+        }else if (mLayoutProgress==0&&(mInfoGroup.getVisibility()!=GONE||mProgressBar.getVisibility()!=GONE)){
+            mInfoGroup.setVisibility(GONE);
             mProgressBar.setVisibility(GONE);
         }
-        if (deltaX <= dp2px(45)) {
+        if (deltaX <= dp2px(48)) {
             mCloseWrapper.setWidth(deltaX);
-        } else if (deltaX <= dp2px(90) && deltaX > dp2px(45)) {
-            mPlayWrapper.setWidth(deltaX - dp2px(45));
+        } else if (deltaX <= dp2px(96) && deltaX > dp2px(48)) {
+            mPlayWrapper.setWidth(deltaX - dp2px(48));
         }else {
-            mCloseWrapper.setWidth(dp2px(45));
-            mPlayWrapper.setWidth(dp2px(45));
+            mCloseWrapper.setWidth(dp2px(48));
+            mPlayWrapper.setWidth(dp2px(48));
         }
         if (mLayoutProgress <0.01f){
-            mVideoParentWrapper.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+            mVideoParentWrapper.setWidth(0);
         }
-        mInfoWrapper.setWidth(deltaX);
-        mInfoWrapper.getView().setAlpha(mLayoutProgress);
+        mInfoGroup.setAlpha(mLayoutProgress);
         mProgressBar.setAlpha(mLayoutProgress);
-//        requestLayout();
         mVideoContent.requestLayout();
-        mInfoWrapper.getView().requestLayout();
-        setLayerType(View.LAYER_TYPE_NONE, null);
+        Log.e("video",String.valueOf(mVideoContent.getX()));
+        Log.e("btn",String.valueOf(btnClose.getX()));
     }
 
     private int dp2px(int dpVal) {
@@ -277,8 +292,8 @@ public class ScaleVideoView extends FrameLayout implements OnClickListener,Playe
 
     @Override
     public void onReload() {
-        if (mScaleViewListener != null){
-            mScaleViewListener.onReload();
+        if (mReloadListener != null){
+            mReloadListener.needReload();
         }
     }
 
@@ -313,5 +328,9 @@ public class ScaleVideoView extends FrameLayout implements OnClickListener,Playe
         }
         mVideoContent.removeAllViews();
         mVideoPlayer = null;
+    }
+
+    public void setReloadListener(ReloadListener reloadListener) {
+        mReloadListener = reloadListener;
     }
 }

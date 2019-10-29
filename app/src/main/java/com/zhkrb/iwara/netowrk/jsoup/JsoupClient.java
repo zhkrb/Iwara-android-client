@@ -3,6 +3,7 @@ package com.zhkrb.iwara.netowrk.jsoup;
 import com.zhkrb.iwara.netowrk.retrofit.HttpUtil;
 
 import io.reactivex.Observable;
+import io.reactivex.Observer;
 import okhttp3.ResponseBody;
 
 public class JsoupClient {
@@ -30,5 +31,9 @@ public class JsoupClient {
 
      Observable<ResponseBody> getObservable(final String url){
          return HttpUtil.getBody(url);
+    }
+
+    Observable<ResponseBody> getObservableWithoutHost(final String url){
+        return HttpUtil.getBodyWithoutHost(url);
     }
 }

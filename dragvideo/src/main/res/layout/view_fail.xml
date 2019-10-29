@@ -20,7 +20,7 @@
         android:layout_marginTop="20dp"
         android:layout_gravity="center_horizontal"
         android:textAlignment="center"
-        android:textColor="@color/textColor"
+        android:textColor="@color/text"
         android:textSize="@dimen/body2"
         />
 </LinearLayout>

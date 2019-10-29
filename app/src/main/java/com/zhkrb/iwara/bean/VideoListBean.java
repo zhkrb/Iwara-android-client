@@ -35,6 +35,7 @@ public class VideoListBean implements Parcelable {
     private String user_name;
     private String user_href;
     private String play_href;
+    private boolean privated;
     private int type;
 
 
@@ -113,7 +114,13 @@ public class VideoListBean implements Parcelable {
         this.play_href = play_href;
     }
 
+    public boolean isPrivated() {
+        return privated;
+    }
 
+    public void setPrivated(boolean privated) {
+        this.privated = privated;
+    }
 
 
     @Override
@@ -131,6 +138,9 @@ public class VideoListBean implements Parcelable {
         dest.writeString(this.user_name);
         dest.writeString(this.user_href);
         dest.writeString(this.play_href);
+        boolean[] booleans = new boolean[1];
+        booleans[0] = privated;
+        dest.writeBooleanArray(booleans);
         dest.writeInt(this.type);
     }
 
@@ -143,6 +153,9 @@ public class VideoListBean implements Parcelable {
         this.user_name = in.readString();
         this.user_href = in.readString();
         this.play_href = in.readString();
+        boolean[] booleans = new boolean[1];
+        in.readBooleanArray(booleans);
+        this.privated = booleans[0];
         this.type = in.readInt();
     }
 
@@ -158,5 +171,6 @@ public class VideoListBean implements Parcelable {
             return new VideoListBean(in);
         }
     };
+
 
 }

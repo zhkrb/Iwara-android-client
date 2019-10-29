@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:visible="true"
+    android:fromDegrees="0"
+    android:toDegrees="180"
+    android:pivotX="50%"
+    android:pivotY="50%"
+    android:drawable="@drawable/ic_arrow_down_black_24dp"
+    >
+
+</rotate>

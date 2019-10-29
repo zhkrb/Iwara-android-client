@@ -39,16 +39,20 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.Constraints;
 import androidx.core.widget.NestedScrollView;
 import androidx.customview.widget.ViewDragHelper;
 import androidx.fragment.app.DialogFragment;
 
+import com.zhkrb.dragvideo.ConstViewWrapper;
 import com.zhkrb.dragvideo.NetworkUtil;
 import com.zhkrb.dragvideo.R;
 import com.zhkrb.dragvideo.ViewWrapper;
@@ -56,6 +60,7 @@ import com.zhkrb.dragvideo.bean.SettingBean;
 import com.zhkrb.dragvideo.bean.UrlBean;
 import com.zhkrb.dragvideo.bean.ValueSelectBean;
 import com.zhkrb.dragvideo.contentViewBase.ContentFrame;
+import com.zhkrb.dragvideo.contentViewBase.ReloadListener;
 import com.zhkrb.dragvideo.utils.SettingListUtil;
 import com.zhkrb.dragvideo.utils.ToastUtil;
 import com.zhkrb.dragvideo.videoPlayer.IVideoPlayer;
@@ -69,16 +74,16 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
-public class VideoPlayerView extends RelativeLayout implements ScaleViewListener, PlayerSettingDialogFragment.onItemClickListener {
+public class VideoPlayerView extends ConstraintLayout implements ScaleViewListener, PlayerSettingDialogFragment.onItemClickListener, ReloadListener {
 
     private Context mContext;
     private int mAppearAnimId;
 
-    private RelativeLayout mHeaderView;
+    private FrameLayout mHeaderView;
     private VideoContentView mDescView;
     private ViewGroup mParentLayout;
 //    private RelativeLayout mParentLayout;
-    private ViewWrapper mHeaderWrapper;
+    private ConstViewWrapper mHeaderWrapper;
     private ViewWrapper mDescWrapper;
     private ViewGroup mContentView;
     private ScaleVideoView mScaleVideoView;
@@ -118,6 +123,9 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
     private boolean isSeekBarTouch;
     private ViewWrapper mSeekBarWrapper;
     private Class mRootClazz;
+    private Bundle mBundle;
+    private int mLatestHeaderHeight;
+    private float mLatestTranY;
 
 
     public VideoPlayerView(@NonNull Context context) {
@@ -148,12 +156,13 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
         }
         LayoutInflater inflater = LayoutInflater.from(this.mContext);
         View view = inflater.inflate(R.layout.view_video_play, this, true);
+        setClipChildren(false);
         mHeaderView = view.findViewById(R.id.view_header);
         mDescView = view.findViewById(R.id.view_desc);
         mDescView.setOnScrollTopListener(mScrollChangeListener);
 
 //        mParentLayout = view.findViewById(R.id.parent);
-        mHeaderWrapper = new ViewWrapper(mHeaderView);
+        mHeaderWrapper = new ConstViewWrapper(mHeaderView);
         mDescWrapper = new ViewWrapper(mDescView);
         seekBar = view.findViewById(R.id.progress);
         mSeekBarWrapper = new ViewWrapper(seekBar);
@@ -163,12 +172,14 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
             mScaleVideoView = null;
         }
         mScaleVideoView = new ScaleVideoView(mContext);
+        mScaleVideoView.setClickable(true);
         mScaleVideoView.setViewListener(this);
-        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        mScaleVideoView.setReloadListener(this);
+        mDescView.setReloadListener(this);
+        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mScaleVideoView.setLayoutParams(lp);
         mScaleVideoView.initView(seekBar);
         mHeaderView.addView(mScaleVideoView);
-        seekBar.bringToFront();
 
         mDragHelper = ViewDragHelper.create(this,1.0f,new dragViewCallback());
         final ViewConfiguration vc = ViewConfiguration.get(mContext);
@@ -217,19 +228,20 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
      * user
      */
     public void load(Bundle bundle) {
+        mBundle = bundle;
         if (mRootClazz != null){
             ContentFrame frame = new ContentFrame(mRootClazz);
-            frame.setArgs(bundle);
+            frame.setArgs(mBundle);
             mDescView.loadRootContent(frame);
         }
-        mainUrl = bundle.getString("url","");
-        String title = bundle.getString("title","");
-        String thumb = bundle.getString("thumb","");
-        String user = bundle.getString("user","");
+        mainUrl = mBundle.getString("url","");
+        String title = mBundle.getString("title","");
+        String thumb = mBundle.getString("thumb","");
+        String user = mBundle.getString("user","");
         mScaleVideoView.initData(mainUrl,title,thumb,user);
         Map<String,String> header = new ArrayMap<>();
-        header.put("Referer",bundle.getString("referer",""));
-        header.put("User-Agent",bundle.getString("ua",""));
+        header.put("Referer",mBundle.getString("referer",""));
+        header.put("User-Agent",mBundle.getString("ua",""));
         mScaleVideoView.setHeader(header);
         mScaleVideoView.getVideoView().setLoading(true);
         if (mNetworkUtil != null){
@@ -638,26 +650,31 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
         }else if (dis < 0){
             dis = 0;
         }
+        if (dis == 0 || dis == 10000){
+            setLayerType(View.LAYER_TYPE_NONE, (Paint)null);
+        }else {
+            setLayerType(View.LAYER_TYPE_HARDWARE, (Paint)null);
+        }
         if (dis > 0){
+            mDescView.setAnim(true);
             mScaleVideoView.setPlayerState(IVideoPlayer.VIEW_STATE_SMILL);
             mParentLayout.setClipChildren(true);
             if (mHideFragmentListener != null){
                 mHideFragmentListener.onHide(false);
             }
         }else {
+            mDescView.setAnim(false);
             mScaleVideoView.setPlayerState(IVideoPlayer.VIEW_STATE_NOM);
             mParentLayout.setClipChildren(false);
             if (mHideFragmentListener != null){
                 mHideFragmentListener.onHide(true);
             }
         }
-        setLayerType(View.LAYER_TYPE_HARDWARE, (Paint)null);
         if (dis <= 9000){
             updateFirst(dis);
         }else {
             updateSecond(dis);
         }
-        setLayerType(View.LAYER_TYPE_NONE, (Paint)null);
     }
 
     private void updateFirst(int dis) {
@@ -670,7 +687,17 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
             isFirstUpdate = true;
         }
         float prog = ((float)dis/9000f);
+
+        int headerHeight = (int) (mFullCurrentHeaderHeight -
+                (mFullCurrentHeaderHeight - dp2px(mSmillWidgetHeight+50))*prog);
+        if (mLatestHeaderHeight == headerHeight){
+            return;
+        }
+        mLatestHeaderHeight = headerHeight;
         int leftRightMargin = (int) (dp2px(mSmillLeftAndRight) * prog);
+//        ((ConstraintLayout.LayoutParams)mHeaderView.getLayoutParams()).setMarginEnd(leftRightMargin);
+//        ((ConstraintLayout.LayoutParams)mHeaderView.getLayoutParams()).setMarginStart(leftRightMargin);
+
         mHeaderWrapper.setLeftMargin(leftRightMargin);
         mHeaderWrapper.setRightMargin(leftRightMargin);
         mDescWrapper.setLeftMargin(leftRightMargin);
@@ -680,15 +707,13 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
         int bottomMargin = (int) (dp2px(mSmillBottomHeight) * prog);
         mDescWrapper.setBottomMargin(bottomMargin);
         //一阶段变换为header小控件的高度+50dp
-        int headerHeight = (int) (mFullCurrentHeaderHeight -
-                                        (mFullCurrentHeaderHeight - dp2px(mSmillWidgetHeight+50))*prog);
         mHeaderWrapper.setHeight(headerHeight);
         int headerTopMargin = (int) ((mTopMarginOrigin-dp2px(50))*prog);
         mHeaderWrapper.setTopMargin(headerTopMargin);
         mParentLayout.getBackground().setAlpha(255 - (int) (255*prog));
         mHeaderView.requestLayout();
-        mDescView.requestLayout();
-        mParentLayout.invalidate();
+//        mDescView.requestLayout();
+//        mParentLayout.invalidate();
     }
 
     private void updateSecond(int dis) {
@@ -697,19 +722,25 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
             isFirstUpdate = false;
         }
         float prog = ((float)(dis-9000)/1000f);
+        int headerHeight = (int) (dp2px(mSmillWidgetHeight+50) - dp2px(50)*prog);
+        if (mLatestHeaderHeight == headerHeight){
+            return;
+        }
+        mLatestHeaderHeight = headerHeight;
         mScaleVideoView.setProgress(prog);
         int topMargin = (int) ((mTopMarginOrigin-dp2px(50)) + dp2px(50)*prog);
         mHeaderWrapper.setTopMargin(topMargin);
-        int headerHeight = (int) (dp2px(mSmillWidgetHeight+50) - dp2px(50)*prog);
-        mHeaderWrapper.setHeight(headerHeight);
+        mHeaderWrapper.setHeight(mLatestHeaderHeight);
         mHeaderView.requestLayout();
-        mDescView.requestLayout();
+//        mDescView.requestLayout();
     }
 
     private void setFirst() {
         int leftRightMargin = dp2px(mSmillLeftAndRight);
         mHeaderWrapper.setLeftMargin(leftRightMargin);
         mHeaderWrapper.setRightMargin(leftRightMargin);
+//        ((ConstraintLayout.LayoutParams)mHeaderView.getLayoutParams()).setMarginEnd(leftRightMargin);
+//        ((ConstraintLayout.LayoutParams)mHeaderView.getLayoutParams()).setMarginStart(leftRightMargin);
         mDescWrapper.setLeftMargin(leftRightMargin);
         mDescWrapper.setRightMargin(leftRightMargin);
         mDescWrapper.setBottomMargin(dp2px(mSmillBottomHeight));
@@ -729,13 +760,23 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
         }else if (dis > 100){
             dis = 100;
         }
+        if (dis == 0 || dis == 100){
+            setLayerType(View.LAYER_TYPE_NONE, (Paint)null);
+        }else {
+            setLayerType(View.LAYER_TYPE_HARDWARE, (Paint)null);
+        }
         if (dis > 0){
             mScaleVideoView.setPlayerState(IVideoPlayer.VIEW_STATE_DOWN);
         }else {
             mScaleVideoView.setPlayerState(IVideoPlayer.VIEW_STATE_SMILL);
         }
         float prog = ((float)(dis/100f));
-        setTranslationY(mDropHideDistance * prog);
+        float tranY = mDropHideDistance * prog;
+        if (mLatestTranY == tranY){
+            return;
+        }
+        mLatestTranY = tranY;
+        setTranslationY(mLatestTranY);
         mHeaderView.setAlpha(1 - prog);
     }
 
@@ -759,7 +800,6 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
 
         mHeaderWrapper.setHeight(height);
         mHeaderView.requestLayout();
-        mDescView.requestLayout();
     }
 
 
@@ -784,7 +824,7 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
         }else {
             isVerticalVideo = false;
         }
-        if (mScrollState != SCROLL_STATE_NOM){
+        if (mScrollState != SCROLL_STATE_NOM || isVerticalScroll){
             mFullCurrentHeaderHeight = currentHeight;
         }else {
             transHeaderLayout(currentHeight);
@@ -821,13 +861,14 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
         ((ViewGroup)getParent()).removeView(this);
         mScaleVideoView.release();
         mScaleVideoView = null;
-//        showLoadProgress(false);
-//        showFailedIcon(false);
+        mDescView.setAnim(false);
+        mDescView.release();
         if (mNetworkUtil!=null){
             mNetworkUtil.cancel();
         }
         if (mTracker != null){
             mTracker.recycle();
+            mTracker = null;
         }
     }
 
@@ -860,11 +901,8 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
         hideView(0,0);
     }
 
-    @Override
-    public void onReload() {
-        mNetworkUtil.getUrlList(mainUrl);
-        mScaleVideoView.getVideoView().setLoading(true);
-    }
+
+
 
     public void setNetworkUtil(NetworkUtil networkUtil) {
         mNetworkUtil = networkUtil;
@@ -985,6 +1023,25 @@ public class VideoPlayerView extends RelativeLayout implements ScaleViewListener
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void needReload() {
+        if ( mScaleVideoView.getVideoView().isNeedReload()){
+            reloadVideo();
+        }
+        if (mDescView.isNeedReload()){
+            reloadContent();
+        }
+    }
+
+    public void reloadVideo(){
+        mNetworkUtil.getUrlList(mainUrl);
+        mScaleVideoView.getVideoView().setLoading(true);
+    }
+
+    public void reloadContent(){
+        mDescView.reloadContent(mBundle);
     }
 
 

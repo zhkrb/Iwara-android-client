@@ -1014,4 +1014,9 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
 //            GSYVideoType.setShowType(GSYVideoType.SCREEN_TYPE_FULL);
 //        }
     }
+
+    @Override
+    public boolean isNeedReload() {
+        return mCurrentState == CURRENT_STATE_ERROR;
+    }
 }

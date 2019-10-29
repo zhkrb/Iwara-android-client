@@ -19,9 +19,11 @@
 package com.zhkrb.dragvideo.contentViewBase;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -34,6 +36,7 @@ import com.zhkrb.dragvideo.R;
 import com.zhkrb.dragvideo.contentViewBase.AbsContent;
 import com.zhkrb.dragvideo.contentViewBase.ContentFrame;
 import com.zhkrb.dragvideo.contentViewBase.ContentTransHelper;
+import com.zhkrb.dragvideo.mainView.VideoPlayerView;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -48,6 +51,10 @@ public class VideoContentView extends FrameLayout {
     private AtomicInteger mInteger = new AtomicInteger(0);
     private Context mContext;
     private NestedScrollView.OnScrollChangeListener mScrollListener;
+    private ReloadListener mReloadListener;
+
+    private boolean mNeedReload = false;
+    private boolean isAnim = false;
 
     public VideoContentView(@NonNull Context context) {
         this(context,null);
@@ -70,13 +77,14 @@ public class VideoContentView extends FrameLayout {
         rootContent.setArgs(frame.getArgs());
         rootContent.setContext(mContext);
         rootContent.setParent(this);
+        rootContent.setFillViewport(true);
         ContentTransHelper helper = frame.getHelper();
         String tag = String.valueOf(mInteger.getAndIncrement());
         if (helper == null || !helper.onTransition(mContext,true,rootContent,null)){
             rootContent.setAnimation(null);
         }
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+                ViewGroup.LayoutParams.MATCH_PARENT);
         rootContent.setLayoutParams(layoutParams);
         if (mScrollListener != null){
             rootContent.setOnScrollChangeListener(mScrollListener);
@@ -87,11 +95,24 @@ public class VideoContentView extends FrameLayout {
         rootContent.load();
     }
 
+    public void reloadContent(Bundle arg){
+        if (getChildCount() == 0 || mViweStack.size() == 0){
+            return;
+        }
+        String id = mViweStack.get(mViweStack.size() - 1);
+        AbsContent currentContent = mViewPool.get(id);
+        if (currentContent == null){
+            return;
+        }
+        currentContent.reload(arg);
+    }
+
     public void loadNewContent(ContentFrame frame){
         AbsContent content = createContent(frame.getClazz(),mContext);
         content.setArgs(frame.getArgs());
         content.setContext(mContext);
         content.setParent(this);
+        content.setFillViewport(true);
         ContentTransHelper helper = frame.getHelper();
 
         AbsContent currentContent = null;
@@ -104,7 +125,7 @@ public class VideoContentView extends FrameLayout {
             content.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.top_to_bottom_enter));
         }
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+                ViewGroup.LayoutParams.MATCH_PARENT);
         content.setLayoutParams(layoutParams);
         addView(content);
         mViweStack.add(tag);
@@ -202,4 +223,43 @@ public class VideoContentView extends FrameLayout {
     public void setOnScrollTopListener(NestedScrollView.OnScrollChangeListener scrollChangeListener) {
         mScrollListener = scrollChangeListener;
     }
+
+    public void setReloadListener(ReloadListener listener) {
+        mReloadListener = listener;
+    }
+
+    public ReloadListener getReloadListener() {
+        return mReloadListener;
+    }
+
+    public void setNeedReload(boolean needReload) {
+        mNeedReload = needReload;
+    }
+
+    public boolean isNeedReload() {
+        return mNeedReload;
+    }
+
+    public void release() {
+        removeAllContent();
+    }
+
+    public void setAnim(boolean anim) {
+        if (anim == isAnim){
+            return;
+        }
+        isAnim = anim;
+        if (mViweStack.size() > 0){
+            for (String id :mViweStack){
+                AbsContent content = mViewPool.get(id);
+                if (content != null){
+                    content.setAnim(isAnim);
+                }
+            }
+        }
+    }
+
+
+
+
 }

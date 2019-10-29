@@ -18,6 +18,8 @@
 
 package com.zhkrb.iwara.custom;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -34,6 +36,8 @@ import android.widget.RelativeLayout;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.motion.widget.MotionLayout;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.Group;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import com.google.android.material.card.MaterialCardView;
@@ -42,12 +46,12 @@ import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.activity.AppbarActivity;
 import com.zhkrb.iwara.utils.DpUtil;
 
-public class MaterialAppBarLayout extends FrameLayout implements View.OnClickListener {
+public class MaterialAppBarLayout extends ConstraintLayout implements View.OnClickListener {
 
     private Context mContext;
 
-    private LinearLayout mChildFirstLayout;
-    private LinearLayout mChildSecLayout;
+    private Group mChildFirstLayout;
+    private FrameLayout mChildSecLayout;
     private CutCardView mCardView;
     private ViewWrapper mCardViewWrapper;
     private ImageView mFirstBtn;
@@ -108,10 +112,17 @@ public class MaterialAppBarLayout extends FrameLayout implements View.OnClickLis
     }
 
     private void startAnim(int value){
+        setLayerType(View.LAYER_TYPE_HARDWARE, (Paint)null);
         ObjectAnimator animator = ObjectAnimator.ofInt(this,"progress",value);
         animator.setAutoCancel(true);
         animator.setDuration(555);
         animator.setInterpolator(new FastOutSlowInInterpolator());
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                setLayerType(View.LAYER_TYPE_NONE, (Paint)null);
+            }
+        });
         animator.start();
     }
 
@@ -120,11 +131,8 @@ public class MaterialAppBarLayout extends FrameLayout implements View.OnClickLis
         if (i == mProgress){
             return;
         }
-        setLayerType(View.LAYER_TYPE_HARDWARE, (Paint)null);
         mProgress = i;
-        updateParent(i/500f);
-        updateChild(i/500);
-        setLayerType(View.LAYER_TYPE_NONE, (Paint)null);
+        update(i/500f);
         if (i == 0){
             mChildFirstLayout.setVisibility(GONE);
             mChildSecLayout.setVisibility(VISIBLE);
@@ -137,21 +145,17 @@ public class MaterialAppBarLayout extends FrameLayout implements View.OnClickLis
         }
     }
 
-    private void updateParent(float v) {
+    private void update(float v) {
         if (v >1){
             v = 1;
         }else if (v < 0){
             v = 0;
         }
-        mCardViewWrapper.setRightMargin((int) ((getWidth() - DpUtil.dp2px(90)) * v));
+        mCardViewWrapper.setRightMargin((int) ((getWidth() - DpUtil.dp2px(100)) * v));
         mCardView.setCutProgress(v);
-        mCardView.requestLayout();
-//        invalidate();
-    }
-
-    private void updateChild(float v) {
         mChildFirstLayout.setAlpha(v);
         mChildSecLayout.setAlpha(1 - v);
+        mCardView.requestLayout();
     }
 
     public int getProgress() {

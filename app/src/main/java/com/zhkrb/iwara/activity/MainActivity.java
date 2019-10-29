@@ -21,7 +21,10 @@ package com.zhkrb.iwara.activity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.zhkrb.dragvideo.mainView.VideoPlayerView;
 import com.zhkrb.iwara.AppConfig;
@@ -32,18 +35,21 @@ import com.zhkrb.iwara.bean.VideoListBean;
 import com.zhkrb.iwara.fragment.GalleryFragment;
 import com.zhkrb.iwara.utils.UpdateUtil;
 import com.zhkrb.iwara.utils.VideoNetWorkUtil;
-import com.zhkrb.iwara.videoInfoContent.TestContent;
-//import com.zhkrb.dragvideo.contentView.AbsContent;
+import com.zhkrb.iwara.videoInfoContent.VideoInfoContent;
+
 
 
 public class MainActivity extends AppbarActivity implements VideoPlayerView.onHideFragmentListener {
 
-    private FrameLayout mVideoPlayerLayout;
+
     private VideoPlayerView mPlayerView;
+    private ViewGroup mContentLayout;
 
     static {
         setLaunchMode(GalleryFragment.class, AbsFragment.LAUNCH_MODE_SINGLE_TOP);
     }
+
+    private ConstraintLayout mParentLayout;
 
     @Override
     protected FragmentFrame getLaunchFrame() {
@@ -59,7 +65,8 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
     protected void main() {
         super.main();
         UpdateUtil.checkUpdate(mContext,false);
-        mVideoPlayerLayout = findViewById(R.id.video_layout);
+        mParentLayout = findViewById(R.id.parent_layout);
+        mContentLayout = findViewById(R.id.motion_layout);
     }
 
     @Override
@@ -70,15 +77,15 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
 
     public void playVideo(VideoListBean bean) {
         if (mPlayerView == null){
-            mPlayerView = new VideoPlayerView(mContext).setContentView(mVideoPlayerLayout);
+            mPlayerView = new VideoPlayerView(mContext).setContentView(mParentLayout);
             mPlayerView.setNetworkUtil(new VideoNetWorkUtil());
 //            mPlayerView.setInfoView(new AbsContent(mContext));
             mPlayerView.setHideFragmentListener(this);
-            mPlayerView.setRootContentView(TestContent.class);
+            mPlayerView.setRootContentView(VideoInfoContent.class);
         }
-        if (mVideoPlayerLayout.getVisibility() != View.VISIBLE){
-            mVideoPlayerLayout.setVisibility(View.VISIBLE);
-        }
+//        if (mContentLayout.getVisibility() != View.VISIBLE){
+//            mContentLayout.setVisibility(View.VISIBLE);
+//        }
         Bundle bundle = new Bundle();
         bundle.putString("url", AppConfig.HOST+bean.getHref());
         bundle.putString("title",bean.getTitle());
@@ -118,8 +125,8 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
 
     @Override
     public void onRemove() {
-        if (mVideoPlayerLayout.getVisibility() != View.GONE){
-            mVideoPlayerLayout.setVisibility(View.GONE);
-        }
+//        if (mVideoPlayerLayout.getVisibility() != View.GONE){
+//            mVideoPlayerLayout.setVisibility(View.GONE);
+//        }
     }
 }

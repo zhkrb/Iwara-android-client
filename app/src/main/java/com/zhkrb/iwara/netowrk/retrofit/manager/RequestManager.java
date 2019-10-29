@@ -47,7 +47,7 @@ public class RequestManager implements IRequestManager<String> {
     }
 
     @Override
-    public void add(String tag, Disposable subscription) {
+    public synchronized void add(String tag, Disposable subscription) {
         mMap.put(tag,subscription);
     }
 
@@ -65,7 +65,7 @@ public class RequestManager implements IRequestManager<String> {
     }
 
     @Override
-    public void cancel(String tag) {
+    public synchronized void cancel(String tag) {
         if (mMap.isEmpty()){
             return;
         }

@@ -16,19 +16,23 @@
     android:stateListAnimator="@animator/card_button_floating_anim"
     android:clipChildren="true"
     android:clipToPadding="true"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
     >
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@null"
-        android:paddingBottom="4dp"
+        android:paddingBottom="8dp"
         >
 
         <com.zhkrb.iwara.custom.RateImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/thumb"
-            app:rate="0.68"
+            app:rate="0.60"
             android:scaleType="center"
             android:background="@null"
             app:layout_constraintTop_toTopOf="parent"
@@ -49,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/view"
-            android:textColor="@color/textColor"
+            android:textColor="@color/text"
             android:layout_gravity="center_vertical"
             android:textAlignment="center"
             android:textSize="14sp"
@@ -63,29 +67,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/like"
-            android:textColor="@color/textColor"
+            android:textColor="@color/text"
             android:layout_gravity="center_vertical"
             android:textAlignment="center"
             android:textSize="14sp"
-            android:layout_marginEnd="5dp"
-            android:background="@null"
-            app:layout_constraintEnd_toStartOf="@id/heart"
-            app:layout_constraintTop_toTopOf="@id/shadow"
-            app:layout_constraintBottom_toBottomOf="@id/shadow"
-            />
-        <ImageView
-            android:id="@+id/heart"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:scaleType="center"
-            android:src="@drawable/ic_favorite_black_24dp"
-            android:tint="@color/textColor"
-            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="8dp"
             android:background="@null"
             app:layout_constraintEnd_toEndOf="@id/shadow"
             app:layout_constraintTop_toTopOf="@id/shadow"
             app:layout_constraintBottom_toBottomOf="@id/shadow"
-            android:layout_marginEnd="8dp"
+            android:drawableEnd="@drawable/ic_favorite_white_24dp"
+            android:drawablePadding="5dp"
             />
 
         <TextView
@@ -93,7 +85,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/user"
             android:textSize="12sp"
-            android:textColor="@color/textColor_black_medium"
+            android:textColor="@color/secondaryText"
             android:layout_gravity="center_vertical"
             android:layout_marginTop="3dp"
             android:gravity="center_vertical"
@@ -110,7 +102,7 @@
             android:layout_height="45dp"
             android:maxLines="2"
             android:ellipsize="end"
-            android:textColor="@color/textColor_black"
+            android:textColor="@color/primaryText"
             android:gravity="center_vertical"
             android:textSize="@dimen/subtitle2"
             android:id="@+id/title"
@@ -119,6 +111,7 @@
             app:layout_constraintTop_toBottomOf="@id/user"
             app:layout_constraintStart_toStartOf="@id/user"
             app:layout_constraintEnd_toEndOf="@id/user"
+            android:layout_marginTop="8dp"
             />
 
 

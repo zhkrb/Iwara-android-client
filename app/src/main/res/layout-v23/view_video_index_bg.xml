@@ -14,11 +14,16 @@
     app:cardCornerRadius="0dp"
     android:clipChildren="true"
     android:clipToPadding="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
+    >
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="4dp"
+        android:paddingBottom="8dp"
         >
 
         <ImageView
@@ -37,7 +42,7 @@
             android:layout_height="wrap_content"
             android:maxLines="2"
             android:ellipsize="end"
-            android:textColor="@color/textColor_black"
+            android:textColor="@color/primaryText"
             android:textSize="16sp"
             android:id="@+id/title"
             android:lineSpacingExtra="2dp"
@@ -54,7 +59,7 @@
             android:layout_height="match_parent"
             android:id="@+id/user"
             android:textSize="14sp"
-            android:textColor="@color/textColor_black_medium"
+            android:textColor="@color/secondaryText"
             android:layout_gravity="center_vertical"
             app:layout_constraintStart_toStartOf="@id/title"
             app:layout_constraintEnd_toStartOf="@id/view"
@@ -66,7 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textSize="14sp"
-            android:textColor="@color/textColor_black_medium"
+            android:textColor="@color/secondaryText"
             android:layout_gravity="center_vertical"
             android:id="@+id/view"
             app:layout_constraintStart_toEndOf="@id/user"
@@ -77,25 +82,17 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textSize="14sp"
-            android:textColor="@color/textColor_black_medium"
+            android:textColor="@color/secondaryText"
             android:layout_gravity="center_vertical"
             android:id="@+id/like"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="4dp"
             app:layout_constraintStart_toEndOf="@id/view"
-            app:layout_constraintEnd_toStartOf="@id/heart"
-            app:layout_constraintTop_toTopOf="@id/user"
-            />
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:scaleType="center"
-            android:src="@drawable/ic_favorite_black_24dp"
-            android:id="@+id/heart"
-            app:layout_constraintStart_toEndOf="@id/like"
             app:layout_constraintEnd_toEndOf="@id/title"
             app:layout_constraintTop_toTopOf="@id/user"
+            android:drawablePadding="4dp"
+            android:drawableEnd="@drawable/ic_favorite_black_16dp"
             />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.zhkrb.iwara.custom.CutCardView>

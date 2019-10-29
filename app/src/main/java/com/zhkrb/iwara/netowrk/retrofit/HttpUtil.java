@@ -31,6 +31,10 @@ public class HttpUtil {
         return HttpClient.getInstance().get(api,null);
     }
 
+    public static Observable<ResponseBody> getBodyWithoutHost(String url){
+        return HttpClient.getInstance().getFullUrl(url,null);
+    }
+
     public static void testSend(String tag,@NonNull RetrofitCallback callback){
         HttpClient.getInstance().get("aa",
                 new GetBean()

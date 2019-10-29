@@ -13,7 +13,7 @@
     android:background="@android:color/transparent"
     >
 
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="wrap_content"
     android:layout_height="55dp"
     android:minWidth="105dp"
@@ -27,20 +27,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_current"
-        android:textColor="@color/textColor"
+        android:textColor="@color/text"
         android:textSize="15sp"
-        android:layout_centerVertical="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_duration"
-        android:textColor="@color/textColor"
+        android:textColor="@color/text"
         android:textSize="15sp"
-        android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/tv_current"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_current"
         />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 </com.zhkrb.dragvideo.widget.CutCardView>

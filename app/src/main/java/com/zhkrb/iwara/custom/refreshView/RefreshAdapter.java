@@ -200,12 +200,9 @@ public abstract class RefreshAdapter<T> extends RecyclerView.Adapter {
             mNo_more = itemView.findViewById(R.id.no_more);
             mError = itemView.findViewById(R.id.error);
             mError_text = itemView.findViewById(R.id.error_text);
-            mError.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (mLoadMoreCallback!=null){
-                        mLoadMoreCallback.loadMore();
-                    }
+            mError.setOnClickListener(view -> {
+                if (mLoadMoreCallback!=null){
+                    mLoadMoreCallback.loadMore();
                 }
             });
         }

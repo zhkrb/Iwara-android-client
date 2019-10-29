@@ -85,7 +85,6 @@ public class AppContext extends MultiDexApplication {
             public void onActivityStopped(Activity activity) {
                 mCount--;
                 if (mCount == 0) {
-                    RequestManager.getInstance().cancelAll();
                     mFront = false;
                     L.e("AppContext------->处于后台");
                 }
@@ -102,7 +101,5 @@ public class AppContext extends MultiDexApplication {
             }
         });
     }
-
-
 
 }

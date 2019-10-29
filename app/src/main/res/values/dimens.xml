@@ -18,7 +18,8 @@
     <dimen name="cut_8dp">8dp</dimen>
     <dimen name="cut_12dp">12dp</dimen>
     <dimen name="cut_16dp">16dp</dimen>
-    
+    <dimen name="cut_28dp">28dp</dimen>
+
     //文字大小
     <dimen name="h5">24.29sp</dimen>
     <dimen name="h6">20.2sp</dimen>
@@ -42,9 +43,7 @@
     <dimen name="overline_ls">2</dimen>
 
 
-    //控件间距
-    <dimen name="margin_start">8dp</dimen>
-    <dimen name="margin_end">@dimen/margin_start</dimen>
+
 
 
 </resources>

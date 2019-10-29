@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge
-    android:layout_width="match_parent"
+<merge android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@null"
     xmlns:tools="http://schemas.android.com/tools"
     tools:parentTag="android.widget.RelativeLayout"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     android:id="@+id/refresh_layout"
     android:layout_width="match_parent"
@@ -24,37 +23,37 @@
 
         />
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/no_data"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
 
-        <LinearLayout
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_error_outline"
+            android:id="@+id/no_data_img"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/hint"
+            app:layout_constraintVertical_chainStyle="packed"
+            />
+
+        <TextView
+            android:id="@+id/hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:orientation="vertical">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/no_data_img"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/secondaryText"
+            android:textSize="16sp" />
 
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_error_outline"
-                android:id="@+id/no_data_img"
-                android:layout_gravity="center_horizontal"
-                />
-
-            <TextView
-                android:id="@+id/hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/textColor_black_medium"
-                android:textSize="16sp" />
-
-
-        </LinearLayout>
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </merge>

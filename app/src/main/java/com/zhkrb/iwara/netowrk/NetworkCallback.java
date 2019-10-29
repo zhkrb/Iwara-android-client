@@ -1,13 +1,13 @@
 package com.zhkrb.iwara.netowrk;
 
-public abstract class NetworkCallback {
+public interface NetworkCallback {
 
-    public abstract void onStart();
+    void onStart();
 
-    public abstract void onSuccess(int code,String msg,String info);
+    void onSuccess(int code,String msg,String info);
 
-    public abstract void onFinish();
+    void onFinish();
 
-    public abstract void onError(int code,String msg);
+    void onError(int code,String msg);
 
 }

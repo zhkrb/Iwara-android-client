@@ -8,12 +8,12 @@
     app:AllCutRadius="@dimen/cut_12dp"
     app:CutElevation="@dimen/elevation_4dp"
     android:layout_gravity="center"
-    app:cardBackgroundColor="@color/textColor"
+    app:cardBackgroundColor="@color/text"
     app:cardCornerRadius="0dp"
     android:background="@android:color/transparent"
     >
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minWidth="230dp"
@@ -28,18 +28,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="300dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:maxWidth="200dp"
             android:textSize="16sp"
-            android:textColor="@color/textColor_black"
+            android:textColor="@color/primaryText"
             android:id="@+id/message"
+            android:text=""
             />
         
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" 
             android:id="@+id/cancel_button"
-            android:layout_alignBaseline="@id/confirm_button"
-            android:layout_toStartOf="@id/confirm_button"
+            app:layout_constraintBaseline_toBaselineOf="@id/confirm_button"
+            app:layout_constraintEnd_toStartOf="@id/confirm_button"
             android:layout_marginEnd="10dp"
             android:textSize="16sp"
             android:textColor="@color/textColor_black_medium"
@@ -57,9 +60,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/confirm_button"
-            android:layout_below="@id/message"
+            app:layout_constraintTop_toBottomOf="@id/message"
+            app:layout_constraintEnd_toEndOf="@id/message"
             android:layout_marginTop="15dp"
-            android:layout_alignEnd="@id/message"
             android:textColor="@color/colorAccent"
             android:textSize="16sp"
             android:textAlignment="center"
@@ -73,7 +76,7 @@
             />
 
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

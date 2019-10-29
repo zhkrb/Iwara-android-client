@@ -35,6 +35,9 @@ import com.zhkrb.iwara.custom.ItemDecoration;
 import com.zhkrb.iwara.custom.refreshView.RefreshAdapter;
 import com.zhkrb.iwara.custom.refreshView.RefreshView;
 import com.zhkrb.iwara.custom.refreshView.ScaleRecyclerView;
+import com.zhkrb.iwara.netowrk.jsoup.JsoupCallback;
+import com.zhkrb.iwara.netowrk.retrofit.HttpUtil;
+import com.zhkrb.iwara.utils.HttpConstsUtil;
 import com.zhkrb.iwara.utils.SpUtil;
 import com.zhkrb.iwara.utils.ToastUtil;
 import com.zhkrb.iwara.utils.VibrateUtil;
@@ -80,10 +83,10 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
             }
         });
         mRefreshView.setLayoutManager(manager);
-        ItemDecoration decoration = new ItemDecoration(mContext, 0x00000000,5,5);
-        decoration.setDrawBorderLeftAndRight(true);
-        decoration.setOnlySetItemOffsetsButNoDraw(true);
-        mRefreshView.setItemDecoration(decoration);
+//        ItemDecoration decoration = new ItemDecoration(mContext, 0x00000000,5,5);
+//        decoration.setDrawBorderLeftAndRight(true);
+//        decoration.setOnlySetItemOffsetsButNoDraw(true);
+//        mRefreshView.setItemDecoration(decoration);
         mRefreshView.setOnScaleListener(this);
 
         mAdapter = new VideoListAdapter(mContext);
@@ -99,7 +102,7 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
             @Override
             public void loadData(int p, NetworkCallback callback) {
 //                JsoupUtil.getVideoList(0,p,callback);
-                JsoupUtil.getVideoList(mGalleryMode,p,callback);
+                JsoupUtil.getVideoList(mGalleryMode,p, HttpConstsUtil.GET_VIDEO_LIST+getTag(), (JsoupCallback) callback);
             }
 
             @Override
@@ -208,8 +211,9 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    public void onDestroy() {
+        super.onDestroy();
+        HttpUtil.cancel(HttpConstsUtil.GET_VIDEO_LIST+getTag());
     }
 
     @Override

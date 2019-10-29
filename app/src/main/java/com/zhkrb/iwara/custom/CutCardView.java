@@ -123,9 +123,7 @@ public class CutCardView extends MaterialCardView {
             return;
         }
         mShapeDrawable = new MaterialShapeDrawable(mShapeAppearanceModel.build());
-        mShapeDrawable.setPaintStyle(Paint.Style.FILL);
         mShapeDrawable.setFillColor(backgoundColor);
-//        mShapeDrawable.setUseTintColorForShadow(true);
 //        mShapeDrawable.setTint(getResources().getColor(R.color.textColor_black_medium));
         mShapeDrawable.setElevation(CutElevation);
         mShapeDrawable.setShadowCompatibilityMode(MaterialShapeDrawable.SHADOW_COMPAT_MODE_DEFAULT);

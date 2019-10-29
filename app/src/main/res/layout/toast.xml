@@ -21,7 +21,7 @@
             android:minWidth="50dp"
             android:maxWidth="300dp"
             android:id="@+id/text"
-            android:textColor="@color/textColor"
+            android:textColor="@color/text"
             android:textSize="@dimen/caption"
             android:letterSpacing="@dimen/caption_ls"
             android:textAlignment="center"

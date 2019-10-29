@@ -93,4 +93,6 @@ public interface IVideoPlayer {
     void setFailed(String text);
 
     void setscaleType(int scaleDefault);
+
+    boolean isNeedReload();
 }

@@ -31,6 +31,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhkrb.iwara.R;
+import com.zhkrb.iwara.netowrk.jsoup.JsoupCallback;
+import com.zhkrb.iwara.netowrk.retrofit.RetrofitCallback;
 import com.zhkrb.iwara.utils.ImgLoader;
 import com.zhkrb.iwara.utils.L;
 import com.zhkrb.iwara.utils.ToastUtil;
@@ -61,6 +63,10 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
     private DataHelper mDataHelper;
     private ScaleRecyclerView.onScaleListener mOnScaleListener;
     private int mPage;
+
+    private int mCallbackType = 0; //回调类型 0 jsoup 1 retrofit
+    public static final int TYPE_JSOUP = 0;
+    public static final int TYPE_RETROFIT = 1;
 
     public RefreshView(@NonNull Context context) {
         this(context,null);
@@ -150,6 +156,7 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
         if (adapter.getRecyclerView() == null){
             mRecyclerView.setAdapter(adapter);
         }
+
     }
 
     public void setLayoutManager(RecyclerView.LayoutManager layoutManager) {
@@ -168,7 +175,7 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
         mRefreshLayout.setRefreshing(false);
     }
 
-    private NetworkCallback mRefreshCallback = new NetworkCallback() {
+    private JsoupCallback mJsoupRefreshCallback = new JsoupCallback() {
 
         private int mDataCount;
 
@@ -262,7 +269,176 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
         }
     };
 
-    private NetworkCallback mLoadMoreCallback = new NetworkCallback() {
+    private JsoupCallback mJsoupLoadMoreCallback = new JsoupCallback() {
+
+        private int mDataCount;
+
+        @Override
+        public void onStart() {
+
+        }
+
+        @Override
+        public void onSuccess(int code, String msg, String info) {
+            if (mDataHelper == null) {
+                mPage--;
+                return;
+            }
+            RefreshAdapter adapter = mDataHelper.getAdapter();
+            if (adapter == null){
+                return;
+            }
+            if (code!=200){
+                mPage--;
+                ToastUtil.show(msg);
+                adapter.setLoadState(RefreshAdapter.LOAD_TYPE_ERROR,WordUtil.getErrorMsg(code,msg));
+                return;
+            }
+            if (mShowNoData && mNo_data.getVisibility() == VISIBLE){
+                mNo_data.setVisibility(GONE);
+                mRecyclerView.setVisibility(VISIBLE);
+            }
+            if (!TextUtils.isEmpty(info)){
+                List list = mDataHelper.processData(info);
+                if (list == null){
+                    adapter.setLoadState(RefreshAdapter.LOAD_TYPE_EMPTY,"");
+                    mPage--;
+                    return;
+                }
+                mDataCount = list.size();
+                if (mDataCount > 0){
+                    adapter.insertList(list);
+                    if (mDataCount < mDataHelper.maxPageItemCount()){
+                        adapter.setLoadState(RefreshAdapter.LOAD_TYPE_EMPTY,"");
+                    }else {
+                        adapter.setLoadState(RefreshAdapter.LOAD_TYPE_NOM,"");
+                    }
+                }else {
+                    adapter.setLoadState(RefreshAdapter.LOAD_TYPE_EMPTY,"");
+                    mPage--;
+                }
+            }else {
+                adapter.setLoadState(RefreshAdapter.LOAD_TYPE_EMPTY,"");
+                mPage--;
+            }
+        }
+
+        @Override
+        public void onFinish() {
+            mEnableLoadMore = true;
+            if (mShowLoading && mRefreshLayout.isRefreshing()) {
+                hideLoading();
+            }
+            if (mDataHelper != null) {
+                mDataHelper.onLoadDataCompleted(mDataCount);
+            }
+        }
+
+        @Override
+        public void onError(int code,String msg) {
+            RefreshAdapter adapter = mDataHelper.getAdapter();
+            if (adapter == null){
+                return;
+            }
+            adapter.setLoadState(RefreshAdapter.LOAD_TYPE_ERROR,WordUtil.getErrorMsg(code,msg));
+        }
+    };
+
+    private RetrofitCallback mRetrofitRefreshCallback = new RetrofitCallback() {
+
+        private int mDataCount;
+
+        @Override
+        public void onStart() {
+
+        }
+
+        @Override
+        public void onSuccess(int code, String msg, String info) {
+            if (mDataHelper == null) {
+                return;
+            }
+            if (mNo_data != null && mNo_data.getVisibility() == View.VISIBLE) {
+                mNo_data.setVisibility(View.GONE);
+            }
+
+            if (code!=200){
+                mRecyclerView.setVisibility(GONE);
+                mNo_data.setVisibility(View.VISIBLE);
+                mHintText.setText(WordUtil.getString(R.string.no_more_there));
+                return;
+            }
+            if (!TextUtils.isEmpty(info)){
+                List list = mDataHelper.processData(info);
+                if (list == null){
+                    list = new ArrayList(0);
+                }
+                mDataCount = list.size();
+                if (list.size()>0){
+                    if (mShowNoData && mNo_data != null && mNo_data.getVisibility() == View.VISIBLE) {
+                        mNo_data.setVisibility(View.GONE);
+                    }
+                    mRecyclerView.setVisibility(VISIBLE);
+                    mDataHelper.onNoData(false);
+                    mDataHelper.getAdapter().refreshData(list);
+                    mDataHelper.onRefresh(list);
+                    if (list.size()<mDataHelper.maxPageItemCount()){
+                        mDataHelper.getAdapter().setLoadState(RefreshAdapter.LOAD_TYPE_EMPTY,"");
+                    }else {
+                        mDataHelper.getAdapter().setLoadState(RefreshAdapter.LOAD_TYPE_NOM,"");
+                    }
+                }else {
+                    mDataHelper.getAdapter().clearData();
+                    if (mShowNoData && mNo_data != null && mNo_data.getVisibility() != View.VISIBLE) {
+                        mRecyclerView.setVisibility(GONE);
+                        mNo_data.setVisibility(View.VISIBLE);
+                        mHintText.setText(WordUtil.getString(R.string.no_more_there));
+                    }
+                    mDataHelper.onNoData(true);
+                }
+            }else {
+                mDataHelper.getAdapter().clearData();
+                if (mShowNoData && mNo_data != null && mNo_data.getVisibility() != View.VISIBLE) {
+                    mRecyclerView.setVisibility(GONE);
+                    mNo_data.setVisibility(View.VISIBLE);
+                    mHintText.setText(WordUtil.getString(R.string.no_more_there));
+                }
+                mDataHelper.onNoData(true);
+            }
+        }
+
+        @Override
+        public void onFinish() {
+            setLoadMoreEnable(true);
+            if (mRefreshLayout != null && mRefreshLayout.isRefreshing()) {
+                hideLoading();
+            }
+            if (mDataHelper != null) {
+                mDataHelper.onLoadDataCompleted(mDataCount);
+            }
+        }
+
+        @Override
+        public void onError(int code,String msg) {
+            if (mShowNoData && mNo_data != null && mNo_data.getVisibility() == View.VISIBLE) {
+                mNo_data.setVisibility(View.GONE);
+            }
+            if (mNo_data != null) {
+                if (mNo_data.getVisibility() != View.VISIBLE) {
+                    RefreshAdapter adapter = mDataHelper.getAdapter();
+                    if (adapter != null && adapter.getItemCount() > 0) {
+                        adapter.clearData();
+                    }
+                    mRecyclerView.setVisibility(GONE);
+                    mNo_data.setVisibility(View.VISIBLE);
+                }
+                mHintText.setText(WordUtil.getErrorMsg(code,msg));
+            }
+            mDataHelper.onNoData(true);
+        }
+    };
+
+    private RetrofitCallback mRetrofitLoadMoreCallback = new RetrofitCallback() {
 
         private int mDataCount;
 
@@ -344,7 +520,7 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
     private void refresh() {
         if (mDataHelper != null) {
             mPage = 1;
-            mDataHelper.loadData(mPage, mRefreshCallback);
+            mDataHelper.loadData(mPage, getRefreshCallback());
             setLoadMoreEnable(false);
         }
         showLoading();
@@ -353,8 +529,30 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
     public void loadMore() {
         if (mDataHelper != null&&mEnableLoadMore) {
             mPage++;
-            mDataHelper.loadData(mPage, mLoadMoreCallback);
+            mDataHelper.loadData(mPage, getLoadMoreCallback());
             setLoadMoreEnable(false);
+        }
+    }
+
+    private NetworkCallback getRefreshCallback(){
+        switch (mCallbackType){
+            case 0:
+                return mJsoupRefreshCallback;
+            case 1:
+                return mRetrofitRefreshCallback;
+            default:
+                throw new RuntimeException("callback type error");
+        }
+    }
+
+    private NetworkCallback getLoadMoreCallback(){
+        switch (mCallbackType){
+            case 0:
+                return mJsoupLoadMoreCallback;
+            case 1:
+                return mRetrofitLoadMoreCallback;
+            default:
+                throw new RuntimeException("callback type error");
         }
     }
 
@@ -413,6 +611,10 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
         }else {
             mDataHelper.getAdapter().setLoadState(RefreshAdapter.LOAD_TYPE_NOM,"");
         }
+    }
+
+    public void setCallbackType(int callbackType) {
+        mCallbackType = callbackType;
     }
 
 

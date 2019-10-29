@@ -10,7 +10,7 @@
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="60dp"
             />
     </ConstraintSet>
     <ConstraintSet android:id="@+id/end">

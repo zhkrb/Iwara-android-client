@@ -34,6 +34,7 @@ public class ScaleRecyclerView extends RecyclerView implements ScaleGestureDetec
     private static final float Zoom_out_size = 0.5f;
     private static final float Zoom_in_size = 1.5f;
     private boolean mCanScale = false;
+    private boolean isAnim = false;
 
     public ScaleRecyclerView(@NonNull Context context) {
         this(context,null);
@@ -112,6 +113,17 @@ public class ScaleRecyclerView extends RecyclerView implements ScaleGestureDetec
             }else if (scaleGestureDetector.getScaleFactor() > Zoom_in_size){
                 mScaleListener.onZoomIn();
             }
+        }
+    }
+
+    public void setAnim(boolean anim) {
+        isAnim = anim;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        if (!isAnim){
+            super.onLayout(changed, l, t, r, b);
         }
     }
 

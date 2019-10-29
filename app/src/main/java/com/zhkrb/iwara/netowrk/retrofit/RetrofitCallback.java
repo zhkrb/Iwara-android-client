@@ -14,7 +14,7 @@ import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import okhttp3.ResponseBody;
 
-public abstract class RetrofitCallback extends NetworkCallback implements Observer<ResponseBody> {
+public abstract class RetrofitCallback implements Observer<ResponseBody>,NetworkCallback {
 
     private String mTag;
 
@@ -22,7 +22,6 @@ public abstract class RetrofitCallback extends NetworkCallback implements Observ
         mTag = tag;
         return this;
     }
-
 
     @Override
     public void onSubscribe(Disposable d) {
@@ -60,6 +59,5 @@ public abstract class RetrofitCallback extends NetworkCallback implements Observ
     public void onComplete() {
         RequestManager.getInstance().remove(mTag);
         onFinish();
-
     }
 }

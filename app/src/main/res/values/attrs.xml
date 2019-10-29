@@ -12,6 +12,20 @@
         <attr name="isWidthRate" format="boolean"/>
 
     </declare-styleable>
+    <declare-styleable name="SwitchButton">
+        <attr name="select" format="boolean"/>
+        <attr name="select_image" format="reference"/>
+        <attr name="select_text" format="string"/>
+        <attr name="unselect_image" format="reference"/>
+        <attr name="unselect_text" format="string"/>
+        <attr name="select_background_color" format="color"/>
+        <attr name="unselect_background_color" format="color"/>
+        <attr name="select_text_color" format="color"/>
+        <attr name="unselect_text_color" format="color"/>
+        <attr name="image_size" format="dimension"/>
+        <attr name="text_size" format="integer"/>
+        <attr name="interval" format="dimension"/>
+    </declare-styleable>
     <declare-styleable name="CutCardView">
         <attr name="AllCut" format="boolean"/>
         <attr name="TopLeftCut" format="boolean"/>

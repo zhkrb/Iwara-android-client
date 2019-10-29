@@ -14,4 +14,6 @@
     <string name="url_get_failed">获取视频链接失败</string>
     <string name="url_get_failed_2">获取视频链接失败\n或者当前版本不支持Youtube外链播放</string>
     <string name="zero_time">00:00</string>
+    <string name="loadfail">加载失败</string>
+    <string name="reload">重新加载</string>
 </resources>

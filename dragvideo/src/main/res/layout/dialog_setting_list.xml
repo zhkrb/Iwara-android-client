@@ -9,7 +9,7 @@
     app:TopLeftCutRadius="@dimen/cut_8dp"
     app:TopRightCutRadius="@dimen/cut_8dp"
     app:CutElevation="@dimen/elevation_4dp"
-    app:cardBackgroundColor="@color/textColor"
+    app:cardBackgroundColor="@color/text"
     app:cardCornerRadius="0dp"
     android:background="@android:color/transparent"
     >

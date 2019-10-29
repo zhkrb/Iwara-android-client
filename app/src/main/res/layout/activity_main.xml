@@ -11,19 +11,23 @@
     android:background="@color/surfaceDark"
     >
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/parent_layout"
-        android:background="@null"
+        android:background="@android:color/transparent"
 
         >
         <androidx.constraintlayout.motion.widget.MotionLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:id="@+id/motion_layout"
             android:background="@null"
             app:layoutDescription="@xml/main_scene"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             >
         <FrameLayout
             android:id="@+id/frame_layout"
@@ -40,21 +44,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 />
         </androidx.constraintlayout.motion.widget.MotionLayout>
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/black_alpha"
-            android:id="@+id/video_layout"
-            android:visibility="gone"
-            />
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
     <com.google.android.material.navigation.NavigationView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@color/textColor"
+        android:background="@color/text"
         android:fitsSystemWindows="true"
         app:insetForeground="@android:color/transparent"
         android:id="@+id/nav_view"

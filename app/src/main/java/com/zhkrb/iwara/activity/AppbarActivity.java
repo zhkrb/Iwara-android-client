@@ -18,21 +18,13 @@
 
 package com.zhkrb.iwara.activity;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.graphics.Paint;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.view.Gravity;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.base.AbsActivity;
@@ -40,7 +32,6 @@ import com.zhkrb.iwara.base.FragmentFrame;
 import com.zhkrb.iwara.base.TransitionHelper;
 import com.zhkrb.iwara.custom.DrawerArrowDrawable;
 import com.zhkrb.iwara.custom.MaterialAppBarLayout;
-import com.zhkrb.iwara.utils.L;
 
 @SuppressLint("Registered")
 public abstract class AppbarActivity extends AbsActivity {
@@ -73,7 +64,7 @@ public abstract class AppbarActivity extends AbsActivity {
         }
         if (mBarLayout != null){
             mArrowDrawable = new DrawerArrowDrawable(mContext.getResources());
-            mArrowDrawable.setStrokeColor(mContext.getResources().getColor(R.color.textColor_black_disable));
+            mArrowDrawable.setStrokeColor(mContext.getResources().getColor(R.color.primaryText));
             mBarLayout.setFirstBtnDrawable(mArrowDrawable);
             if (save == null){
                 mBarLayout.firstInit();

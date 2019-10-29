@@ -24,4 +24,10 @@
     <declare-styleable name="advRecyclerView">
         <attr name="maxHeight1" format="dimension"/>
     </declare-styleable>
+    <declare-styleable name="FoldTextView">
+        <attr name="isFold" format="boolean"/>
+        <attr name="foldLine" format="integer"/>
+        <attr name="isRotateDrawable" format="boolean"/>
+        <attr name="mAnimDuration" format="integer"/>
+    </declare-styleable>
 </resources>

@@ -21,4 +21,15 @@
     <string name="ignore">忽略</string>
     <string name="confirm">确定</string>
     <string name="cancel">取消</string>
+    <string name="get_follow_allCount">获取关注总人数</string>
+    <string name="follow">关注</string>
+    <string name="unfollow">取消关注</string>
+    <string name="isfollow">已关注</string>
+    <string name="like">喜欢</string>
+    <string name="share">分享</string>
+    <string name="download">下载</string>
+    <string name="save">保存</string>
+    <string name="user_corr">用户相关:</string>
+    <string name="text_recomm">相关推荐:</string>
+    <string name="uploaddate">上传日期:%1$s</string>
 </resources>

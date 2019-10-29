@@ -25,27 +25,36 @@ import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.zhkrb.iwara.AppContext;
 
 public class ImgLoader {
 
     private static RequestManager sManager;
-    private static RequestOptions options;
     private static boolean isPause = false;
 
     static {
-        options = new RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE);
         sManager = Glide.with(AppContext.sInstance);
     }
 
     //TODO 加载失败时占位图
     public static void display(String url, ImageView imageView) {
+        RequestOptions options = new RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
+        sManager.load(url).apply(options).into(imageView);
+    }
+
+    public static void displayCircle(String url, ImageView imageView){
+        RequestOptions options = new RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .circleCrop();
         sManager.load(url).apply(options).into(imageView);
     }
 
     //TODO 加载失败时占位图
     public static void displayTryThumbnail(String url,ImageView imageView){
+        RequestOptions options = new RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE);
         sManager.load(url.replaceFirst("thumbnail","frontpage_wide"))
                 .apply(options)
                 .error(sManager

@@ -35,12 +35,13 @@ import com.zhkrb.dragvideo.R;
 
 public abstract class AbsContent extends NestedScrollView {
 
-    private Context mContext;
-    private ProgressBar mLoadingProgress;
+    protected Context mContext;
+    private View mLoadingView;
 
     protected VideoContentView mParent;
     protected Bundle mArgs;
     protected View mRootView;
+    protected boolean isAnim = false;
 
     public AbsContent(Context context) {
         this(context,null);
@@ -58,20 +59,16 @@ public abstract class AbsContent extends NestedScrollView {
     protected abstract void main();
 
     protected void showLoading() {
-        if (mLoadingProgress == null){
-            mLoadingProgress = new ProgressBar(mContext);
+        if (mLoadingView == null){
+            mLoadingView = LayoutInflater.from(mContext).inflate(R.layout.view_content_loading,this,false);
         }
-        mLoadingProgress.setBackgroundResource(R.color.textColor);
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        mLoadingProgress.setLayoutParams(layoutParams);
-        addView(mLoadingProgress);
+        addView(mLoadingView);
     }
 
     protected void hideLoading(){
-        if (mLoadingProgress != null && mLoadingProgress.getParent() != null){
-            ((ViewGroup)mLoadingProgress.getParent()).removeView(mLoadingProgress);
-            mLoadingProgress = null;
+        if (mLoadingView != null){
+            removeView(mLoadingView);
+            mLoadingView = null;
         }
     }
 
@@ -79,13 +76,18 @@ public abstract class AbsContent extends NestedScrollView {
 
     public void release() {
         mContext = null;
-        mLoadingProgress = null;
+        mLoadingView = null;
         mParent = null;
         mArgs = null;
         mRootView = null;
     }
 
     protected void reload(Bundle arg) {
+        if (arg != null){
+            mArgs = arg;
+        }
+        removeAllViews();
+        load();
     }
 
     public void setArgs(Bundle args) {
@@ -101,7 +103,46 @@ public abstract class AbsContent extends NestedScrollView {
     }
 
     public void load(){
+
+        ((VideoContentView)getParent()).setNeedReload(false);
+        showLoading();
+        prepareLoad();
+    }
+
+    protected abstract void prepareLoad();
+
+    public void loadComplete(){
+        hideLoading();
+        loadRootView();
+    }
+
+    public void loadFail(){
+        ((VideoContentView)getParent()).setNeedReload(true);
+        hideLoading();
+        if (getChildCount() > 0){
+            removeAllViews();
+        }
+        LayoutInflater.from(mContext).inflate(R.layout.view_content_loadfail,this,true);
+        findViewById(R.id.btn_reload).setOnClickListener(v -> {
+            ((VideoContentView)getParent()).getReloadListener().needReload();
+        });
+
+    }
+
+    public void loadRootView(){
         mRootView = LayoutInflater.from(mContext).inflate(getContentLayoutId(),this,true);
         main();
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        if (isAnim){
+            return;
+        }
+        super.onLayout(changed, l, t, r, b);
+    }
+
+    public void setAnim(boolean anim) {
+        isAnim = anim;
     }
 }
