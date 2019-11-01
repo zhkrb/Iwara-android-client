@@ -164,42 +164,6 @@ public class JsoupUtil {
             }
             callback.onSuccess(HttpURLConnection.HTTP_OK,"success",FormatUtil.videoInfoFormat(document));
         });
-//        Observer<ResponseBody> observer = new Observer<ResponseBody>() {
-//            @Override
-//            public void onSubscribe(Disposable d) {
-//                callback.onStart();
-//            }
-//
-//            @Override
-//            public void onNext(ResponseBody responseBody) {
-//                try {
-//                    Document document = Jsoup.parse(responseBody.string());
-//                    if (document==null|| TextUtils.isEmpty(document.body().toString())){
-//                        callback.onSuccess(200,"empty body","");
-//                        return;
-//                    }
-//                    callback.onSuccess(HttpURLConnection.HTTP_OK,"success",FormatUtil.videoInfoFormat(document));
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    onError(e);
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                e.printStackTrace();
-//                ExceptionUtil.msg msg1 = ExceptionUtil.getException(e);
-//                Log.e("jsoup exception",msg1.getCode()+": "+msg1.getMsg());
-//                callback.onError(msg1.getCode(),msg1.getMsg());
-//                callback.onFinish();
-//            }
-//
-//            @Override
-//            public void onComplete() {
-//                callback.onFinish();
-//            }
-//        };
         JsoupClient.getInstance().getObservableWithoutHost(url).subscribe(callback.addTag(tag));
     }
 

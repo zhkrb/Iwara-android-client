@@ -48,7 +48,7 @@ public interface IVideoPlayer {
     /**
      * 播放 带开始时间
      */
-    void playUrl(String url,long startTime);
+    void playUrl(String host,String url,long startTime);
 
 
 

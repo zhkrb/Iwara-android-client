@@ -5,30 +5,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/text_user_video_recomm"
+        android:text="@string/text_recomm"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:id="@+id/text_comment_tip"
-        android:text="@string/comment_tip"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
         android:textSize="@dimen/subtitle2"
-        android:background="@color/shadowColor"
         />
 
     <com.zhkrb.iwara.custom.refreshView.ScaleRecyclerView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:id="@+id/recyclerView_user_comment"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_comment_tip"
-
-        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/text_user_video_recomm"
+        android:layout_marginTop="12dp"
+        android:id="@+id/recyclerView_video_recomm"
+        android:background="@android:color/transparent"
+        android:paddingBottom="8dp"
+        android:translationZ="2dp"
+        android:elevation="2dp"
         />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,4 +16,5 @@
     <string name="zero_time">00:00</string>
     <string name="loadfail">加载失败</string>
     <string name="reload">重新加载</string>
+    <string name="url_get_failed_3">获取DNS信息错误</string>
 </resources>

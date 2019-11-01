@@ -29,7 +29,10 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
+import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -69,7 +72,10 @@ import com.zhkrb.dragvideo.videoPlayer.IVideoPlayer;
 import com.zhkrb.dragvideo.videoPlayer.PlayerStateListener;
 import com.zhkrb.dragvideo.widget.ImgLoader;
 
+import java.lang.ref.WeakReference;
+import java.text.BreakIterator;
 import java.util.Map;
+import java.util.logging.LogRecord;
 
 import moe.codeest.enviews.ENDownloadView;
 
@@ -103,7 +109,8 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
     private ValueAnimator mScaleShow;
     private ValueAnimator mScaleHide;
 
-    private Map<String,String> mHeader;
+    private Map<String,String> mHeader = new ArrayMap<>();
+    private handler mHandler = new handler(this);
 
 
     public VideoPlayer(Context context, Boolean fullFlag) {
@@ -200,7 +207,27 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
         GSYVideoManager.instance().setTimeOut(60000,true);
     }
 
+    private static class handler extends Handler{
 
+        private final WeakReference<VideoPlayer> mPlayer;
+
+        public handler(VideoPlayer player) {
+            mPlayer = new WeakReference<>(player);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 0x01:
+                    VideoPlayer player = mPlayer.get();
+                    if (player != null){
+                        player.release();
+                    }
+                    break;
+            }
+        }
+    }
 
     @Override
     public boolean isAutoFullWithSize() {
@@ -390,6 +417,11 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
     }
 
     @Override
+    protected void releaseVideos() {
+        super.releaseVideos();
+    }
+
+    @Override
     public void load(String shareUrl,String title,String thumb) {
         ImgLoader.display(mContext,thumb, (ImageView) getThumbImageView());
         mShareUrl = shareUrl;
@@ -397,14 +429,12 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
     }
 
     @Override
-    public void playUrl(String url,long startTime){
+    public void playUrl(String host,String url,long startTime){
         if (startTime!=0){
             setSeekOnStart(startTime);
         }
-        if (mHeader!=null&&!mHeader.isEmpty()){
-            setHeader(mHeader);
-        }
-//        url = "http://192.168.0.6/test1.mp4";
+        mHeader.put("Host",host);
+        setMapHeadData(mHeader);
         setUp(url,false,mTitle);
         startPlayLogic();
     }

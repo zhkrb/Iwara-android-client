@@ -162,11 +162,11 @@ public class VideoListAdapter extends RefreshAdapter<VideoListBean> {
     protected RecyclerView.ViewHolder onViewHolderCreate(@NonNull ViewGroup parent, int viewType) {
         Vh vh;
         if (viewType==TYPE_BIG){
-            vh = new Vh(mInflater.inflate(R.layout.view_video_index_bg,parent,false));
+            vh = new Vh(mInflater.inflate(R.layout.item_video_index_bg,parent,false));
         }else if (viewType == TYPE_SM){
-            vh = new Vh(mInflater.inflate(R.layout.view_video_index_sm,parent,false));
+            vh = new Vh(mInflater.inflate(R.layout.item_video_index_sm,parent,false));
         }else {
-            vh = new Vh(mInflater.inflate(R.layout.view_video_index_nom,parent,false));
+            vh = new Vh(mInflater.inflate(R.layout.item_video_index_nom,parent,false));
         }
         return vh;
     }

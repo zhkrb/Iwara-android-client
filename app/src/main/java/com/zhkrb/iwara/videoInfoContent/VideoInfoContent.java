@@ -24,12 +24,17 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.Group;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSON;
@@ -50,6 +55,9 @@ import com.zhkrb.iwara.utils.ImgLoader;
 import com.zhkrb.iwara.utils.ToastUtil;
 import com.zhkrb.iwara.utils.WordUtil;
 
+import java.util.ArrayList;
+import java.util.Stack;
+
 public class VideoInfoContent extends AbsContent implements ViewStub.OnInflateListener, View.OnClickListener, RecommAdapter.onItemClickListener {
 
     private FoldTextView mTextTitle;
@@ -65,11 +73,13 @@ public class VideoInfoContent extends AbsContent implements ViewStub.OnInflateLi
     private ScaleRecyclerView mRecyclerViewCorr;
     private ScaleRecyclerView mRecyclerViewRecomm;
     private ScaleRecyclerView mRecyclerViewComment;
-    private ViewStub mStubComment;
 
     private VideoInfoBean mInfoBean;
-    private AnimLinearLayoutManager layoutManager1;
+    private AnimLinearLayoutManager mCorrLayoutManager;
     private AnimLinearLayoutManager layoutManager2;
+    private ViewStub mStubComm;
+    private Group mGroupCorr;
+    private Group mGroupRecomm;
 
     public VideoInfoContent(Context context) {
         super(context);
@@ -99,17 +109,6 @@ public class VideoInfoContent extends AbsContent implements ViewStub.OnInflateLi
             mTextTitle.setFold(!b);
             mTextInfo.setFold(!b);
         });
-        TextView mTips = mRootView.findViewById(R.id.text_comment_tip);
-        mStubComment = mRootView.findViewById(R.id.view_stub);
-        mStubComment.setOnInflateListener(this);
-        getViewTreeObserver().addOnScrollChangedListener(() -> {
-            Rect scrollBounds = new Rect();
-            if (mTips.getLocalVisibleRect(scrollBounds)) {
-                if (mStubComment != null && mStubComment.getParent() != null){
-                    mStubComment.inflate();
-                }
-            }
-        });
         mTextVideoView = mRootView.findViewById(R.id.text_video_view);
         mTextVideoComment = mRootView.findViewById(R.id.text_video_comment);
         mTextVideoDate = mRootView.findViewById(R.id.text_video_upload_date);
@@ -118,8 +117,6 @@ public class VideoInfoContent extends AbsContent implements ViewStub.OnInflateLi
         mTextAuthorName = mRootView.findViewById(R.id.artist_name);
         mTextAuthorFollow = mRootView.findViewById(R.id.artist_follow);
         mBtnFollow = mRootView.findViewById(R.id.btn_follow);
-        mRecyclerViewCorr = mRootView.findViewById(R.id.recyclerView_user_corr);
-        mRecyclerViewRecomm = mRootView.findViewById(R.id.recyclerView_video_recomm);
         initView();
     }
 
@@ -140,30 +137,42 @@ public class VideoInfoContent extends AbsContent implements ViewStub.OnInflateLi
         mRootView.findViewById(R.id.btn_share).setOnClickListener(this);
         mRootView.findViewById(R.id.btn_download).setOnClickListener(this);
         mRootView.findViewById(R.id.btn_save).setOnClickListener(this);
-        initRecyclerView();
+        mGroupCorr = mRootView.findViewById(R.id.group_corr);
+        mGroupRecomm = mRootView.findViewById(R.id.group_recomm);
+        post(() ->setOnScrollChangeListener(mScrollChangeListener));
+        initRecycler();
     }
 
-    private void initRecyclerView() {
-        layoutManager1 = new AnimLinearLayoutManager(mContext,RecyclerView.VERTICAL,false);
-        layoutManager2 = new AnimLinearLayoutManager(mContext,RecyclerView.VERTICAL,false);
-        mRecyclerViewCorr.setHasFixedSize(true);
-        mRecyclerViewCorr.setLayoutManager(layoutManager1);
-        mRecyclerViewRecomm.setHasFixedSize(true);
-        mRecyclerViewRecomm.setLayoutManager(layoutManager2);
-        if (mInfoBean.getAuthor_video_from_user() != null){
-            RecommAdapter corrAdapter = new RecommAdapter(mContext,mInfoBean.getAuthor_video_from_user());
-            corrAdapter.setClickListener(this);
-            mRecyclerViewCorr.setAdapter(corrAdapter);
+    private void initRecycler() {
+        if (mInfoBean.getAuthor_video_from_user() != null && mInfoBean.getAuthor_video_from_user().size() > 0){
+            mGroupCorr.setVisibility(VISIBLE);
+            initCorr();
+        }else {
+            mGroupCorr.setVisibility(GONE);
         }
-        if (mInfoBean.getAuthor_video_recomm() != null){
-            RecommAdapter recommAdapter = new RecommAdapter(mContext,mInfoBean.getAuthor_video_recomm());
-            recommAdapter.setClickListener(this);
-            mRecyclerViewRecomm.setAdapter(recommAdapter);
+        if (mInfoBean.getAuthor_video_recomm() != null && mInfoBean.getAuthor_video_recomm().size() > 0){
+            mGroupRecomm.setVisibility(VISIBLE);
+            initRecomm();
+        }else {
+            mGroupRecomm.setVisibility(GONE);
         }
-
-
-
     }
+
+
+    private OnScrollChangeListener mScrollChangeListener = new OnScrollChangeListener() {
+        @Override
+        public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+            View onlyChild = getChildAt(0);
+            if (onlyChild.getHeight() <= scrollY + getHeight()) {
+                if (mInfoBean.getComment_item_list() != null &&
+                        mInfoBean.getComment_item_list().size() >0 &&
+                        mStubComm != null && mStubComm.getParent() != null){
+                    mStubComm.inflate();
+                    mStubComm = null;
+                }
+            }
+        }
+    };
 
 
     @Override
@@ -216,7 +225,7 @@ public class VideoInfoContent extends AbsContent implements ViewStub.OnInflateLi
         super.setAnim(anim);
         if (mRecyclerViewCorr != null){
             mRecyclerViewCorr.setAnim(isAnim);
-            layoutManager1.setAnim(isAnim);
+            mCorrLayoutManager.setAnim(isAnim);
         }
         if (mRecyclerViewRecomm != null){
             mRecyclerViewRecomm.setAnim(isAnim);
@@ -229,7 +238,31 @@ public class VideoInfoContent extends AbsContent implements ViewStub.OnInflateLi
 
     @Override
     public void onInflate(ViewStub stub, View inflated) {
+        initComment();
+    }
 
+    private void initComment() {
+
+    }
+
+    private void initRecomm() {
+        mRecyclerViewRecomm = mRootView.findViewById(R.id.recyclerView_video_recomm);
+        layoutManager2 = new AnimLinearLayoutManager(mContext, RecyclerView.VERTICAL, false);
+        mRecyclerViewRecomm.setHasFixedSize(true);
+        mRecyclerViewRecomm.setLayoutManager(layoutManager2);
+        RecommAdapter recommAdapter = new RecommAdapter(mContext, mInfoBean.getAuthor_video_recomm());
+        recommAdapter.setClickListener(this);
+        mRecyclerViewRecomm.setAdapter(recommAdapter);
+    }
+
+    private void initCorr() {
+        mRecyclerViewCorr = mRootView.findViewById(R.id.recyclerView_user_corr);
+        mCorrLayoutManager = new AnimLinearLayoutManager(mContext,RecyclerView.VERTICAL,false);
+        mRecyclerViewCorr.setHasFixedSize(true);
+        mRecyclerViewCorr.setLayoutManager(mCorrLayoutManager);
+        RecommAdapter corrAdapter = new RecommAdapter(mContext,mInfoBean.getAuthor_video_from_user());
+        corrAdapter.setClickListener(this);
+        mRecyclerViewCorr.setAdapter(corrAdapter);
     }
 
     @Override

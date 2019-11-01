@@ -37,6 +37,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="4dp"
         android:layout_marginTop="8dp"
+
         />
 
     <TextView
@@ -58,13 +59,12 @@
 
     <ImageView
         android:id="@+id/btn_play"
-        android:layout_width="48dp"
+        android:layout_width="0dp"
         android:layout_height="48dp"
         android:clickable="true"
         android:focusable="true"
         android:scaleType="center"
         android:src="@drawable/ic_play_arrow_24dp"
-        android:foreground="@drawable/ripple_click_pople"
         android:tint="@color/textColor_black_medium"
         tools:ignore="Suspicious0dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -75,19 +75,18 @@
 
     <ImageView
         android:id="@+id/btn_close"
-        android:layout_width="48dp"
+        android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_gravity="center_vertical"
         android:clickable="true"
         android:focusable="true"
         android:scaleType="center"
         android:src="@drawable/ic_close_24dp"
-        android:foreground="@drawable/ripple_click_pople"
         android:tint="@color/textColor_black_medium"
         tools:ignore="Suspicious0dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/btn_play"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />
 

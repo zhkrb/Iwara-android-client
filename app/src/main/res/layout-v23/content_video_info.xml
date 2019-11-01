@@ -27,7 +27,6 @@
         android:drawablePadding="5dp"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="?android:selectableItemBackground"
         />
 
     <TextView
@@ -289,8 +288,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_comment_tip"
-        android:id="@+id/view_stub"
+        android:id="@+id/stub_comment"
         android:layout_marginTop="4dp"
         android:layout="@layout/view_comment"
+        />
+
+    <androidx.constraintlayout.widget.Group
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="text_user_video_corr,recyclerView_user_corr"
+        android:id="@+id/group_corr"
+        android:visibility="gone"
+        />
+    <androidx.constraintlayout.widget.Group
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="text_user_video_recomm,recyclerView_video_recomm"
+        android:id="@+id/group_recomm"
+        android:visibility="gone"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

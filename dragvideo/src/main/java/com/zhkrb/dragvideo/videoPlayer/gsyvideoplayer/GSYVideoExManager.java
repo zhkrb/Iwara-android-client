@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Create by zhkrb on 2019/9/9 13:23
+ * Create by zhkrb on 2019/10/31 10:03
  */
 
-package com.zhkrb.iwara.utils;
+package com.zhkrb.dragvideo.videoPlayer.gsyvideoplayer;
 
-public class HttpConstsUtil {
+import com.shuyu.gsyvideoplayer.GSYVideoManager;
 
-    public static final String GET_VIDEO_URL_LIST = "get_video_url_list";
+public class GSYVideoExManager{
 
-    public static final String CHECK_UPDATE = "check_update";
-    public static final String GET_VIDEO_INFO = "get_video_info";
-    public static final String GET_VIDEO_LIST = "get_video_list";
-    public static final String GET_HOST_DNS = "get_host_dns";
+
 }

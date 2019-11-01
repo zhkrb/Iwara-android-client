@@ -128,12 +128,12 @@ public class ScaleVideoView extends ConstraintLayout implements OnClickListener,
         mVideoPlayer.setHeader(header);
     }
 
-    public void playUrl(String url){
-        playUrl(url,0);
+    public void playUrl(String host,String url){
+        playUrl(host,url,0);
     }
 
-    public void playUrl(String url,long startTime){
-        mVideoPlayer.playUrl(url,startTime);
+    public void playUrl(String host,String url,long startTime){
+        mVideoPlayer.playUrl(host,url,startTime);
     }
 
     protected IVideoPlayer getVideoPlayer() {
@@ -187,11 +187,13 @@ public class ScaleVideoView extends ConstraintLayout implements OnClickListener,
         if (mLayoutProgress <0.01f){
             mVideoParentWrapper.setWidth(0);
         }
-        mInfoGroup.setAlpha(mLayoutProgress);
+        mTitle.setAlpha(mLayoutProgress);
+        mUser.setAlpha(mLayoutProgress);
+        btnClose.setAlpha(mLayoutProgress);
+        btnPlay.setAlpha(mLayoutProgress);
+//        mInfoGroup.setAlpha(mLayoutProgress);
         mProgressBar.setAlpha(mLayoutProgress);
         mVideoContent.requestLayout();
-        Log.e("video",String.valueOf(mVideoContent.getX()));
-        Log.e("btn",String.valueOf(btnClose.getX()));
     }
 
     private int dp2px(int dpVal) {

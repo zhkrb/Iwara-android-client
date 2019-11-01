@@ -34,6 +34,7 @@ import com.zhkrb.iwara.base.FragmentFrame;
 import com.zhkrb.iwara.bean.VideoListBean;
 import com.zhkrb.iwara.fragment.GalleryFragment;
 import com.zhkrb.iwara.utils.UpdateUtil;
+import com.zhkrb.iwara.utils.VideoDnsUtil;
 import com.zhkrb.iwara.utils.VideoNetWorkUtil;
 import com.zhkrb.iwara.videoInfoContent.VideoInfoContent;
 
@@ -79,6 +80,7 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
         if (mPlayerView == null){
             mPlayerView = new VideoPlayerView(mContext).setContentView(mParentLayout);
             mPlayerView.setNetworkUtil(new VideoNetWorkUtil());
+            mPlayerView.setDnsUtil(new VideoDnsUtil());
 //            mPlayerView.setInfoView(new AbsContent(mContext));
             mPlayerView.setHideFragmentListener(this);
             mPlayerView.setRootContentView(VideoInfoContent.class);

@@ -80,7 +80,7 @@ public class RecommAdapter extends RecyclerView.Adapter<RecommAdapter.holder> {
     @NonNull
     @Override
     public holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new holder(mInflater.inflate(R.layout.view_video_index_nom,parent,false));
+        return new holder(mInflater.inflate(R.layout.item_video_index_nom,parent,false));
     }
 
     @Override

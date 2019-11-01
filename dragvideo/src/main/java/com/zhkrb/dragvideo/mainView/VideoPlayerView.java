@@ -23,6 +23,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.Constraints;
@@ -61,6 +63,7 @@ import com.zhkrb.dragvideo.bean.UrlBean;
 import com.zhkrb.dragvideo.bean.ValueSelectBean;
 import com.zhkrb.dragvideo.contentViewBase.ContentFrame;
 import com.zhkrb.dragvideo.contentViewBase.ReloadListener;
+import com.zhkrb.dragvideo.utils.DnsUtil;
 import com.zhkrb.dragvideo.utils.SettingListUtil;
 import com.zhkrb.dragvideo.utils.ToastUtil;
 import com.zhkrb.dragvideo.videoPlayer.IVideoPlayer;
@@ -71,6 +74,7 @@ import com.zhkrb.dragvideo.contentViewBase.VideoContentView;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
 import java.util.List;
 import java.util.Map;
 
@@ -126,6 +130,7 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
     private Bundle mBundle;
     private int mLatestHeaderHeight;
     private float mLatestTranY;
+    private DnsUtil mDnsUtil;
 
 
     public VideoPlayerView(@NonNull Context context) {
@@ -157,6 +162,7 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
         LayoutInflater inflater = LayoutInflater.from(this.mContext);
         View view = inflater.inflate(R.layout.view_video_play, this, true);
         setClipChildren(false);
+//        setBackgroundColor(mContext.getResources().getColor(R.color.black_alpha));
         mHeaderView = view.findViewById(R.id.view_header);
         mDescView = view.findViewById(R.id.view_desc);
         mDescView.setOnScrollTopListener(mScrollChangeListener);
@@ -245,10 +251,17 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
         mScaleVideoView.setHeader(header);
         mScaleVideoView.getVideoView().setLoading(true);
         if (mNetworkUtil != null){
+            mNetworkUtil.cancel();
             mNetworkUtil.setGetPlayUrlCallback(mCallback);
             mNetworkUtil.getUrlList(mainUrl);
         }else {
             throw new RuntimeException("must set NetworkUtil");
+        }
+        if (mDnsUtil != null){
+            mDnsUtil.cancel();
+            mDnsUtil.setCallback(mDnsUtilCallback);
+        }else {
+            throw new RuntimeException("must set DnsUtil");
         }
     }
 
@@ -375,6 +388,8 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
 
 
     private boolean isFirstMeasure = true;
+
+    //TODO 处理偶尔缺少抬起或者按下事件的动画错误
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -641,6 +656,7 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
     }
 
     //根据拖动距离的百分比进行变化 0-9000 9000-10000
+    //TODO update和Third 变化时禁止外部点击重新初始化player
     public void dropUpdate(int dis){
         if (mFullCurrentHeaderHeight == 0){
             measureWidget();
@@ -710,10 +726,8 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
         mHeaderWrapper.setHeight(headerHeight);
         int headerTopMargin = (int) ((mTopMarginOrigin-dp2px(50))*prog);
         mHeaderWrapper.setTopMargin(headerTopMargin);
-        mParentLayout.getBackground().setAlpha(255 - (int) (255*prog));
+//        getBackground().setAlpha(255 - (int) (255*prog));
         mHeaderView.requestLayout();
-//        mDescView.requestLayout();
-//        mParentLayout.invalidate();
     }
 
     private void updateSecond(int dis) {
@@ -732,21 +746,18 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
         mHeaderWrapper.setTopMargin(topMargin);
         mHeaderWrapper.setHeight(mLatestHeaderHeight);
         mHeaderView.requestLayout();
-//        mDescView.requestLayout();
     }
 
     private void setFirst() {
         int leftRightMargin = dp2px(mSmillLeftAndRight);
         mHeaderWrapper.setLeftMargin(leftRightMargin);
         mHeaderWrapper.setRightMargin(leftRightMargin);
-//        ((ConstraintLayout.LayoutParams)mHeaderView.getLayoutParams()).setMarginEnd(leftRightMargin);
-//        ((ConstraintLayout.LayoutParams)mHeaderView.getLayoutParams()).setMarginStart(leftRightMargin);
         mDescWrapper.setLeftMargin(leftRightMargin);
         mDescWrapper.setRightMargin(leftRightMargin);
         mDescWrapper.setBottomMargin(dp2px(mSmillBottomHeight));
         mHeaderWrapper.setHeight(dp2px(mSmillWidgetHeight+50));
         mHeaderWrapper.setTopMargin(mTopMarginOrigin-dp2px(50));
-        mParentLayout.getBackground().setAlpha(0);
+//        getBackground().setAlpha(0);
         if (mDescView.getVisibility() != GONE){
             mDescView.setVisibility(GONE);
         }
@@ -912,9 +923,7 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
         @Override
         public void onSuccess(List<UrlBean> list) {
             mVideoUrlList = list;
-            mScaleVideoView.getVideoView().setLoading(false);
-            mScaleVideoView.playUrl(mVideoUrlList.get(mSelectUrlPos).getUri(),
-                    mScaleVideoView.getVideoView().getPlayingPos());
+            mDnsUtil.getHostDns(mVideoUrlList.get(mSelectUrlPos).getUri());
         }
 
         @Override
@@ -973,8 +982,7 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
             return;
         }
         mSelectUrlPos = pos1;
-        mScaleVideoView.playUrl(mVideoUrlList.get(mSelectUrlPos).getUri(),
-                mScaleVideoView.getVideoView().getPlayingPos());
+        mDnsUtil.getHostDns(mVideoUrlList.get(mSelectUrlPos).getUri());
         fragment.dismiss();
     };
 
@@ -983,6 +991,21 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
                 mScaleVideoView.getVideoView().setPlaySpeed(Float.valueOf(bean.getValue()));
                 fragment.dismiss();
             };
+
+    private DnsUtil.DnsUtilCallback mDnsUtilCallback = new DnsUtil.DnsUtilCallback() {
+        @Override
+        public void onSuccess(String host, String url) {
+            mScaleVideoView.getVideoView().setLoading(false);
+            mScaleVideoView.playUrl(host,url,
+                    mScaleVideoView.getVideoView().getPlayingPos());
+        }
+
+        @Override
+        public void onFail() {
+            ToastUtil.show(mContext,R.string.url_get_failed);
+            mScaleVideoView.getVideoView().setFailed((String) mContext.getText(R.string.url_get_failed_3));
+        }
+    };
 
     public boolean isFullScreen() {
         if (mScaleVideoView!=null){
@@ -1042,6 +1065,10 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
 
     public void reloadContent(){
         mDescView.reloadContent(mBundle);
+    }
+
+    public void setDnsUtil(DnsUtil dnsUtil) {
+        mDnsUtil = dnsUtil;
     }
 
 

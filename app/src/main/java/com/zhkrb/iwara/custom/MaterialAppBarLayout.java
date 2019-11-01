@@ -55,7 +55,7 @@ public class MaterialAppBarLayout extends ConstraintLayout implements View.OnCli
     private CutCardView mCardView;
     private ViewWrapper mCardViewWrapper;
     private ImageView mFirstBtn;
-
+    private ImageView mSecBtn;
     private int mProgress;
 
 
@@ -79,13 +79,13 @@ public class MaterialAppBarLayout extends ConstraintLayout implements View.OnCli
         mChildSecLayout = view.findViewById(R.id.second_layout);
         mChildFirstLayout = view.findViewById(R.id.first_layout);
         mFirstBtn = view.findViewById(R.id.btn_bar_first);
-        ImageView secBtn = view.findViewById(R.id.btn_bar_second);
+        mSecBtn = view.findViewById(R.id.btn_bar_second);
 
         mCardView = view.findViewById(R.id.cardView);
         mCardViewWrapper = new ViewWrapper(mCardView);
 
         mFirstBtn.setOnClickListener(this);
-        secBtn.setOnClickListener(this);
+        mSecBtn.setOnClickListener(this);
         requestLayout();
 
     }
@@ -153,7 +153,8 @@ public class MaterialAppBarLayout extends ConstraintLayout implements View.OnCli
         }
         mCardViewWrapper.setRightMargin((int) ((getWidth() - DpUtil.dp2px(100)) * v));
         mCardView.setCutProgress(v);
-        mChildFirstLayout.setAlpha(v);
+        mFirstBtn.setAlpha(v);
+        mSecBtn.setAlpha(v);
         mChildSecLayout.setAlpha(1 - v);
         mCardView.requestLayout();
     }
