@@ -33,6 +33,7 @@ import com.zhkrb.iwara.base.AbsFragment;
 import com.zhkrb.iwara.base.FragmentFrame;
 import com.zhkrb.iwara.bean.VideoListBean;
 import com.zhkrb.iwara.fragment.GalleryFragment;
+import com.zhkrb.iwara.fragment.TestFragment;
 import com.zhkrb.iwara.utils.UpdateUtil;
 import com.zhkrb.iwara.utils.VideoDnsUtil;
 import com.zhkrb.iwara.utils.VideoNetWorkUtil;
@@ -47,14 +48,17 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
     private ViewGroup mContentLayout;
 
     static {
-        setLaunchMode(GalleryFragment.class, AbsFragment.LAUNCH_MODE_SINGLE_TOP);
+        setLaunchMode(GalleryFragment.class, AbsFragment.LAUNCH_MODE_BASE);
+        setLaunchMode(TestFragment.class, AbsFragment.LAUNCH_MODE_PAGE);
     }
 
     private ConstraintLayout mParentLayout;
+    private boolean mCanClick = true;
 
     @Override
     protected FragmentFrame getLaunchFrame() {
         return new FragmentFrame(GalleryFragment.class);
+//        return new FragmentFrame(TestFragment.class);
     }
 
     @Override
@@ -77,6 +81,9 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
 
 
     public void playVideo(VideoListBean bean) {
+        if (!mCanClick){
+            return;
+        }
         if (mPlayerView == null){
             mPlayerView = new VideoPlayerView(mContext).setContentView(mParentLayout);
             mPlayerView.setNetworkUtil(new VideoNetWorkUtil());
@@ -112,17 +119,7 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
     @Override
     public void onHide(boolean hide) {
         View view = findViewById(R.id.motion_layout);
-        if (hide){
-            if (view.getVisibility() != View.GONE){
-                view.setVisibility(View.GONE);
-            }
-            enableSlideLayout(false);
-        }else {
-            if (view.getVisibility() != View.VISIBLE){
-                view.setVisibility(View.VISIBLE);
-            }
-            enableSlideLayout(true);
-        }
+        view.setVisibility(hide ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -130,5 +127,10 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
 //        if (mVideoPlayerLayout.getVisibility() != View.GONE){
 //            mVideoPlayerLayout.setVisibility(View.GONE);
 //        }
+    }
+
+    @Override
+    public void canClick(boolean b) {
+        mCanClick = b;
     }
 }

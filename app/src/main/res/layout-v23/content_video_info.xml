@@ -27,6 +27,7 @@
         android:drawablePadding="5dp"
         android:clickable="true"
         android:focusable="true"
+        android:foreground="?android:selectableItemBackground"
         />
 
     <TextView
@@ -132,7 +133,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_like"
-        android:background="@color/textColor_black_disable"
+        android:background="@color/dividerColor"
         android:layout_marginTop="12dp"
         android:id="@+id/divider_line"
         />
@@ -146,6 +147,7 @@
         android:layout_marginTop="16dp"
         android:scaleType="centerCrop"
         android:id="@+id/artist_thumb"
+        android:foreground="?android:selectableItemBackground"
         />
 
     <TextView
@@ -184,14 +186,14 @@
         app:text_size="12"
         app:unselect_text_color="@color/text"
         app:unselect_text="@string/follow"
-        app:unselect_background_color="@color/colorPrimary"
+        app:unselect_background_color="@color/colorAccent"
         app:unselect_image="@drawable/ic_add_16dp"
         app:select_text_color="@color/textColor_black_disable"
         app:select_text="@string/isfollow"
         app:select_background_color="@color/grey_alpha"
         app:select_image="@drawable/ic_close_16dp"
         android:id="@+id/btn_follow"
-        android:background="?android:selectableItemBackgroundBorderless"
+        android:foreground="?android:selectableItemBackground"
         />
 
     <View
@@ -200,8 +202,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/artist_thumb"
-        android:background="@color/textColor_black_disable"
-        android:layout_marginTop="12dp"
+        android:background="@color/dividerColor"
+        android:layout_marginTop="16dp"
         android:id="@+id/divider_line2"
         />
 
@@ -240,6 +242,7 @@
         app:layout_constraintTop_toBottomOf="@id/text_user_video_corr"
         android:layout_marginTop="12dp"
         android:id="@+id/recyclerView_user_corr"
+        android:overScrollMode="never"
         />
 
     <TextView
@@ -264,30 +267,31 @@
         android:paddingBottom="8dp"
         android:translationZ="2dp"
         android:elevation="2dp"
+        android:overScrollMode="never"
         />
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recyclerView_video_recomm"
-        android:id="@+id/text_comment_tip"
-        android:text="@string/comment_tip"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:textSize="@dimen/subtitle2"
-        android:background="@color/shadowColor"
-        />
+<!--    <TextView-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/recyclerView_video_recomm"-->
+<!--        android:id="@+id/text_comment_tip"-->
+<!--        android:text="@string/comment_tip"-->
+<!--        android:paddingStart="12dp"-->
+<!--        android:paddingEnd="12dp"-->
+<!--        android:paddingTop="8dp"-->
+<!--        android:paddingBottom="8dp"-->
+<!--        android:textSize="@dimen/subtitle2"-->
+<!--        android:background="@color/shadowColor"-->
+<!--        />-->
 
     <ViewStub
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_comment_tip"
+        app:layout_constraintTop_toBottomOf="@id/recyclerView_video_recomm"
         android:id="@+id/stub_comment"
         android:layout_marginTop="4dp"
         android:layout="@layout/view_comment"

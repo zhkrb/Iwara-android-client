@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="content_parent" type="id"/>
+    <item name="error_view" type="id"/>
 </resources>

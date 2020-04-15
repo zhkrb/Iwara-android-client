@@ -36,9 +36,8 @@ import androidx.fragment.app.Fragment;
 
 public abstract class AbsFragment extends Fragment {
 
-    public static final int LAUNCH_MODE_STANDARD = 0;
-    public static final int LAUNCH_MODE_SINGLE_TOP = 1;
-    public static final int LAUNCH_MODE_SINGLE_TASK = 2;
+    public static final int LAUNCH_MODE_BASE = 0;
+    public static final int LAUNCH_MODE_PAGE = 1;
 
     /** Standard scene result: operation canceled. */
     public static final int RESULT_CANCELED  = 0;
@@ -62,7 +61,9 @@ public abstract class AbsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mRootView = inflater.inflate(getLayoutId(),container,false);
+        if (mRootView == null){
+            mRootView = LayoutInflater.from(getContext()).inflate(getLayoutId(),container,false);
+        }
         return mRootView;
     }
 
@@ -135,9 +136,8 @@ public abstract class AbsFragment extends Fragment {
 
 
     @IntDef({
-            LAUNCH_MODE_STANDARD,
-            LAUNCH_MODE_SINGLE_TOP,
-            LAUNCH_MODE_SINGLE_TASK
+            LAUNCH_MODE_BASE,
+            LAUNCH_MODE_PAGE
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface LaunchMode{}

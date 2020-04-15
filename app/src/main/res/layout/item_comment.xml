@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="18dp"
+        android:paddingTop="18dp"
+        android:paddingEnd="18dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/comm_parent"
+        android:background="?android:attr/selectableItemBackground"
+        >
+    <ImageView
+        android:layout_width="@dimen/thumb_comm"
+        android:layout_height="@dimen/thumb_comm"
+        android:scaleType="center"
+        app:layout_constraintTop_toBottomOf="@id/comm_reply_list"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/comm_thumb"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/comm_username"
+        app:layout_constraintStart_toStartOf="@id/comm_username"
+        android:paddingBottom="8dp"
+        android:orientation="vertical"
+        android:id="@+id/comm_reply_list"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/comm_reply_list"
+        app:layout_constraintStart_toEndOf="@id/comm_thumb"
+        android:layout_marginStart="18dp"
+        android:textSize="@dimen/caption"
+        android:letterSpacing="@dimen/caption_ls"
+        android:textColor="@color/textColor_black_medium"
+        android:id="@+id/comm_username"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/comm_username"
+        app:layout_constraintStart_toEndOf="@id/comm_username"
+        android:textSize="@dimen/caption"
+        android:letterSpacing="@dimen/caption_ls"
+        android:textColor="@color/textColor_black_medium"
+        android:layout_marginStart="12dp"
+        android:id="@+id/comm_time"
+        />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/comm_username"
+        app:layout_constraintStart_toStartOf="@id/comm_username"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="14dp"
+        android:textColor="@color/textColor_black"
+        android:textSize="@dimen/subtitle2"
+        android:id="@+id/comm_content"
+        />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/comm_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="62dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:textSize="@dimen/subtitle2"
+        android:textColor="@color/colorAccent"
+        android:background="?android:selectableItemBackground"
+        android:id="@+id/comm_reply_count"
+        android:visibility="gone"
+        />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

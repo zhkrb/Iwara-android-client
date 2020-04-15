@@ -21,42 +21,37 @@ package com.zhkrb.iwara.custom;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.Group;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
-import com.google.android.material.card.MaterialCardView;
-import com.zhkrb.dragvideo.ViewWrapper;
 import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.activity.AppbarActivity;
 import com.zhkrb.iwara.utils.DpUtil;
 
-public class MaterialAppBarLayout extends ConstraintLayout implements View.OnClickListener {
+public class MaterialAppBarLayout extends CutCardView implements View.OnClickListener {
 
     private Context mContext;
-
-    private Group mChildFirstLayout;
     private FrameLayout mChildSecLayout;
-    private CutCardView mCardView;
-    private ViewWrapper mCardViewWrapper;
-    private ImageView mFirstBtn;
-    private ImageView mSecBtn;
-    private int mProgress;
+    private ImageView mIconBtn;
+    private float mProgress;
+    private boolean mCanCollse = true;
+    private boolean isExpand = true;
+    private static final String BAR_EXPAND = "bar_expand";
+    private static final String BAR_SUPER = "bar_super";
 
 
     public MaterialAppBarLayout(Context context) {
@@ -77,43 +72,30 @@ public class MaterialAppBarLayout extends ConstraintLayout implements View.OnCli
         super.onFinishInflate();
         View view = LayoutInflater.from(mContext).inflate(R.layout.view_material_appbar,this,true);
         mChildSecLayout = view.findViewById(R.id.second_layout);
-        mChildFirstLayout = view.findViewById(R.id.first_layout);
-        mFirstBtn = view.findViewById(R.id.btn_bar_first);
-        mSecBtn = view.findViewById(R.id.btn_bar_second);
-
-        mCardView = view.findViewById(R.id.cardView);
-        mCardViewWrapper = new ViewWrapper(mCardView);
-
-        mFirstBtn.setOnClickListener(this);
-        mSecBtn.setOnClickListener(this);
+        mIconBtn = view.findViewById(R.id.btn_bar_second);
+        mIconBtn.setOnClickListener(this);
         requestLayout();
-
-    }
-
-
-    public void firstInit(){
-        post(measureRunable);
     }
 
     public void restoreState(boolean expand){
-        post(() -> setProgress(expand ? 0 : 500));
+        post(() -> setProgress(expand ? 0 : 1));
     }
 
-    private Runnable measureRunable = () -> {
-        setProgress(500);
-        setBarCollse(false);
-    };
 
-    public void setBarCollse(boolean b) {
-        if ((b && mProgress == 500) || (!b && mProgress == 0)){
+
+    public void setBarClose(boolean b) {
+        if (!mCanCollse && b){
             return;
         }
-        startAnim(b ? 500 : 0);
+        if ((b && mProgress == 1f) || (!b && mProgress == 0)){
+            return;
+        }
+        startAnim(b ? 1f : 0);
     }
 
-    private void startAnim(int value){
+    private void startAnim(float value){
         setLayerType(View.LAYER_TYPE_HARDWARE, (Paint)null);
-        ObjectAnimator animator = ObjectAnimator.ofInt(this,"progress",value);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(this,"progress",value);
         animator.setAutoCancel(true);
         animator.setDuration(555);
         animator.setInterpolator(new FastOutSlowInInterpolator());
@@ -127,20 +109,20 @@ public class MaterialAppBarLayout extends ConstraintLayout implements View.OnCli
     }
 
 
-    public void setProgress(int i){
+    public void setProgress(float i){
         if (i == mProgress){
             return;
         }
         mProgress = i;
-        update(i/500f);
+        update(i);
         if (i == 0){
-            mChildFirstLayout.setVisibility(GONE);
+            mIconBtn.setVisibility(GONE);
             mChildSecLayout.setVisibility(VISIBLE);
-        }else if (i == 500){
-            mChildFirstLayout.setVisibility(VISIBLE);
+        }else if (i == 1f){
+            mIconBtn.setVisibility(VISIBLE);
             mChildSecLayout.setVisibility(GONE);
         }else {
-            mChildFirstLayout.setVisibility(VISIBLE);
+            mIconBtn.setVisibility(VISIBLE);
             mChildSecLayout.setVisibility(VISIBLE);
         }
     }
@@ -151,40 +133,30 @@ public class MaterialAppBarLayout extends ConstraintLayout implements View.OnCli
         }else if (v < 0){
             v = 0;
         }
-        mCardViewWrapper.setRightMargin((int) ((getWidth() - DpUtil.dp2px(100)) * v));
-        mCardView.setCutProgress(v);
-        mFirstBtn.setAlpha(v);
-        mSecBtn.setAlpha(v);
+        setCutProgress(v);
+        mIconBtn.setAlpha(v);
         mChildSecLayout.setAlpha(1 - v);
-        mCardView.requestLayout();
     }
 
-    public int getProgress() {
+    public float getProgress() {
         return mProgress;
-    }
-
-    public void setFirstBtnDrawable(Drawable drawable){
-        mFirstBtn.setImageDrawable(drawable);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.btn_bar_first:
-                if (((AppbarActivity)mContext).canClickBackup()){
-                    ((AppbarActivity) mContext).onBackPressed();
-                }else {
-                    ((AppbarActivity) mContext).openSlideLayout();
-                }
-                break;
-            case R.id.btn_bar_second:
-                ((AppbarActivity)mContext).expandAll();
-                break;
+        if (v.getId() == R.id.btn_bar_second) {
+            ((AppbarActivity) mContext).expandAll();
         }
     }
 
-    public void addTitleBar(View view){
+    public void addTitleBar(View view,boolean canClose){
         removeTitleBar();
+        mCanCollse = canClose;
+        if (view == null){
+            return;
+        }
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        view.setLayoutParams(params);
         mChildSecLayout.addView(view);
         mChildSecLayout.requestLayout();
     }
@@ -193,6 +165,25 @@ public class MaterialAppBarLayout extends ConstraintLayout implements View.OnCli
         if (mChildSecLayout.getChildCount() > 0){
             mChildSecLayout.removeAllViews();
         }
+    }
+
+    @Nullable
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        Parcelable parcelable = super.onSaveInstanceState();
+        bundle.putParcelable(BAR_SUPER,parcelable);
+        bundle.putBoolean(BAR_EXPAND,isExpand);
+        return bundle;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        Bundle bundle = (Bundle) state;
+        Parcelable parcelable = bundle.getParcelable(BAR_SUPER);
+        isExpand = bundle.getBoolean(BAR_EXPAND);
+        restoreState(isExpand);
+        super.onRestoreInstanceState(parcelable);
     }
 
 }

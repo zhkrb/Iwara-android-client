@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Create by zhkrb on 2019/10/4 10:51
+ * Create by zhkrb on 2019/11/4 22:04
  */
 
-package com.zhkrb.iwara.fragment;
+package com.zhkrb.iwara.adapter.inter;
 
-public class SingleTopFragment {
+public interface AdapterClickInterface<T> {
+
+    void itemClick(T bean);
+
 }

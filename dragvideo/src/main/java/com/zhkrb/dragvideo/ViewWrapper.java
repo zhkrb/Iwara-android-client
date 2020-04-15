@@ -59,7 +59,7 @@ public class ViewWrapper {
         if (mLayoutParams instanceof ViewGroup.MarginLayoutParams){
             ((ViewGroup.MarginLayoutParams) mLayoutParams).topMargin = top;
         }else {
-            throw new RuntimeException(mView.getClass().getName()+"Can't cast to MarginLayoutParams");
+            throw new RuntimeException(mView.getClass().getName()+" Can't cast to MarginLayoutParams");
         }
     }
 
@@ -67,7 +67,7 @@ public class ViewWrapper {
         if (mLayoutParams instanceof ViewGroup.MarginLayoutParams){
             return ((ViewGroup.MarginLayoutParams) mLayoutParams).topMargin;
         }else {
-            throw new RuntimeException(mView.getClass().getName()+"Can't cast to MarginLayoutParams");
+            throw new RuntimeException(mView.getClass().getName()+" Can't cast to MarginLayoutParams");
         }
     }
 
@@ -75,7 +75,7 @@ public class ViewWrapper {
         if (mLayoutParams instanceof ViewGroup.MarginLayoutParams){
             ((ViewGroup.MarginLayoutParams) mLayoutParams).leftMargin = left;
         }else {
-            throw new RuntimeException(mView.getClass().getName()+"Can't cast to MarginLayoutParams");
+            throw new RuntimeException(mView.getClass().getName()+" Can't cast to MarginLayoutParams");
         }
     }
 
@@ -83,7 +83,7 @@ public class ViewWrapper {
         if (mLayoutParams instanceof ViewGroup.MarginLayoutParams){
             return ((ViewGroup.MarginLayoutParams) mLayoutParams).leftMargin;
         }else {
-            throw new RuntimeException(mView.getClass().getName()+"Can't cast to MarginLayoutParams");
+            throw new RuntimeException(mView.getClass().getName()+" Can't cast to MarginLayoutParams");
         }
     }
 
@@ -91,7 +91,7 @@ public class ViewWrapper {
         if (mLayoutParams instanceof ViewGroup.MarginLayoutParams){
             ((ViewGroup.MarginLayoutParams) mLayoutParams).rightMargin = right;
         }else {
-            throw new RuntimeException(mView.getClass().getName()+"Can't cast to MarginLayoutParams");
+            throw new RuntimeException(mView.getClass().getName()+" Can't cast to MarginLayoutParams");
         }
     }
 
@@ -99,7 +99,7 @@ public class ViewWrapper {
         if (mLayoutParams instanceof ViewGroup.MarginLayoutParams){
             return ((ViewGroup.MarginLayoutParams) mLayoutParams).rightMargin;
         }else {
-            throw new RuntimeException(mView.getClass().getName()+"Can't cast to MarginLayoutParams");
+            throw new RuntimeException(mView.getClass().getName()+" Can't cast to MarginLayoutParams");
         }
     }
 

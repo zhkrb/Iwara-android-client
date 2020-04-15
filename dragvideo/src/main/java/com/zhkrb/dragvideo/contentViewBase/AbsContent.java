@@ -103,7 +103,6 @@ public abstract class AbsContent extends NestedScrollView {
     }
 
     public void load(){
-
         ((VideoContentView)getParent()).setNeedReload(false);
         showLoading();
         prepareLoad();
@@ -132,6 +131,24 @@ public abstract class AbsContent extends NestedScrollView {
     public void loadRootView(){
         mRootView = LayoutInflater.from(mContext).inflate(getContentLayoutId(),this,true);
         main();
+    }
+
+    protected void loadNewContent(ContentFrame frame){
+        View view = (View) getParent();
+        if (view instanceof VideoContentView){
+            ((VideoContentView) view).loadNewContent(frame);
+        }else {
+            throw new RuntimeException("must set parent to VideoContentView");
+        }
+    }
+
+    protected void finishContent(ContentTransHelper helper){
+        View view = (View) getParent();
+        if (view instanceof VideoContentView){
+            ((VideoContentView) view).finishContent(helper);
+        }else {
+            throw new RuntimeException("must set parent to VideoContentView");
+        }
     }
 
     @Override

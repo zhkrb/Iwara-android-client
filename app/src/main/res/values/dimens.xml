@@ -42,8 +42,8 @@
     <dimen name="caption_ls">0.1</dimen>
     <dimen name="overline_ls">2</dimen>
 
-
-
+    //控件大小
+    <dimen name="thumb_comm">44dp</dimen>
 
 
 </resources>

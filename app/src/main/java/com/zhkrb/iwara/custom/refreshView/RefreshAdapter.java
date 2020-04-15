@@ -19,10 +19,12 @@
 package com.zhkrb.iwara.custom.refreshView;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
 
 import java.lang.annotation.Retention;
@@ -32,9 +34,12 @@ import java.util.List;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.Group;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.zhkrb.iwara.R;
+import com.zhkrb.iwara.custom.refreshView.loading.LoadingDrawable;
+import com.zhkrb.iwara.custom.refreshView.loading.LoadingView;
 
 public abstract class RefreshAdapter<T> extends RecyclerView.Adapter {
 
@@ -42,29 +47,10 @@ public abstract class RefreshAdapter<T> extends RecyclerView.Adapter {
     private Context mContext;
     protected LayoutInflater mInflater;
     private RecyclerView mRecyclerView;
-    private int mLoadMoreState = LOAD_TYPE_NOM;
-    private String mErrorMsg = "";
-    private LoadMoreCallback mLoadMoreCallback;
+    private boolean isFooterEnable = false;
     private Vh_more mView_loadmore;
 
-
     protected static final int TYPE_MORE = -1;      //加载更多Vh type
-
-    public static final int LOAD_TYPE_NOM = -1;    //加载更多
-    public static final int LOAD_TYPE_EMPTY = -2;  //有内容时显示“没有更多内容提示”
-    public static final int LOAD_TYPE_ERROR = -3;  //有内容时显示“网络错误提示”
-
-    public void setLoadMoreCallback(LoadMoreCallback loadMoreCallback) {
-        mLoadMoreCallback = loadMoreCallback;
-    }
-
-    @IntDef({
-        LOAD_TYPE_NOM,
-        LOAD_TYPE_EMPTY,
-        LOAD_TYPE_ERROR
-    })
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface LoadMoreType{}
 
 
     public RefreshAdapter(Context context) {
@@ -112,9 +98,7 @@ public abstract class RefreshAdapter<T> extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (position == mList.size()){
-            ((Vh_more)holder).setData(mLoadMoreState);
-        }else {
+        if (position != mList.size()){
             onViewHolderBind(holder,position);
         }
     }
@@ -123,7 +107,7 @@ public abstract class RefreshAdapter<T> extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        if (mList==null||position==mList.size()){
+        if (mList != null && position==mList.size()){
             return TYPE_MORE;
         }
         return getViewType(position);
@@ -131,10 +115,40 @@ public abstract class RefreshAdapter<T> extends RecyclerView.Adapter {
 
     protected abstract int getViewType(int pos);
 
-    public void setLoadState(@LoadMoreType int state,String errorMsg){
-        mLoadMoreState = state;
-        mErrorMsg = errorMsg;
-        notifyItemChanged(mList.size());
+    public void enableFooter(boolean enable){
+        isFooterEnable = enable;
+        if (mList != null && mList.size() > 0){
+            notifyItemChanged(mList.size() + 1);
+        }
+    }
+
+    public void hideFooterLoad(){
+        hideFooterLoad(true);
+    }
+
+    public void hideFooterLoad(boolean needAnim){
+        if (mList == null ||mList.size() == 0 || mRecyclerView.getLayoutManager() == null){
+            return;
+        }
+        View view = mRecyclerView.getLayoutManager().findViewByPosition(mList.size());
+        if (view == null){
+            return;
+        }
+        Rect visibleRect = new Rect();
+        if (isViewVisibleRect(view,visibleRect)){
+            LoadingView loadingView = view.findViewById(R.id.loading_view);
+            loadingView.endAnimation(() -> {
+                if (needAnim){
+                    mRecyclerView.smoothScrollBy(0, -visibleRect.bottom,new AccelerateDecelerateInterpolator());
+                }else {
+                    mRecyclerView.scrollBy(0, -visibleRect.bottom);
+                }
+            });
+        }
+    }
+
+    private boolean isViewVisibleRect(View v,Rect rect){
+        return v.getLocalVisibleRect(rect);
     }
 
     public void setList(List<T> list){
@@ -172,10 +186,6 @@ public abstract class RefreshAdapter<T> extends RecyclerView.Adapter {
         }
     }
 
-    public interface LoadMoreCallback{
-        void loadMore();
-    }
-
     @Override
     public long getItemId(int position) {
         return position;
@@ -187,49 +197,15 @@ public abstract class RefreshAdapter<T> extends RecyclerView.Adapter {
 
 
     class Vh_more extends RecyclerView.ViewHolder {
-        int pos;
-        ViewGroup mLoading;
-        ViewGroup mNo_more;
-        ViewGroup mError;
-        TextView mError_text;
-
 
         Vh_more(@NonNull View itemView) {
             super(itemView);
-            mLoading = itemView.findViewById(R.id.load_more);
-            mNo_more = itemView.findViewById(R.id.no_more);
-            mError = itemView.findViewById(R.id.error);
-            mError_text = itemView.findViewById(R.id.error_text);
-            mError.setOnClickListener(view -> {
-                if (mLoadMoreCallback!=null){
-                    mLoadMoreCallback.loadMore();
-                }
-            });
-        }
-
-
-        void setData(@LoadMoreType int state) {
-            setAllGone();
-            switch (state){
-                case LOAD_TYPE_NOM:
-                    mLoading.setVisibility(View.VISIBLE);
-                    break;
-                case LOAD_TYPE_EMPTY:
-                    mNo_more.setVisibility(View.VISIBLE);
-                    break;
-                case LOAD_TYPE_ERROR:
-                    mError.setVisibility(View.VISIBLE);
-                    if (!TextUtils.isEmpty(mErrorMsg)){
-                        mError_text.setText(mErrorMsg);
-                    }
-                    break;
-            }
-        }
-
-        private void setAllGone(){
-            mLoading.setVisibility(View.GONE);
-            mNo_more.setVisibility(View.GONE);
-            mError.setVisibility(View.GONE);
+            LoadingView lv = itemView.findViewById(R.id.loading_view);
+            lv.setColorSchemeResources(R.color.ref_blue,
+                    R.color.ref_green,
+                    R.color.ref_pink,
+                    R.color.ref_pop,
+                    R.color.ref_red);
         }
     }
 

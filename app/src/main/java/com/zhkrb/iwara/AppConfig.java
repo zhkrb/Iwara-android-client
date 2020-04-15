@@ -23,7 +23,10 @@ import com.zhkrb.iwara.utils.SpUtil;
 public class AppConfig {
 
     //域名
-    public static final String HOST = "https://ecchi.iwara.tv";
+    public static final String HOST_URL = "ecchi.iwara.tv";
+    public static final String HOST = "https://" + HOST_URL;
+    public static final String NOM_HOST_URL = "i.iwara.tv";
+    public static final String NOM_HOST = "https://" + NOM_HOST_URL;
     public static final String GET_VIDEO_API = "/api/video/";
     public static final String UPDATE_URL = "https://iw.zhkrb.com/update";
     public static final String UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36";

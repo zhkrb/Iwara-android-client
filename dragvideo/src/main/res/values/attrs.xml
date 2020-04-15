@@ -4,7 +4,7 @@
         <attr name="view_layout" format="reference"/>
         <attr name="target_width" format="dimension"/>
     </declare-styleable>
-    <declare-styleable name="VideoPlayView">
+    <declare-styleable name="VideoPlayerView">
         <attr name="appear_animation" format="reference"/>
     </declare-styleable>
     <declare-styleable name="CutCardView">
@@ -20,6 +20,7 @@
         <attr name="BottomRightRadius" format="dimension"/>
         <attr name="AllCutRadius" format="dimension"/>
         <attr name="CutForeground" format="reference"/>
+        <attr name="CutProgress" format="integer"/>
     </declare-styleable>
     <declare-styleable name="advRecyclerView">
         <attr name="maxHeight1" format="dimension"/>

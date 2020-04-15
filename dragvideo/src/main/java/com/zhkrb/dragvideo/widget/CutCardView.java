@@ -23,15 +23,16 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 
+import androidx.cardview.widget.CardView;
+
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.shape.CutCornerTreatment;
 import com.google.android.material.shape.MaterialShapeDrawable;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.zhkrb.dragvideo.R;
 
-public class CutCardView extends MaterialCardView {
+public class CutCardView extends CardView {
 
-    private final Context mcontext;
     private ShapeAppearanceModel.Builder mShapeAppearanceModel;
     private MaterialShapeDrawable mShapeDrawable;
 
@@ -48,6 +49,7 @@ public class CutCardView extends MaterialCardView {
     private float mBottomLeftRadius;
     private float mBottomRightRadius;
     private Drawable mForegoundDrawable;
+    private int mDefaultProgress;
 
     public CutCardView(Context context) {
         this(context,null);
@@ -59,7 +61,6 @@ public class CutCardView extends MaterialCardView {
 
     public CutCardView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mcontext = context;
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.CutCardView);
         isAllCut = ta.getBoolean(R.styleable.CutCardView_AllCut, false);
         isTopLeftCut = ta.getBoolean(R.styleable.CutCardView_TopLeftCut, false);
@@ -73,7 +74,7 @@ public class CutCardView extends MaterialCardView {
         mBottomLeftRadius = ta.getDimension(R.styleable.CutCardView_BottomLeftRadius,0);
         mBottomRightRadius = ta.getDimension(R.styleable.CutCardView_BottomRightRadius,0);
         mForegoundDrawable = ta.getDrawable(R.styleable.CutCardView_CutForeground);
-//        mForegoundDrawable = getForeground();
+        mDefaultProgress = ta.getInt(R.styleable.CutCardView_CutProgress,1);
         backgoundColor = getCardBackgroundColor();
         ta.recycle();
         init();
@@ -82,7 +83,6 @@ public class CutCardView extends MaterialCardView {
     private void init() {
         if (isAllCut || isTopLeftCut || isTopRightCut || isBottomLeftCut || isBottomRightCut){
             mShapeAppearanceModel = new ShapeAppearanceModel().toBuilder();
-//            mShapeAppearanceModel.setCornerRadius(0);
             if (isTopLeftCut){
                 mShapeAppearanceModel.setTopLeftCorner(new CutCornerTreatment(mTopLeftRadius));
             }
@@ -107,17 +107,29 @@ public class CutCardView extends MaterialCardView {
             return;
         }
         mShapeDrawable = new MaterialShapeDrawable(mShapeAppearanceModel.build());
-        mShapeDrawable.setPaintStyle(Paint.Style.FILL);
         mShapeDrawable.setFillColor(backgoundColor);
-//        mShapeDrawable.setUseTintColorForShadow(true);
-//        mShapeDrawable.setTint(getResources().getColor(R.color.textColor_black_medium));
         mShapeDrawable.setElevation(CutElevation);
         mShapeDrawable.setShadowCompatibilityMode(MaterialShapeDrawable.SHADOW_COMPAT_MODE_DEFAULT);
-
+        mShapeDrawable.setInterpolation(mDefaultProgress);
         setBackground(mShapeDrawable);
         if (mForegoundDrawable!=null){
             setForeground(mForegoundDrawable);
         }
+    }
+
+    //根据进度设置切角有无 1 显示切角 0 不显示
+    public void setCutProgress(float progress){
+        if (mShapeDrawable==null){
+            return;
+        }
+        mShapeDrawable.setInterpolation(progress);
+    }
+
+    public float getCutProgress(){
+        if (mShapeDrawable==null){
+            return 0;
+        }
+        return mShapeDrawable.getInterpolation();
     }
 
 

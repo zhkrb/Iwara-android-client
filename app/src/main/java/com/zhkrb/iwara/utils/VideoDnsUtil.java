@@ -29,8 +29,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -47,9 +45,9 @@ public class VideoDnsUtil extends DnsUtil {
             return;
         }
         try {
-            InetAddress[] inetAddress = InetAddress.getAllByName(host);
-            if (inetAddress.length > 0){
-                String ip = inetAddress[0].getHostAddress();    //直接取第一个
+            InetAddress inetAddress = InetAddress.getByName(host);
+            if (inetAddress != null){
+                String ip = inetAddress.getHostAddress();    //直接取第一个
                 Log.e("dnsUtil",host+": "+ip);
                 emitter.onNext(ip);
                 emitter.onComplete();
@@ -61,7 +59,7 @@ public class VideoDnsUtil extends DnsUtil {
     });
 
     @Override
-    public void getHostDns(String url) {
+    public synchronized void getHostDns(String url) {
         host = Uri.parse(url).getHost();
         Observer<String> observer = new Observer<String>() {
             @Override
@@ -82,12 +80,12 @@ public class VideoDnsUtil extends DnsUtil {
                 if (mCallback != null){
                     mCallback.onFail();
                 }
-                RequestManager.getInstance().remove(HttpConstsUtil.GET_HOST_DNS);
+                RequestManager.getInstance().cancel(HttpConstsUtil.GET_HOST_DNS);
             }
 
             @Override
             public void onComplete() {
-                RequestManager.getInstance().remove(HttpConstsUtil.GET_HOST_DNS);
+                RequestManager.getInstance().cancel(HttpConstsUtil.GET_HOST_DNS);
             }
         };
         mObservable.subscribeOn(Schedulers.io())
@@ -98,6 +96,6 @@ public class VideoDnsUtil extends DnsUtil {
 
     @Override
     public void cancel() {
-        RequestManager.getInstance().remove(HttpConstsUtil.GET_HOST_DNS);
+        RequestManager.getInstance().cancel(HttpConstsUtil.GET_HOST_DNS);
     }
 }

@@ -110,7 +110,6 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
     private ValueAnimator mScaleHide;
 
     private Map<String,String> mHeader = new ArrayMap<>();
-    private handler mHandler = new handler(this);
 
 
     public VideoPlayer(Context context, Boolean fullFlag) {
@@ -157,7 +156,6 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
         mFadeOut = AnimationUtils.loadAnimation(mContext,R.anim.anim_hide);
         mFadeInAdd = AnimationUtils.loadAnimation(mContext,R.anim.anim_show);
         mFadeOutAdd = AnimationUtils.loadAnimation(mContext,R.anim.anim_hide);
-
         mScaleShow = new ValueAnimator().setDuration(333);
         mScaleShow.setFloatValues(0f,1.0f);
         mScaleShow.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -207,27 +205,7 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
         GSYVideoManager.instance().setTimeOut(60000,true);
     }
 
-    private static class handler extends Handler{
 
-        private final WeakReference<VideoPlayer> mPlayer;
-
-        public handler(VideoPlayer player) {
-            mPlayer = new WeakReference<>(player);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what){
-                case 0x01:
-                    VideoPlayer player = mPlayer.get();
-                    if (player != null){
-                        player.release();
-                    }
-                    break;
-            }
-        }
-    }
 
     @Override
     public boolean isAutoFullWithSize() {
@@ -629,6 +607,9 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
 
         @Override
         public void onAnimationEnd(Animation animation) {
+            if (mCurrentState == CURRENT_STATE_PREPAREING){
+                return;
+            }
            mScaleHide.start();
         }
 
@@ -646,6 +627,9 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
 
         @Override
         public void onAnimationEnd(Animation animation) {
+            if (mCurrentState == CURRENT_STATE_PREPAREING){
+                return;
+            }
             mProgressBar.setEnabled(true);
             mScaleShow.start();
         }
@@ -938,6 +922,7 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
     @Override
     public void setSeekbar(SeekBar seekbar) {
         mProgressBar = seekbar;
+        mProgressBar.setEnabled(false);
         mProgressBar.setOnSeekBarChangeListener(this);
         mProgressBar.setOnTouchListener(this);
     }

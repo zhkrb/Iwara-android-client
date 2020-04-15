@@ -124,6 +124,12 @@ public class ScaleVideoView extends ConstraintLayout implements OnClickListener,
         mTitle.setSelected(true);
     }
 
+    public void setUser(String s){
+        if (mUser != null){
+            mUser.setText(s);
+        }
+    }
+
     public void setHeader(Map<String,String> header){
         mVideoPlayer.setHeader(header);
     }

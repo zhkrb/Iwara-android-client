@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Create by zhkrb on 2019/10/4 10:52
+ * Create by zhkrb on 2019/11/4 22:05
  */
 
-package com.zhkrb.iwara.fragment;
+package com.zhkrb.iwara.adapter.inter;
 
-public class SingleTaskFragment {
+public interface AdapterLongClickInterface<T> extends AdapterClickInterface<T> {
+
+    void itemLongClick(T bean);
 }

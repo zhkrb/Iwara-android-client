@@ -14,8 +14,8 @@
         android:text="@string/comment_tip"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp"
         android:textSize="@dimen/subtitle2"
         android:background="@color/shadowColor"
         />
@@ -27,7 +27,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_comment_tip"
-
+        android:overScrollMode="never"
         android:layout_marginTop="4dp"
         />
 

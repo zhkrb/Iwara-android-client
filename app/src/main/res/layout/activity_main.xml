@@ -1,65 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
+    android:id="@+id/parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MainActivity"
-    android:fitsSystemWindows="true"
     android:background="@color/surfaceDark"
+    android:fitsSystemWindows="true"
+    tools:context=".activity.MainActivity"
     >
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/parent_layout"
-        android:background="@android:color/transparent"
-
-        >
         <androidx.constraintlayout.motion.widget.MotionLayout
-            android:layout_width="0dp"
-            android:layout_height="0dp"
             android:id="@+id/motion_layout"
-            android:background="@null"
-            app:layoutDescription="@xml/main_scene"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            >
-        <FrameLayout
-            android:id="@+id/frame_layout"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@null"
-            />
+            android:background="@android:color/transparent"
+            app:layoutDescription="@xml/main_scene_fixtop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:motionDebug="SHOW_ALL"
+            >
+
+            <FrameLayout
+                android:id="@+id/frame_layout"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@android:color/transparent" />
+
             <com.zhkrb.iwara.custom.MaterialAppBarLayout
+                android:id="@+id/appBarLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/appBarLayout"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@android:color/transparent"
+                android:translationZ="2dp"
+                app:BottomRightCut="true"
+                app:BottomRightRadius="@dimen/cut_16dp"
+                app:CutElevation="@dimen/elevation_2dp"
+                app:CutProgress="0"
+                app:cardBackgroundColor="@color/secondaryLight"
+                app:cardCornerRadius="0dp"
                 />
         </androidx.constraintlayout.motion.widget.MotionLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
-    <com.google.android.material.navigation.NavigationView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="@color/text"
-        android:fitsSystemWindows="true"
-        app:insetForeground="@android:color/transparent"
-        android:id="@+id/nav_view"
-        android:layout_gravity="start|left"
-        >
 
-
-    </com.google.android.material.navigation.NavigationView>
-
-
-</androidx.drawerlayout.widget.DrawerLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

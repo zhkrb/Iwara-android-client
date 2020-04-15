@@ -34,6 +34,8 @@ import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 
+import androidx.cardview.widget.CardView;
+
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.shape.CornerTreatment;
 import com.google.android.material.shape.CutCornerTreatment;
@@ -45,7 +47,7 @@ import com.google.android.material.shape.ShapePathModel;
 import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.utils.DpUtil;
 
-public class CutCardView extends MaterialCardView {
+public class CutCardView extends CardView {
 
     private ShapeAppearanceModel.Builder mShapeAppearanceModel;
     private MaterialShapeDrawable mShapeDrawable;

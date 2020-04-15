@@ -22,4 +22,6 @@ public interface ReloadListener {
 
     void needReload();
 
+    void reSetAuthorName(String s);
+
 }

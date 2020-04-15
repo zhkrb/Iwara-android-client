@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.zhkrb.iwara.AppConfig;
 import com.zhkrb.iwara.utils.RegexUtil;
 import com.zhkrb.iwara.utils.TimeUtil;
 
@@ -32,7 +33,11 @@ public class FormatUtil {
             object.put("view",selectTextMayNull(element,"div.left-icon"));
             object.put("href",element.selectFirst("div.field-item").getElementsByTag("a").attr("href"));
             if (element.selectFirst("img")!=null){
-                object.put("thumb","https:"+selectAttrMayNull(element,"img","src"));
+                String thumb = selectAttrMayNull(element,"img","src");
+                if (!TextUtils.isEmpty(thumb)&&!thumb.contains(AppConfig.NOM_HOST_URL)){
+                    thumb = "//" + AppConfig.HOST_URL + thumb;
+                }
+                object.put("thumb","https:" + thumb);
                 String title = "";
                 if (TextUtils.isEmpty(selectAttrMayNull(element,"img","title"))){
                     if (element.selectFirst("h3.title") != null){
@@ -238,7 +243,11 @@ public class FormatUtil {
             Element element = comment.selectFirst("li.pager-last");
             String p = selectAttrMayNull(element,"a","href");
             if (!TextUtils.isEmpty(p)){
-                page = Integer.parseInt(p.split("/?page=")[1]);
+                List<String> list = RegexUtil.regex(p,"/?page=(.*\\d)");
+                if (list != null && list.size() >0){
+                    page = Integer.parseInt(list.get(0).split("page=")[1]);
+                }
+
             }
         }
         return page;

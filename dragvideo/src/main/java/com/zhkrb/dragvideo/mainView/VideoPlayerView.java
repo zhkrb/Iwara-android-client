@@ -19,11 +19,11 @@
 package com.zhkrb.dragvideo.mainView;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -41,15 +41,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.Constraints;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.widget.NestedScrollView;
 import androidx.customview.widget.ViewDragHelper;
 import androidx.fragment.app.DialogFragment;
@@ -74,7 +72,6 @@ import com.zhkrb.dragvideo.contentViewBase.VideoContentView;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
 import java.util.List;
 import java.util.Map;
 
@@ -143,8 +140,8 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
 
     public VideoPlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.VideoPlayView);
-        mAppearAnimId = ta.getResourceId(R.styleable.VideoPlayView_appear_animation,R.anim.bottom_to_top_enter);
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.VideoPlayerView);
+        mAppearAnimId = ta.getResourceId(R.styleable.VideoPlayerView_appear_animation,R.anim.bottom_to_top_enter);
         ta.recycle();
         mContext = context;
     }
@@ -234,6 +231,7 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
      * user
      */
     public void load(Bundle bundle) {
+
         mBundle = bundle;
         if (mRootClazz != null){
             ContentFrame frame = new ContentFrame(mRootClazz);
@@ -319,7 +317,7 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
         boolean intercept = false;
         final float x = ev.getX();
         final float y = ev.getY();
-        final float rawy = ev.getRawY();
+        final float rwy = ev.getRawY();
         final int action = ev.getAction();
         if (isViewHit(seekBar,(int) x,(int) y) && mScrollState == SCROLL_STATE_NOM){
             return false;
@@ -353,7 +351,7 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
             case MotionEvent.ACTION_DOWN:
                 mDownMotionX = x;
                 mDownMotionY = y;
-                mDownRawY = rawy;
+                mDownRawY = rwy;
                 break;
             case MotionEvent.ACTION_MOVE:
                 float deltaX = Math.abs(x - mDownMotionX);
@@ -388,8 +386,6 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
 
 
     private boolean isFirstMeasure = true;
-
-    //TODO 处理偶尔缺少抬起或者按下事件的动画错误
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -469,6 +465,9 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
                 }
                 break;
             case MotionEvent.ACTION_UP:
+                if (mTracker == null){
+                    return false;
+                }
                 mTracker.computeCurrentVelocity(500);
                 float yv = mTracker.getYVelocity();
                 float deltaY1 = y - mDownMotionY;
@@ -546,9 +545,8 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
     }
 
 
-    private NestedScrollView.OnScrollChangeListener mScrollChangeListener = (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-       isScrollTop = scrollY == 0;
-    };
+    private NestedScrollView.OnScrollChangeListener mScrollChangeListener = (v, scrollX, scrollY, oldScrollX, oldScrollY) ->
+            isScrollTop = scrollY == 0;
 
 
     private void notHideView(int i, float velocity) {
@@ -576,25 +574,10 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
         valueAnimator.setIntValues(i,100);
         valueAnimator.setDuration(computeSettleDuration(100 - i, (int) velocity, 100));
         valueAnimator.addUpdateListener(v -> updateThird((Integer) v.getAnimatedValue()));
-        valueAnimator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
+        valueAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 release();
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
             }
         });
         valueAnimator.setInterpolator(sInterpolator);
@@ -667,9 +650,11 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
             dis = 0;
         }
         if (dis == 0 || dis == 10000){
-            setLayerType(View.LAYER_TYPE_NONE, (Paint)null);
+            setLayerType(View.LAYER_TYPE_NONE, null);
+            mHideFragmentListener.canClick(true);
         }else {
-            setLayerType(View.LAYER_TYPE_HARDWARE, (Paint)null);
+            setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            mHideFragmentListener.canClick(false);
         }
         if (dis > 0){
             mDescView.setAnim(true);
@@ -711,9 +696,6 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
         }
         mLatestHeaderHeight = headerHeight;
         int leftRightMargin = (int) (dp2px(mSmillLeftAndRight) * prog);
-//        ((ConstraintLayout.LayoutParams)mHeaderView.getLayoutParams()).setMarginEnd(leftRightMargin);
-//        ((ConstraintLayout.LayoutParams)mHeaderView.getLayoutParams()).setMarginStart(leftRightMargin);
-
         mHeaderWrapper.setLeftMargin(leftRightMargin);
         mHeaderWrapper.setRightMargin(leftRightMargin);
         mDescWrapper.setLeftMargin(leftRightMargin);
@@ -773,8 +755,10 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
         }
         if (dis == 0 || dis == 100){
             setLayerType(View.LAYER_TYPE_NONE, (Paint)null);
+            mHideFragmentListener.canClick(true);
         }else {
             setLayerType(View.LAYER_TYPE_HARDWARE, (Paint)null);
+            mHideFragmentListener.canClick(false);
         }
         if (dis > 0){
             mScaleVideoView.setPlayerState(IVideoPlayer.VIEW_STATE_DOWN);
@@ -877,6 +861,9 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
         if (mNetworkUtil!=null){
             mNetworkUtil.cancel();
         }
+        if (mDnsUtil != null){
+            mDnsUtil.cancel();
+        }
         if (mTracker != null){
             mTracker.recycle();
             mTracker = null;
@@ -928,7 +915,6 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
 
         @Override
         public void onFailed(String result) {
-            ToastUtil.show(mContext,R.string.url_get_failed);
             mScaleVideoView.getVideoView().setFailed((String) mContext.getText(R.string.url_get_failed_2));
         }
     };
@@ -1058,6 +1044,13 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
         }
     }
 
+    @Override
+    public void reSetAuthorName(String s) {
+        if (mScaleVideoView != null){
+            mScaleVideoView.setUser(s);
+        }
+    }
+
     public void reloadVideo(){
         mNetworkUtil.getUrlList(mainUrl);
         mScaleVideoView.getVideoView().setLoading(true);
@@ -1082,6 +1075,8 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
     public interface onHideFragmentListener{
         void onHide(boolean hide);
         void onRemove();
+
+        void canClick(boolean b);
     }
 
 

@@ -1,4 +1,8 @@
 apply plugin: 'com.android.application'
+if (file('google-services.json').exists()) {
+    apply plugin: 'com.google.gms.google-services'
+    apply plugin: 'io.fabric'
+}
 
 static def gitVersionCode() {
     def cmd = 'git rev-list HEAD --first-parent --count'
@@ -21,6 +25,20 @@ static def gitVersionTag(boolean isPattern) {
     }
 
     return version
+}
+
+task switchToDebug(type: Copy) {
+    description = 'Switches to DEBUG google-services.json'
+    from "src/debug"
+    include "google-services.json"
+    into "."
+}
+
+task switchToRelease(type: Copy) {
+    description = 'Switches to RELEASE google-services.json'
+    from "src/release"
+    include "google-services.json"
+    into "."
 }
 
 android {
@@ -63,6 +81,12 @@ android {
         }
     }
 
+    afterEvaluate {
+        if (file('google-services.json').exists()) {
+            processDebugGoogleServices.dependsOn switchToDebug
+            processReleaseGoogleServices.dependsOn switchToRelease
+        }
+    }
 
 }
 
@@ -80,10 +104,10 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.google.android.material:material:1.1.0-beta01'
+    implementation 'com.google.android.material:material:1.2.0-alpha05'
     implementation 'com.android.support:support-annotations:28.0.0'
     implementation 'com.android.support:swiperefreshlayout:28.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
 
     //glide
     implementation 'com.github.bumptech.glide:glide:4.8.0'
@@ -97,8 +121,12 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
 
 
-
     implementation 'org.jsoup:jsoup:1.11.3'
     api project(':dragvideo')
 
+    // Firebase
+    implementation 'com.google.firebase:firebase-core:17.2.1'
+    implementation 'com.google.firebase:firebase-analytics:17.2.1'
+
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 }

@@ -26,6 +26,8 @@ import android.widget.TextView;
 
 import com.zhkrb.iwara.AppConfig;
 import com.zhkrb.iwara.R;
+import com.zhkrb.iwara.adapter.inter.AdapterClickInterface;
+import com.zhkrb.iwara.adapter.inter.AdapterLongClickInterface;
 import com.zhkrb.iwara.bean.VideoListBean;
 import com.zhkrb.iwara.custom.refreshView.RefreshAdapter;
 import com.zhkrb.iwara.utils.DpUtil;
@@ -48,7 +50,7 @@ public class VideoListAdapter extends RefreshAdapter<VideoListBean> {
     private static int mListMode = 0;
     private int mLastBgSize = 0;
 
-    private onItemClickListener mItemClickListener;
+    private AdapterClickInterface<VideoListBean> mItemClickListener;
     private View.OnClickListener mClickListener;
     private View.OnLongClickListener mLongClickListener;
 
@@ -75,8 +77,8 @@ public class VideoListAdapter extends RefreshAdapter<VideoListBean> {
             if (tag != null) {
                 int position = (int) tag;
                 VideoListBean bean = mList.get(position);
-                if (mItemClickListener != null&&mItemClickListener instanceof onItemLongClickListener){
-                    ((onItemLongClickListener) mItemClickListener).itemLongClick(bean);
+                if (mItemClickListener != null&&mItemClickListener instanceof AdapterLongClickInterface){
+                    ((AdapterLongClickInterface<VideoListBean>) mItemClickListener).itemLongClick(bean);
                 }
             }
             return true;
@@ -180,7 +182,7 @@ public class VideoListAdapter extends RefreshAdapter<VideoListBean> {
         isListSort = b;
     }
 
-    public void setClickListener(onItemClickListener clickListener) {
+    public void setClickListener(AdapterClickInterface<VideoListBean> clickListener) {
         mItemClickListener = clickListener;
     }
 
@@ -220,19 +222,13 @@ public class VideoListAdapter extends RefreshAdapter<VideoListBean> {
             like.setText(videoListBean.getLike());
             if (!itemView.hasOnClickListeners()){
                 itemView.setOnClickListener(mClickListener);
-                if (mItemClickListener instanceof onItemLongClickListener){
+                if (mItemClickListener instanceof AdapterLongClickInterface){
                     itemView.setOnLongClickListener(mLongClickListener);
                 }
             }
         }
     }
 
-    public interface onItemClickListener{
-        void itemClick(VideoListBean bean);
-    }
 
-    public interface onItemLongClickListener extends onItemClickListener{
-        void itemLongClick(VideoListBean bean);
-    }
 
 }

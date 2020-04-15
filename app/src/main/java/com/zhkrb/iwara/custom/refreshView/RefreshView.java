@@ -26,15 +26,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.netowrk.jsoup.JsoupCallback;
 import com.zhkrb.iwara.netowrk.retrofit.RetrofitCallback;
-import com.zhkrb.iwara.utils.ImgLoader;
-import com.zhkrb.iwara.utils.L;
 import com.zhkrb.iwara.utils.ToastUtil;
 import com.zhkrb.iwara.utils.WordUtil;
 import com.zhkrb.iwara.netowrk.NetworkCallback;
@@ -47,21 +42,22 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-public class RefreshView extends RelativeLayout implements View.OnClickListener {
+public class RefreshView extends FrameLayout implements View.OnClickListener {
 
     private  boolean mEnableLoadMore;
     private  boolean mEnableRefresh;
-    private  boolean mShowLoading;
-    private boolean mShowNoData;
+    private  boolean isHeaderRefresh;
+    private boolean isFooterRefresh;
+    private boolean isShowError;
     private int mLayoutRes;
     private Context mContext;
-    private ViewGroup mNo_data;
-    private TextView mHintText;
-    private ImageView mNo_data_img;
+    private ErrorView mErrorView;
     private SwipeRefreshLayout mRefreshLayout;
     private ScaleRecyclerView mRecyclerView;
     private DataHelper mDataHelper;
     private ScaleRecyclerView.onScaleListener mOnScaleListener;
+    private String mErrHint;
+    private int mErrDrawable;
     private int mPage;
 
     private int mCallbackType = 0; //回调类型 0 jsoup 1 retrofit
@@ -81,11 +77,19 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
         mContext = context;
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.RefreshView);
         mLayoutRes = ta.getResourceId(R.styleable.RefreshView_layout, R.layout.view_refresh_group);
-        mShowNoData = ta.getBoolean(R.styleable.RefreshView_showNoData, true);
-        mShowLoading = ta.getBoolean(R.styleable.RefreshView_showLoading, true);
+        isHeaderRefresh = ta.getBoolean(R.styleable.RefreshView_showLoading, true);
         mEnableRefresh = ta.getBoolean(R.styleable.RefreshView_enableRefresh, true);
         mEnableLoadMore = ta.getBoolean(R.styleable.RefreshView_enableLoadMore, true);
         ta.recycle();
+        createErrorView();
+    }
+
+    private void createErrorView() {
+        mErrorView = new ErrorView(mContext);
+        mErrorView.setId(R.id.error_view);
+        mErrorView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mErrorView.setOnClickListener(this);
+        mErrorView.setVisibility(GONE);
     }
 
     @Override
@@ -93,28 +97,10 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
         super.onFinishInflate();
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(mLayoutRes,this,true);
-        mNo_data = view.findViewById(R.id.no_data);
-        mNo_data_img = view.findViewById(R.id.no_data_img);
-        mHintText = view.findViewById(R.id.hint);
         mRefreshLayout = view.findViewById(R.id.refresh_layout);
         mRecyclerView = view.findViewById(R.id.recyclerView);
-        mRecyclerView.setItemViewCacheSize(4);
-        mRecyclerView.setOnFlingListener(new RecyclerView.OnFlingListener() {
-            @Override
-            public boolean onFling(int velocityX, int velocityY) {
-                L.e("Fling", String.valueOf(Math.abs(velocityY)));
-                if (Math.abs(velocityY)>4000){
-//                    ImgLoader.pause();
-                }
-                return false;
-            }
-        });
-        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refresh();
-            }
-        });
+        mRecyclerView.setItemViewCacheSize(10);
+        mRefreshLayout.setOnRefreshListener(this::refresh);
         OnScrollEndlessListener onScrollEndlessListener = new OnScrollEndlessListener() {
             @Override
             public void onLoadMore() {
@@ -129,11 +115,23 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
                 R.color.ref_pink,
                 R.color.ref_pop,
                 R.color.ref_red);
-        if (mShowLoading){
+        if (isHeaderRefresh){
             mRefreshLayout.setRefreshing(true);
         }
-        mNo_data.setOnClickListener(this);
+        if (isShowError){
+            showError();
+        }
+        mErrorView.setOnClickListener(this);
+    }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
     }
 
     public <T> RefreshView setDataHelper(DataHelper<T> dataHelper) {
@@ -149,14 +147,8 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
         if (adapter == null){
             return;
         }
-        adapter.setLoadMoreCallback(() -> {
-            adapter.setLoadState(RefreshAdapter.LOAD_TYPE_NOM,"");
-            RefreshView.this.loadMore();
-        });
-        if (adapter.getRecyclerView() == null){
-            mRecyclerView.setAdapter(adapter);
-        }
-
+        mRecyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     public void setLayoutManager(RecyclerView.LayoutManager layoutManager) {
@@ -167,12 +159,75 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
         mRecyclerView.addItemDecoration(itemDecoration);
     }
 
+    public void resetAllstate(){
+        hideLoadmore(false);
+        hideLoading();
+//        if (!mEnableLoadMore)
+    }
+
     public void showLoading(){
+        isHeaderRefresh = true;
         mRefreshLayout.setRefreshing(true);
     }
 
     public void hideLoading(){
+        isHeaderRefresh = false;
         mRefreshLayout.setRefreshing(false);
+    }
+
+    public void hideLoadmore(boolean needAnim){
+        isFooterRefresh = false;
+        if (mDataHelper != null && mDataHelper.getAdapter() != null){
+            mDataHelper.getAdapter().hideFooterLoad(needAnim);
+        }
+    }
+
+    public void hideLoadmore(){
+        isFooterRefresh = false;
+        if (mDataHelper != null && mDataHelper.getAdapter() != null){
+            mDataHelper.getAdapter().hideFooterLoad();
+        }
+    }
+
+    public void showError(){
+        isShowError = true;
+        mRecyclerView.setVisibility(INVISIBLE);
+        if (getChildCount() < 2){
+            addView(mErrorView);
+        }
+        mErrorView.setVisibility(VISIBLE);
+        mErrorView.setError(mErrHint,mErrDrawable);
+    }
+
+    public void hideError(){
+        isShowError = false;
+        mRecyclerView.setVisibility(VISIBLE);
+        mErrorView.setVisibility(GONE);
+    }
+
+    private boolean isShowFullScreen(){
+        if (mRecyclerView == null){
+            return false;
+        }
+        int childCount = mRecyclerView.getChildCount();
+        //获取最后一个childView
+        View lastChildView = mRecyclerView.getChildAt(childCount - 1);
+        //获取第一个childView
+        View firstChildView = mRecyclerView.getChildAt(0);
+        int top = firstChildView.getTop();
+        int bottom = lastChildView.getBottom();
+        //recycleView显示itemView的有效区域的bottom坐标Y
+        int bottomEdge = mRecyclerView.getHeight() - mRecyclerView.getPaddingBottom();
+        //recycleView显示itemView的有效区域的top坐标Y
+        int topEdge = mRecyclerView.getPaddingTop();
+        //第一个view的顶部小于top边界值,说明第一个view已经部分或者完全移出了界面
+        //最后一个view的底部小于bottom边界值,说明最后一个view已经完全显示在界面
+        //若不处理这种情况,可能会存在recycleView高度足够高时,itemView数量很少无法填充一屏,但是滑动到最后一项时依然会发生回调
+        //此时其实并不需要任何刷新操作的
+        if (bottom <= bottomEdge && top < topEdge) {
+            return true;
+        }
+        return false;
     }
 
     private JsoupCallback mJsoupRefreshCallback = new JsoupCallback() {
@@ -189,14 +244,11 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
             if (mDataHelper == null) {
                 return;
             }
-            if (mNo_data != null && mNo_data.getVisibility() == View.VISIBLE) {
-                mNo_data.setVisibility(View.GONE);
-            }
+            hideError();
 
             if (code!=200){
-                mRecyclerView.setVisibility(GONE);
-                mNo_data.setVisibility(View.VISIBLE);
-                mHintText.setText(WordUtil.getString(R.string.no_more_there));
+                mErrHint = WordUtil.getString(R.string.no_more_there);
+                showError();
                 return;
             }
             if (!TextUtils.isEmpty(info)){
@@ -206,34 +258,19 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
                 }
                 mDataCount = list.size();
                 if (list.size()>0){
-                    if (mShowNoData && mNo_data != null && mNo_data.getVisibility() == View.VISIBLE) {
-                        mNo_data.setVisibility(View.GONE);
-                    }
-                    mRecyclerView.setVisibility(VISIBLE);
-                    mDataHelper.onNoData(false);
+                    hideError();
                     mDataHelper.getAdapter().refreshData(list);
                     mDataHelper.onRefresh(list);
-                    if (list.size()<mDataHelper.maxPageItemCount()){
-                        mDataHelper.getAdapter().setLoadState(RefreshAdapter.LOAD_TYPE_EMPTY,"");
-                    }else {
-                        mDataHelper.getAdapter().setLoadState(RefreshAdapter.LOAD_TYPE_NOM,"");
-                    }
                 }else {
                     mDataHelper.getAdapter().clearData();
-                    if (mShowNoData && mNo_data != null && mNo_data.getVisibility() != View.VISIBLE) {
-                        mRecyclerView.setVisibility(GONE);
-                        mNo_data.setVisibility(View.VISIBLE);
-                        mHintText.setText(WordUtil.getString(R.string.no_more_there));
-                    }
+                    mErrHint = WordUtil.getString(R.string.no_more_there);
+                    showError();
                     mDataHelper.onNoData(true);
                 }
             }else {
                 mDataHelper.getAdapter().clearData();
-                if (mShowNoData && mNo_data != null && mNo_data.getVisibility() != View.VISIBLE) {
-                    mRecyclerView.setVisibility(GONE);
-                    mNo_data.setVisibility(View.VISIBLE);
-                    mHintText.setText(WordUtil.getString(R.string.no_more_there));
-                }
+                mErrHint = WordUtil.getString(R.string.no_more_there);
+                showError();
                 mDataHelper.onNoData(true);
             }
         }
@@ -251,19 +288,11 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
 
         @Override
         public void onError(int code,String msg) {
-            if (mShowNoData && mNo_data != null && mNo_data.getVisibility() == View.VISIBLE) {
-                mNo_data.setVisibility(View.GONE);
-            }
-            if (mNo_data != null) {
-                if (mNo_data.getVisibility() != View.VISIBLE) {
-                    RefreshAdapter adapter = mDataHelper.getAdapter();
-                    if (adapter != null && adapter.getItemCount() > 0) {
-                        adapter.clearData();
-                    }
-                    mRecyclerView.setVisibility(GONE);
-                    mNo_data.setVisibility(View.VISIBLE);
-                }
-                mHintText.setText(WordUtil.getErrorMsg(code,msg));
+            mErrHint = WordUtil.getErrorMsg(code,msg);
+            showError();
+            RefreshAdapter adapter = mDataHelper.getAdapter();
+            if (adapter != null && adapter.getItemCount() > 0) {
+                adapter.clearData();
             }
             mDataHelper.onNoData(true);
         }
@@ -290,35 +319,22 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
             }
             if (code!=200){
                 mPage--;
-                ToastUtil.show(msg);
-                adapter.setLoadState(RefreshAdapter.LOAD_TYPE_ERROR,WordUtil.getErrorMsg(code,msg));
+                ToastUtil.show(WordUtil.getErrorMsg(code,msg));
+                hideLoadmore();
                 return;
             }
-            if (mShowNoData && mNo_data.getVisibility() == VISIBLE){
-                mNo_data.setVisibility(GONE);
-                mRecyclerView.setVisibility(VISIBLE);
-            }
+            hideError();
             if (!TextUtils.isEmpty(info)){
                 List list = mDataHelper.processData(info);
-                if (list == null){
-                    adapter.setLoadState(RefreshAdapter.LOAD_TYPE_EMPTY,"");
+                if (list == null ||list.size() == 0){
+                    hideLoadmore();
                     mPage--;
                     return;
                 }
                 mDataCount = list.size();
-                if (mDataCount > 0){
-                    adapter.insertList(list);
-                    if (mDataCount < mDataHelper.maxPageItemCount()){
-                        adapter.setLoadState(RefreshAdapter.LOAD_TYPE_EMPTY,"");
-                    }else {
-                        adapter.setLoadState(RefreshAdapter.LOAD_TYPE_NOM,"");
-                    }
-                }else {
-                    adapter.setLoadState(RefreshAdapter.LOAD_TYPE_EMPTY,"");
-                    mPage--;
-                }
+                adapter.insertList(list);
             }else {
-                adapter.setLoadState(RefreshAdapter.LOAD_TYPE_EMPTY,"");
+                hideLoadmore();
                 mPage--;
             }
         }
@@ -326,9 +342,6 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
         @Override
         public void onFinish() {
             mEnableLoadMore = true;
-            if (mShowLoading && mRefreshLayout.isRefreshing()) {
-                hideLoading();
-            }
             if (mDataHelper != null) {
                 mDataHelper.onLoadDataCompleted(mDataCount);
             }
@@ -336,11 +349,13 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
 
         @Override
         public void onError(int code,String msg) {
+            mPage--;
             RefreshAdapter adapter = mDataHelper.getAdapter();
             if (adapter == null){
                 return;
             }
-            adapter.setLoadState(RefreshAdapter.LOAD_TYPE_ERROR,WordUtil.getErrorMsg(code,msg));
+            ToastUtil.show(WordUtil.getErrorMsg(code,msg));
+            hideLoadmore();
         }
     };
 
@@ -358,14 +373,12 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
             if (mDataHelper == null) {
                 return;
             }
-            if (mNo_data != null && mNo_data.getVisibility() == View.VISIBLE) {
-                mNo_data.setVisibility(View.GONE);
-            }
+            hideError();
 
             if (code!=200){
                 mRecyclerView.setVisibility(GONE);
-                mNo_data.setVisibility(View.VISIBLE);
-                mHintText.setText(WordUtil.getString(R.string.no_more_there));
+                mErrHint = WordUtil.getString(R.string.no_more_there);
+                showError();
                 return;
             }
             if (!TextUtils.isEmpty(info)){
@@ -375,34 +388,21 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
                 }
                 mDataCount = list.size();
                 if (list.size()>0){
-                    if (mShowNoData && mNo_data != null && mNo_data.getVisibility() == View.VISIBLE) {
-                        mNo_data.setVisibility(View.GONE);
-                    }
+                    hideError();
                     mRecyclerView.setVisibility(VISIBLE);
                     mDataHelper.onNoData(false);
                     mDataHelper.getAdapter().refreshData(list);
                     mDataHelper.onRefresh(list);
-                    if (list.size()<mDataHelper.maxPageItemCount()){
-                        mDataHelper.getAdapter().setLoadState(RefreshAdapter.LOAD_TYPE_EMPTY,"");
-                    }else {
-                        mDataHelper.getAdapter().setLoadState(RefreshAdapter.LOAD_TYPE_NOM,"");
-                    }
                 }else {
                     mDataHelper.getAdapter().clearData();
-                    if (mShowNoData && mNo_data != null && mNo_data.getVisibility() != View.VISIBLE) {
-                        mRecyclerView.setVisibility(GONE);
-                        mNo_data.setVisibility(View.VISIBLE);
-                        mHintText.setText(WordUtil.getString(R.string.no_more_there));
-                    }
+                    mErrHint = WordUtil.getString(R.string.no_more_there);
+                    showError();
                     mDataHelper.onNoData(true);
                 }
             }else {
                 mDataHelper.getAdapter().clearData();
-                if (mShowNoData && mNo_data != null && mNo_data.getVisibility() != View.VISIBLE) {
-                    mRecyclerView.setVisibility(GONE);
-                    mNo_data.setVisibility(View.VISIBLE);
-                    mHintText.setText(WordUtil.getString(R.string.no_more_there));
-                }
+                mErrHint = WordUtil.getString(R.string.no_more_there);
+                showError();
                 mDataHelper.onNoData(true);
             }
         }
@@ -420,19 +420,11 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
 
         @Override
         public void onError(int code,String msg) {
-            if (mShowNoData && mNo_data != null && mNo_data.getVisibility() == View.VISIBLE) {
-                mNo_data.setVisibility(View.GONE);
-            }
-            if (mNo_data != null) {
-                if (mNo_data.getVisibility() != View.VISIBLE) {
-                    RefreshAdapter adapter = mDataHelper.getAdapter();
-                    if (adapter != null && adapter.getItemCount() > 0) {
-                        adapter.clearData();
-                    }
-                    mRecyclerView.setVisibility(GONE);
-                    mNo_data.setVisibility(View.VISIBLE);
-                }
-                mHintText.setText(WordUtil.getErrorMsg(code,msg));
+            mErrHint = WordUtil.getErrorMsg(code,msg);
+            showError();
+            RefreshAdapter adapter = mDataHelper.getAdapter();
+            if (adapter != null && adapter.getItemCount() > 0) {
+                adapter.clearData();
             }
             mDataHelper.onNoData(true);
         }
@@ -460,34 +452,21 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
             if (code!=200){
                 mPage--;
                 ToastUtil.show(msg);
-                adapter.setLoadState(RefreshAdapter.LOAD_TYPE_ERROR,WordUtil.getErrorMsg(code,msg));
+                hideLoadmore();
                 return;
             }
-            if (mShowNoData && mNo_data.getVisibility() == VISIBLE){
-                mNo_data.setVisibility(GONE);
-                mRecyclerView.setVisibility(VISIBLE);
-            }
+            hideError();
             if (!TextUtils.isEmpty(info)){
                 List list = mDataHelper.processData(info);
-                if (list == null){
-                    adapter.setLoadState(RefreshAdapter.LOAD_TYPE_EMPTY,"");
+                if (list == null ||list.size() == 0){
+                    hideLoadmore();
                     mPage--;
                     return;
                 }
                 mDataCount = list.size();
-                if (mDataCount > 0){
-                    adapter.insertList(list);
-                    if (mDataCount < mDataHelper.maxPageItemCount()){
-                        adapter.setLoadState(RefreshAdapter.LOAD_TYPE_EMPTY,"");
-                    }else {
-                        adapter.setLoadState(RefreshAdapter.LOAD_TYPE_NOM,"");
-                    }
-                }else {
-                    adapter.setLoadState(RefreshAdapter.LOAD_TYPE_EMPTY,"");
-                    mPage--;
-                }
+                adapter.insertList(list);
             }else {
-                adapter.setLoadState(RefreshAdapter.LOAD_TYPE_EMPTY,"");
+                hideLoadmore();
                 mPage--;
             }
         }
@@ -495,9 +474,6 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
         @Override
         public void onFinish() {
             mEnableLoadMore = true;
-            if (mShowLoading && mRefreshLayout.isRefreshing()) {
-                hideLoading();
-            }
             if (mDataHelper != null) {
                 mDataHelper.onLoadDataCompleted(mDataCount);
             }
@@ -505,11 +481,13 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
 
         @Override
         public void onError(int code,String msg) {
+            mPage--;
             RefreshAdapter adapter = mDataHelper.getAdapter();
             if (adapter == null){
                 return;
             }
-            adapter.setLoadState(RefreshAdapter.LOAD_TYPE_ERROR,WordUtil.getErrorMsg(code,msg));
+            ToastUtil.show(WordUtil.getErrorMsg(code,msg));
+            hideLoadmore();
         }
     };
 
@@ -527,6 +505,7 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
     }
 
     public void loadMore() {
+        isFooterRefresh = true;
         if (mDataHelper != null&&mEnableLoadMore) {
             mPage++;
             mDataHelper.loadData(mPage, getLoadMoreCallback());
@@ -536,9 +515,9 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
 
     private NetworkCallback getRefreshCallback(){
         switch (mCallbackType){
-            case 0:
+            case TYPE_JSOUP:
                 return mJsoupRefreshCallback;
-            case 1:
+            case TYPE_RETROFIT:
                 return mRetrofitRefreshCallback;
             default:
                 throw new RuntimeException("callback type error");
@@ -547,9 +526,9 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
 
     private NetworkCallback getLoadMoreCallback(){
         switch (mCallbackType){
-            case 0:
+            case TYPE_JSOUP:
                 return mJsoupLoadMoreCallback;
-            case 1:
+            case TYPE_RETROFIT:
                 return mRetrofitLoadMoreCallback;
             default:
                 throw new RuntimeException("callback type error");
@@ -582,7 +561,7 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.no_data:
+            case R.id.error_view:
                 if (mRefreshLayout!=null&&mRefreshLayout.isRefreshing()){
                     return;
                 }
@@ -599,18 +578,11 @@ public class RefreshView extends RelativeLayout implements View.OnClickListener 
     }
 
     public void restoreData(List list) {
-        if (mShowNoData && mNo_data != null && mNo_data.getVisibility() == View.VISIBLE) {
-            mNo_data.setVisibility(View.GONE);
-        }
-        mRecyclerView.setVisibility(VISIBLE);
+        hideError();
         mDataHelper.onNoData(false);
         mDataHelper.getAdapter().setList(list);
         hideLoading();
-        if (list.size()<mDataHelper.maxPageItemCount()){
-            mDataHelper.getAdapter().setLoadState(RefreshAdapter.LOAD_TYPE_EMPTY,"");
-        }else {
-            mDataHelper.getAdapter().setLoadState(RefreshAdapter.LOAD_TYPE_NOM,"");
-        }
+        hideLoadmore();
     }
 
     public void setCallbackType(int callbackType) {

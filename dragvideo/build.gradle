@@ -50,4 +50,5 @@ dependencies {
     api 'com.shuyu:gsyVideoPlayer-x86:7.0.2'
     api 'com.shuyu:gsyVideoPlayer-arm64:7.0.2'
 //    implementation 'com.shuyu:gsyVideoPlayer-ex_so:7.0.1'
+
 }

@@ -13,29 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Create by zhkrb on 2019/10/4 10:52
+ * Create by zhkrb on 2020/3/1 20:50
  */
 
 package com.zhkrb.iwara.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 
 import com.zhkrb.iwara.base.AbsFragment;
 
-public class StandFragment extends AbsFragment {
+public abstract class BarBaseFragment extends AbsFragment {
 
-    @Override
-    protected void main(Bundle savedInstanceState) {
+    public abstract View getTopAppbar(Context context);
 
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return 0;
-    }
-
-    @Override
-    public void onNewArguments(Bundle args) {
-
-    }
+    public abstract boolean getNeedFixTop();
 }

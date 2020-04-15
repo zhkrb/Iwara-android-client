@@ -18,34 +18,22 @@
 
 package com.zhkrb.dragvideo.utils;
 
-import android.net.Uri;
-import android.text.TextUtils;
-import android.util.Log;
-
-import com.bumptech.glide.RequestManager;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.List;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+/**
+ * FFmpeg设置的url最终由tcp.c文件中的getaddrinfo()来解析host
+ * 他是线程阻塞的，所以碰到DNS污染或者DNS设置错误会导致ANR
+ * 需要自己实现DNS解析然后替换掉url中的域名
+ * 然后在FFmpeg的header中添加Host:原始域名
+ */
 
 public class DnsUtil {
 
     protected String host;
     protected DnsUtilCallback mCallback;
 
-    public DnsUtil() {
+    protected DnsUtil() {
     }
 
-    public void getHostDns(String url){
+    public synchronized void getHostDns(String url){
 
     }
 

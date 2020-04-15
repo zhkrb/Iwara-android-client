@@ -19,6 +19,7 @@
 package com.zhkrb.iwara.videoInfoContent;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.text.Html;
 import android.text.TextUtils;
@@ -39,13 +40,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSON;
 import com.zhkrb.dragvideo.contentViewBase.AbsContent;
+import com.zhkrb.dragvideo.contentViewBase.ContentFrame;
+import com.zhkrb.dragvideo.contentViewBase.VideoContentView;
 import com.zhkrb.iwara.R;
+import com.zhkrb.iwara.activity.MainActivity;
+import com.zhkrb.iwara.adapter.CommentAdapter;
 import com.zhkrb.iwara.adapter.RecommAdapter;
+import com.zhkrb.iwara.adapter.inter.AdapterClickInterface;
 import com.zhkrb.iwara.bean.VideoInfoBean;
 import com.zhkrb.iwara.bean.VideoListBean;
 import com.zhkrb.iwara.custom.FoldTextView;
+import com.zhkrb.iwara.custom.ItemDecoration;
 import com.zhkrb.iwara.custom.SwitchButton;
 import com.zhkrb.iwara.custom.AnimLinearLayoutManager;
+import com.zhkrb.iwara.custom.refreshView.OnScrollEndlessListener;
+import com.zhkrb.iwara.custom.refreshView.RefreshAdapter;
 import com.zhkrb.iwara.custom.refreshView.ScaleRecyclerView;
 import com.zhkrb.iwara.netowrk.jsoup.JsoupCallback;
 import com.zhkrb.iwara.netowrk.jsoup.JsoupUtil;
@@ -58,7 +67,7 @@ import com.zhkrb.iwara.utils.WordUtil;
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class VideoInfoContent extends AbsContent implements ViewStub.OnInflateListener, View.OnClickListener, RecommAdapter.onItemClickListener {
+public class VideoInfoContent extends AbsContent implements View.OnClickListener, AdapterClickInterface<VideoListBean>, ViewStub.OnInflateListener {
 
     private FoldTextView mTextTitle;
     private FoldTextView mTextInfo;
@@ -77,6 +86,7 @@ public class VideoInfoContent extends AbsContent implements ViewStub.OnInflateLi
     private VideoInfoBean mInfoBean;
     private AnimLinearLayoutManager mCorrLayoutManager;
     private AnimLinearLayoutManager layoutManager2;
+    private AnimLinearLayoutManager layoutManager3;
     private ViewStub mStubComm;
     private Group mGroupCorr;
     private Group mGroupRecomm;
@@ -117,12 +127,14 @@ public class VideoInfoContent extends AbsContent implements ViewStub.OnInflateLi
         mTextAuthorName = mRootView.findViewById(R.id.artist_name);
         mTextAuthorFollow = mRootView.findViewById(R.id.artist_follow);
         mBtnFollow = mRootView.findViewById(R.id.btn_follow);
+        mStubComm = mRootView.findViewById(R.id.stub_comment);
         initView();
     }
 
     private void initView() {
         mTextTitle.setText(mInfoBean.getTitle());
         mTextAuthorName.setText(mInfoBean.getAuthor_name());
+        ((VideoContentView)getParent()).getReloadListener().reSetAuthorName(mInfoBean.getAuthor_name());
         mTextAuthorFollow.setOnClickListener(this);
         mTextVideoComment.setText(String.valueOf(mInfoBean.getComment_count()));
         mTextVideoView.setText(mInfoBean.getAuthor_video_view());
@@ -139,6 +151,7 @@ public class VideoInfoContent extends AbsContent implements ViewStub.OnInflateLi
         mRootView.findViewById(R.id.btn_save).setOnClickListener(this);
         mGroupCorr = mRootView.findViewById(R.id.group_corr);
         mGroupRecomm = mRootView.findViewById(R.id.group_recomm);
+        mStubComm.setOnInflateListener(this);
         post(() ->setOnScrollChangeListener(mScrollChangeListener));
         initRecycler();
     }
@@ -233,6 +246,7 @@ public class VideoInfoContent extends AbsContent implements ViewStub.OnInflateLi
         }
         if (mRecyclerViewComment != null){
             mRecyclerViewComment.setAnim(isAnim);
+            layoutManager3.setAnim(isAnim);
         }
     }
 
@@ -242,7 +256,15 @@ public class VideoInfoContent extends AbsContent implements ViewStub.OnInflateLi
     }
 
     private void initComment() {
-
+        mRecyclerViewComment = mRootView.findViewById(R.id.recyclerView_user_comment);
+        layoutManager3 = new AnimLinearLayoutManager(mContext, RecyclerView.VERTICAL, false);
+        mRecyclerViewComment.setHasFixedSize(true);
+        mRecyclerViewComment.setLayoutManager(layoutManager3);
+        mRecyclerViewComment.addOnScrollListener(commitScrollEndListener);
+        CommentAdapter commentAdapter = new CommentAdapter(mContext);
+        mRecyclerViewComment.setAdapter(commentAdapter);
+        commentAdapter.setList(mInfoBean.getComment_item_list());
+        mRecyclerViewComment.addItemDecoration(new ItemDecoration(mContext, Color.parseColor("#14000000"),0,1));
     }
 
     private void initRecomm() {
@@ -265,13 +287,22 @@ public class VideoInfoContent extends AbsContent implements ViewStub.OnInflateLi
         mRecyclerViewCorr.setAdapter(corrAdapter);
     }
 
+    private OnScrollEndlessListener commitScrollEndListener = new OnScrollEndlessListener() {
+        @Override
+        public void onLoadMore() {
+
+        }
+    };
+
     @Override
     public void onClick(View v) {
-
+        ContentFrame frame = new ContentFrame(TestContent.class);
+        loadNewContent(frame);
     }
 
     @Override
     public void itemClick(VideoListBean bean) {
-
+        ((MainActivity)mContext).playVideo(bean);
     }
+
 }

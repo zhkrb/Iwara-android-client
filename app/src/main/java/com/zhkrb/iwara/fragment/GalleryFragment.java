@@ -18,18 +18,23 @@
 
 package com.zhkrb.iwara.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import com.alibaba.fastjson.JSON;
 import com.google.android.material.button.MaterialButton;
 import com.zhkrb.iwara.AppConfig;
+import com.zhkrb.iwara.AppContext;
 import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.activity.MainActivity;
 import com.zhkrb.iwara.adapter.VideoListAdapter;
+import com.zhkrb.iwara.adapter.inter.AdapterClickInterface;
 import com.zhkrb.iwara.base.AbsActivity;
 import com.zhkrb.iwara.base.AbsFragment;
+import com.zhkrb.iwara.base.FragmentFrame;
 import com.zhkrb.iwara.bean.VideoListBean;
 import com.zhkrb.iwara.custom.ItemDecoration;
 import com.zhkrb.iwara.custom.refreshView.RefreshAdapter;
@@ -53,7 +58,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class GalleryFragment extends AbsFragment implements View.OnClickListener, ScaleRecyclerView.onScaleListener, VideoListAdapter.onItemClickListener {
+public class GalleryFragment extends BarBaseFragment implements View.OnClickListener, ScaleRecyclerView.onScaleListener, AdapterClickInterface<VideoListBean> {
 
     private static final String DATA_LIST = "data_list";
     private static final String DATA_LOADED = "isdata_loaded";
@@ -83,16 +88,17 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
             }
         });
         mRefreshView.setLayoutManager(manager);
-//        ItemDecoration decoration = new ItemDecoration(mContext, 0x00000000,5,5);
-//        decoration.setDrawBorderLeftAndRight(true);
-//        decoration.setOnlySetItemOffsetsButNoDraw(true);
-//        mRefreshView.setItemDecoration(decoration);
         mRefreshView.setOnScaleListener(this);
-
-        mAdapter = new VideoListAdapter(mContext);
-        mAdapter.setSortMode(mGalleryMode == 0);
-        mAdapter.setListMode(mListViewMode);
-        mAdapter.setClickListener(this);
+        if (isFirstLoad){
+            ItemDecoration decoration = new ItemDecoration(mContext, 0x00000000,8,6);
+            decoration.setDrawBorderLeftAndRight(true);
+            decoration.setOnlySetItemOffsetsButNoDraw(true);
+            mRefreshView.setItemDecoration(decoration);
+            mAdapter = new VideoListAdapter(mContext);
+            mAdapter.setSortMode(mGalleryMode == 0);
+            mAdapter.setListMode(mListViewMode);
+            mAdapter.setClickListener(this);
+        }
         mRefreshView.setDataHelper(new RefreshView.DataHelper<VideoListBean>() {
             @Override
             public RefreshAdapter<VideoListBean> getAdapter() {
@@ -101,7 +107,6 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
 
             @Override
             public void loadData(int p, NetworkCallback callback) {
-//                JsoupUtil.getVideoList(0,p,callback);
                 JsoupUtil.getVideoList(mGalleryMode,p, HttpConstsUtil.GET_VIDEO_LIST+getTag(), (JsoupCallback) callback);
             }
 
@@ -122,7 +127,9 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
 
             @Override
             public void onLoadDataCompleted(int dataCount) {
-                isFirstLoad = dataCount<= 0;
+                if (isFirstLoad){
+                    isFirstLoad = dataCount<= 0;
+                }
             }
 
             @Override
@@ -184,6 +191,17 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
     }
 
     @Override
+    public View getTopAppbar(Context context) {
+        View view = LayoutInflater.from(context).inflate(R.layout.view_loadmore,null,false);
+        return view;
+    }
+
+    @Override
+    public boolean getNeedFixTop() {
+        return true;
+    }
+
+    @Override
     public void onClick(View view) {
 //        int pos = 0;
 //        switch (view.getId()){
@@ -213,6 +231,12 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
         HttpUtil.cancel(HttpConstsUtil.GET_VIDEO_LIST+getTag());
     }
 
@@ -278,10 +302,14 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
 
     @Override
     public void itemClick(VideoListBean bean) {
-        if (TextUtils.isEmpty(bean.getHref())){
-            ToastUtil.show(R.string.url_is_empty);
-        }else {
-            ((MainActivity)mContext).playVideo(bean);
-        }
+        HttpUtil.cancel(HttpConstsUtil.GET_VIDEO_LIST+getTag());
+        FragmentFrame frame = new FragmentFrame(TestFragment.class);
+        startFragment(frame);
+
+//        if (TextUtils.isEmpty(bean.getHref())){
+//            ToastUtil.show(R.string.url_is_empty);
+//        }else {
+//            ((MainActivity)mContext).playVideo(bean);
+//        }
     }
 }

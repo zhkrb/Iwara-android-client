@@ -23,25 +23,25 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.motion.widget.MotionLayout;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.base.AbsActivity;
 import com.zhkrb.iwara.base.FragmentFrame;
 import com.zhkrb.iwara.base.TransitionHelper;
-import com.zhkrb.iwara.custom.DrawerArrowDrawable;
 import com.zhkrb.iwara.custom.MaterialAppBarLayout;
+import com.zhkrb.iwara.fragment.BarBaseFragment;
 
 @SuppressLint("Registered")
 public abstract class AppbarActivity extends AbsActivity {
 
     private static final String BAR_EXPAND = "bar_expand";
-    private static final String ARROW_DRAWABLE_STATE = "arrow_drawable_state";
+    private static final String BAR_FIXTOP = "bar_fixtop";
     protected MotionLayout mMainMotionLayout;
     protected MaterialAppBarLayout mBarLayout;
-    private DrawerArrowDrawable mArrowDrawable;
     private boolean isExpand = true;
+    private boolean isFixTop = false;
+    private volatile boolean needReloadLayoutDescription;
 
 
     @Override
@@ -59,64 +59,50 @@ public abstract class AppbarActivity extends AbsActivity {
         super.main(save);
         mMainMotionLayout = findViewById(R.id.motion_layout);
         mBarLayout = findViewById(R.id.appBarLayout);
-        if (mMainMotionLayout != null){
-            mMainMotionLayout.setTransitionListener(mTransitionListener);
-        }
-        if (mBarLayout != null){
-            mArrowDrawable = new DrawerArrowDrawable(mContext.getResources());
-            mArrowDrawable.setStrokeColor(mContext.getResources().getColor(R.color.primaryText));
-            mBarLayout.setFirstBtnDrawable(mArrowDrawable);
-            if (save == null){
-                mBarLayout.firstInit();
-            }else {
-                onRestore(save);
-            }
+        mMainMotionLayout.setTransitionListener(mTransitionListener);
+        if (save != null) {
+            onRestore(save);
         }
     }
 
-
+    private synchronized void initBar() {
+        if (isFixTop){
+            mMainMotionLayout.loadLayoutDescription(R.xml.main_scene_fixtop);
+        }else {
+            mMainMotionLayout.loadLayoutDescription(R.xml.main_scene);
+        }
+        mBarLayout.setProgress(0);
+        needReloadLayoutDescription = false;
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mArrowDrawable = null;
     }
 
     @Override
     public void startFragment(FragmentFrame frame) {
-        mArrowDrawable.setStateWithAnim(mFragmentStack.size() <= 1,!isExpand);
-//        mArrowDrawable.setStateWithAnim(false,!isExpand);
         super.startFragment(frame);
     }
 
     @Override
     public void finish(String tag, TransitionHelper transitionHelper) {
-        if (mFragmentStack.size() == 2){
-            mArrowDrawable.setStateWithAnim(true,!isExpand);
-        }
         super.finish(tag, transitionHelper);
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(ARROW_DRAWABLE_STATE,mFragmentStack.size() <= 1);
-        outState.putBoolean(BAR_EXPAND,isExpand);
+        outState.putBoolean(BAR_FIXTOP, isFixTop);
+        outState.putBoolean(BAR_EXPAND, isExpand);
     }
+
 
     private void onRestore(Bundle save) {
-        isExpand = save.getBoolean(BAR_EXPAND,true);
-        if (isExpand){
-            mMainMotionLayout.setProgress(0);
-        }else {
-            mMainMotionLayout.setProgress(1);
-        }
-        mBarLayout.restoreState(isExpand);
-        mArrowDrawable.setStateWithAnim(save.getBoolean(ARROW_DRAWABLE_STATE,true),false);
-    }
-
-    public boolean canClickBackup(){
-        return mFragmentStack.size() > 2;
+        isExpand = save.getBoolean(BAR_EXPAND, true);
+        isFixTop = save.getBoolean(BAR_FIXTOP, false);
+        initBar();
+        mMainMotionLayout.setProgress(isExpand ? 0 : 1);
     }
 
     private MotionLayout.TransitionListener mTransitionListener = new MotionLayout.TransitionListener() {
@@ -131,12 +117,15 @@ public abstract class AppbarActivity extends AbsActivity {
 
         @Override
         public void onTransitionCompleted(MotionLayout motionLayout, int i) {
-            if (i == R.id.end){
-                mBarLayout.setBarCollse(true);
+            if (i == R.id.end) {
+                mBarLayout.setBarClose(true);
                 isExpand = false;
-            }else if (i == R.id.start){
-                mBarLayout.setBarCollse(false);
+            } else if (i == R.id.start) {
+                mBarLayout.setBarClose(false);
                 isExpand = true;
+                if (needReloadLayoutDescription){
+                    initBar();
+                }
             }
         }
 
@@ -146,26 +135,28 @@ public abstract class AppbarActivity extends AbsActivity {
         }
     };
 
-    public void expandAll(){
-        if (isExpand){
+    @Override
+    protected void onTransactionFragment(Fragment fragment) {
+        super.onTransactionFragment(fragment);
+        if (!(fragment instanceof BarBaseFragment)) {
+            throw new RuntimeException("must extends BarBaseFragment: " + fragment.getClass());
+        }
+        boolean needFixTop = ((BarBaseFragment) fragment).getNeedFixTop();
+        isFixTop = needFixTop;
+        if (mMainMotionLayout.getCurrentState() == R.id.start){
+            initBar();
+        }else {
+            needReloadLayoutDescription = true;
+            mMainMotionLayout.transitionToStart();
+        }
+        mBarLayout.addTitleBar(((BarBaseFragment) fragment).getTopAppbar(mContext), needFixTop);
+    }
+
+    public void expandAll() {
+        if (isExpand) {
             return;
         }
         mMainMotionLayout.transitionToStart();
-    }
-
-    public void openSlideLayout(){
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-        if (drawerLayout != null){
-            drawerLayout.openDrawer(GravityCompat.START);
-        }
-    }
-
-    public void enableSlideLayout(boolean enabled){
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-        if (drawerLayout == null){
-            return;
-        }
-        drawerLayout.setDrawerLockMode(enabled ? DrawerLayout.LOCK_MODE_UNLOCKED: DrawerLayout.LOCK_MODE_LOCKED_CLOSED );
     }
 
 }

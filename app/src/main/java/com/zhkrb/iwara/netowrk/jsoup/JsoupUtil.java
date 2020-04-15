@@ -56,59 +56,22 @@ public class JsoupUtil {
             callback.onSuccess(HttpURLConnection.HTTP_OK,"success",FormatUtil.videoListFormat(elements));
 
         });
-
-//        Observer<ResponseBody> observer = new Observer<ResponseBody>() {
-//            @Override
-//            public void onSubscribe(Disposable d) {
-//                callback.onStart();
-//            }
-//
-//            @Override
-//            public void onNext(ResponseBody body) {
-//                try {
-//                    Document document = Jsoup.parse(body.string());
-//                    Elements elements = document.select("div.node-video");
-//                    if (elements==null||elements.size()==0){
-//                        callback.onSuccess(200,"empty body","");
-//                        return;
-//                    }
-//
-//                    callback.onSuccess(HttpURLConnection.HTTP_OK,"success",FormatUtil.videoListFormat(elements));
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    onError(e);
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                e.printStackTrace();
-//                ExceptionUtil.msg msg1 = ExceptionUtil.getException(e);
-//                Log.e("jsoup exception",msg1.getCode()+": "+msg1.getMsg());
-//                callback.onError(msg1.getCode(),msg1.getMsg());
-//                callback.onFinish();
-//            }
-//
-//            @Override
-//            public void onComplete() {
-//                callback.onFinish();
-//            }
-//        };
         String url ="/videos?sort=";
-        switch (type){
-            case 0://日期
-                url += "date";
-                break;
-            case 1://点击
-                url += "views";
-                break;
-            case 2://like
-                url += "likes";
-                break;
-        }
+//        switch (type){
+//            case 0://日期
+//                url += "date";
+//                break;
+//            case 1://点击
+//                url += "views";
+//                break;
+//            case 2://like
+//                url += "likes";
+//                break;
+//        }
+        url += "likes&f%5B0%5D=created%3A2020";
         if (p>1){
-            url += "&page="+ (p - 1);
+//            url += "&page="+ (p - 1);
+            url = "/vides?sort=";
         }
 //        JsoupClient.getInstance().getObservable("/videos/wqlwatgmvhqg40kg").subscribe(observer);
         JsoupClient.getInstance().getObservable(url).subscribe(callback.addTag(tag));

@@ -23,8 +23,8 @@ import com.zhkrb.iwara.AppContext;
 
 public class DpUtil {
 
-    public static int dp2px(int dpVal) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal,
+    public static float dp2px(float dpVal) {
+        return  TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal,
                 AppContext.sInstance.getResources().getDisplayMetrics());
     }
 

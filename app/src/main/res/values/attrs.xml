@@ -10,7 +10,10 @@
     <declare-styleable name="RateImageView">
         <attr name="rate" format="float"/>
         <attr name="isWidthRate" format="boolean"/>
-
+    </declare-styleable>
+    <declare-styleable name="SwipeRefreshExLayout">
+        <attr name="footerHeight" format="dimension"/>
+        <attr name="footerDrawableId" format="integer"/>
     </declare-styleable>
     <declare-styleable name="SwitchButton">
         <attr name="select" format="boolean"/>
