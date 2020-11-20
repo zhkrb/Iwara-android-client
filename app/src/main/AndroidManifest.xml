@@ -42,7 +42,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             />
-        <activity android:name=".base.AbsActivity"
+        <activity android:name="com.zhkrb.base.AbsActivity"
             />
         <provider
             android:name="androidx.core.content.FileProvider"

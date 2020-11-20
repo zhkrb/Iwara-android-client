@@ -26,10 +26,10 @@ import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.fragment.app.Fragment;
 
 import com.zhkrb.iwara.R;
-import com.zhkrb.iwara.base.AbsActivity;
-import com.zhkrb.iwara.base.FragmentFrame;
-import com.zhkrb.iwara.base.TransitionHelper;
-import com.zhkrb.iwara.custom.MaterialAppBarLayout;
+import com.zhkrb.base.AbsActivity;
+import com.zhkrb.base.FragmentFrame;
+import com.zhkrb.base.TransitionHelper;
+import com.zhkrb.custom.MaterialAppBarLayout;
 import com.zhkrb.iwara.fragment.BarBaseFragment;
 
 @SuppressLint("Registered")

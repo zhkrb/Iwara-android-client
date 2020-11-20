@@ -38,6 +38,7 @@ import com.zhkrb.dragvideo.contentViewBase.ContentFrame;
 import com.zhkrb.dragvideo.contentViewBase.ContentTransHelper;
 import com.zhkrb.dragvideo.mainView.VideoPlayerView;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class VideoContentView extends FrameLayout {
         }
         AbsContent rootContent = createContent(frame.getClazz(),mContext);
         rootContent.setArgs(frame.getArgs());
-        rootContent.setContext(mContext);
+//        rootContent.setContext(mContext);
         rootContent.setParent(this);
         rootContent.setFillViewport(true);
         ContentTransHelper helper = frame.getHelper();
@@ -110,7 +111,7 @@ public class VideoContentView extends FrameLayout {
     public void loadNewContent(ContentFrame frame){
         AbsContent content = createContent(frame.getClazz(),mContext);
         content.setArgs(frame.getArgs());
-        content.setContext(mContext);
+//        content.setContext(mContext);
         content.setParent(this);
         content.setFillViewport(true);
         ContentTransHelper helper = frame.getHelper();

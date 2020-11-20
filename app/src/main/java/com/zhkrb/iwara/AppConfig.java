@@ -18,7 +18,7 @@
 
 package com.zhkrb.iwara;
 
-import com.zhkrb.iwara.utils.SpUtil;
+import com.zhkrb.utils.SpUtil;
 
 public class AppConfig {
 

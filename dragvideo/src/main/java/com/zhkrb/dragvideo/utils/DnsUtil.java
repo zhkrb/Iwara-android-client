@@ -22,7 +22,7 @@ package com.zhkrb.dragvideo.utils;
  * FFmpeg设置的url最终由tcp.c文件中的getaddrinfo()来解析host
  * 他是线程阻塞的，所以碰到DNS污染或者DNS设置错误会导致ANR
  * 需要自己实现DNS解析然后替换掉url中的域名
- * 然后在FFmpeg的header中添加Host:原始域名
+ * 然后在FFmpeg的header中添加Host: 原始域名(注意域名前面要添加空格)
  */
 
 public class DnsUtil {

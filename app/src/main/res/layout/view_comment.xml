@@ -20,7 +20,7 @@
         android:background="@color/shadowColor"
         />
 
-    <com.zhkrb.iwara.custom.refreshView.ScaleRecyclerView
+    <com.zhkrb.custom.refreshView.ScaleRecyclerView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/recyclerView_user_comment"

@@ -13,3 +13,4 @@
 .externalNativeBuild
 /app/src/release
 /app/src/debug
+/.idea/*

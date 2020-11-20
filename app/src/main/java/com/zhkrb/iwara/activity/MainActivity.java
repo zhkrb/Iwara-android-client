@@ -22,21 +22,20 @@ package com.zhkrb.iwara.activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.zhkrb.dragvideo.mainView.VideoPlayerView;
 import com.zhkrb.iwara.AppConfig;
 import com.zhkrb.iwara.R;
-import com.zhkrb.iwara.base.AbsFragment;
-import com.zhkrb.iwara.base.FragmentFrame;
+import com.zhkrb.base.AbsFragment;
+import com.zhkrb.base.FragmentFrame;
 import com.zhkrb.iwara.bean.VideoListBean;
 import com.zhkrb.iwara.fragment.GalleryFragment;
 import com.zhkrb.iwara.fragment.TestFragment;
-import com.zhkrb.iwara.utils.UpdateUtil;
-import com.zhkrb.iwara.utils.VideoDnsUtil;
-import com.zhkrb.iwara.utils.VideoNetWorkUtil;
+import com.zhkrb.utils.UpdateUtil;
+import com.zhkrb.utils.VideoDnsUtil;
+import com.zhkrb.utils.VideoNetWorkUtil;
 import com.zhkrb.iwara.videoInfoContent.VideoInfoContent;
 
 
@@ -85,7 +84,7 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
             return;
         }
         if (mPlayerView == null){
-            mPlayerView = new VideoPlayerView(mContext).setContentView(mParentLayout);
+            mPlayerView = new VideoPlayerView(this).setContentView(mParentLayout);
             mPlayerView.setNetworkUtil(new VideoNetWorkUtil());
             mPlayerView.setDnsUtil(new VideoDnsUtil());
 //            mPlayerView.setInfoView(new AbsContent(mContext));

@@ -8,7 +8,7 @@
     android:clickable="true"
     android:focusable="true"
     >
-    <com.zhkrb.iwara.custom.refreshView.loading.LoadingView
+    <com.zhkrb.custom.refreshView.loading.LoadingView
         android:layout_width="0dp"
         android:layout_height="25dp"
         app:layout_constraintStart_toStartOf="parent"

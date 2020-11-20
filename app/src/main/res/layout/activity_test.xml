@@ -7,56 +7,62 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/parent"
+    android:clipChildren="false"
     >
 
-    <androidx.constraintlayout.motion.widget.MotionLayout
-        android:id="@+id/motion_layout"
+    <com.zhkrb.dragvideo.widget.AdvSeekbar
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@android:color/transparent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="3dp"
+        android:id="@+id/progress"
+        android:thumbTint="@color/colorAccent"
+        android:thumb="@drawable/seekbar_thumb"
+        android:progressDrawable="@drawable/scale_progress_drawable"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        style="@android:style/Widget.Material.SeekBar"
+        android:splitTrack="false"
+        android:max="1000"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        >
+        android:layout_marginTop="150dp"
+        android:background="@null"
+        app:top="10dp"
+        app:bottom="30dp"
+        />
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="425dp"
-            android:text="隐藏"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/button"
+        android:layout_marginBottom="50dp"
+        android:textSize="20sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:id="@+id/text"
+        />
 
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="525dp"
-            android:text="结束"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="425dp"
+        android:text="添加"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-<!--        <com.zhkrb.iwara.custom.MaterialAppBarLayout-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            android:background="@color/colorPrimary"-->
-<!--            android:id="@+id/view"-->
-<!--            android:translationZ="2dp"-->
-<!--            app:BottomRightCut="true"-->
-<!--            app:BottomRightRadius="@dimen/cut_16dp"-->
-<!--            app:CutElevation="@dimen/elevation_2dp"-->
-<!--            app:CutProgress="0"-->
-<!--            app:cardBackgroundColor="@color/secondaryLight"-->
-<!--            app:cardCornerRadius="0dp"-->
-<!--            />-->
-    </androidx.constraintlayout.motion.widget.MotionLayout>
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="525dp"
+        android:text="删除"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

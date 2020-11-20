@@ -24,7 +24,6 @@ import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,12 +32,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.adapter.inter.AdapterClickInterface;
 import com.zhkrb.iwara.bean.CommentBean;
-import com.zhkrb.iwara.bean.UpdateInfoBean;
-import com.zhkrb.iwara.bean.VideoListBean;
-import com.zhkrb.iwara.custom.refreshView.RefreshAdapter;
-import com.zhkrb.iwara.utils.ImgLoader;
-import com.zhkrb.iwara.utils.ToastUtil;
-import com.zhkrb.iwara.utils.WordUtil;
+import com.zhkrb.custom.refreshView.RefreshAdapter;
+import com.zhkrb.utils.ImgLoader;
+import com.zhkrb.utils.WordUtil;
 
 import java.util.List;
 

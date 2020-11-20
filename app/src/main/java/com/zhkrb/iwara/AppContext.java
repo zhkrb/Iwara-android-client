@@ -21,12 +21,14 @@ package com.zhkrb.iwara;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 
 
-import com.zhkrb.iwara.utils.L;
-import com.zhkrb.iwara.netowrk.jsoup.JsoupUtil;
-import com.zhkrb.iwara.netowrk.retrofit.HttpUtil;
-import com.zhkrb.iwara.netowrk.retrofit.manager.RequestManager;
+import com.zhkrb.utils.L;
+import com.zhkrb.netowrk.jsoup.JsoupUtil;
+import com.zhkrb.netowrk.retrofit.HttpUtil;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
@@ -34,8 +36,10 @@ import androidx.multidex.MultiDexApplication;
 public class AppContext extends MultiDexApplication {
 
     public static AppContext sInstance;
-    private int mCount;
+    private final AtomicInteger mCount = new AtomicInteger(0);
     private boolean mFront;
+    private Handler mHandler;
+    private boolean isFirstStart = true;
     public static boolean sDeBug = true;
 
     @Override
@@ -63,11 +67,13 @@ public class AppContext extends MultiDexApplication {
 
             @Override
             public void onActivityStarted(Activity activity) {
-                mCount++;
+                mCount.getAndIncrement();
                 if (!mFront) {
                     mFront = true;
                     L.e("AppContext------->处于前台");
-
+                    if (!isFirstStart()) {
+                        isFirstStart = false;
+                    }
                 }
             }
 
@@ -83,8 +89,8 @@ public class AppContext extends MultiDexApplication {
 
             @Override
             public void onActivityStopped(Activity activity) {
-                mCount--;
-                if (mCount == 0) {
+                mCount.getAndDecrement();
+                if (mCount.get() == 0) {
                     mFront = false;
                     L.e("AppContext------->处于后台");
                 }
@@ -102,4 +108,15 @@ public class AppContext extends MultiDexApplication {
         });
     }
 
+    public Handler getMainHandler() {
+        return mHandler;
+    }
+
+    public boolean isFront() {
+        return mFront;
+    }
+
+    public boolean isFirstStart() {
+        return isFirstStart;
+    }
 }

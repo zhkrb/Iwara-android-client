@@ -25,8 +25,8 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.zhkrb.iwara.R;
-import com.zhkrb.iwara.utils.SpUtil;
-import com.zhkrb.iwara.utils.ToastUtil;
+import com.zhkrb.utils.SpUtil;
+import com.zhkrb.utils.ToastUtil;
 
 import androidx.appcompat.app.AppCompatActivity;
 

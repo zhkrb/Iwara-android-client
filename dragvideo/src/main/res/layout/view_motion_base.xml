@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="android.widget.FrameLayout">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/textColor_black_disable"
+        android:id="@+id/view_dark_background"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:clipChildren="false"
+        android:id="@+id/parent_layout"
+        >
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="195dp"
+            android:id="@+id/view_header"
+            android:background="@android:color/transparent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:clickable="true"
+            android:focusable="true"
+            />
+
+        <com.zhkrb.dragvideo.contentViewBase.VideoContentView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/view_desc"
+            android:background="@color/text"
+            android:clickable="true"
+            android:focusable="true"
+            android:fillViewport="true"
+            app:layout_constraintTop_toBottomOf="@id/view_header"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <com.zhkrb.dragvideo.widget.AdvSeekbar
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:id="@+id/progress"
+            android:thumbTint="@color/colorAccent"
+            android:thumb="@drawable/seekbar_thumb"
+            android:progressDrawable="@drawable/scale_progress_drawable"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            style="@android:style/Widget.Material.SeekBar"
+            android:splitTrack="false"
+            android:max="1000"
+            app:layout_constraintStart_toStartOf="@id/view_header"
+            app:layout_constraintEnd_toEndOf="@id/view_header"
+            app:layout_constraintTop_toBottomOf="@id/view_header"
+            app:top="5dp"
+            app:bottom="15dp"
+            android:background="@null"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</merge>

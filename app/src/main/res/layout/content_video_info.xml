@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.zhkrb.iwara.custom.FoldTextView
+    <com.zhkrb.custom.FoldTextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -172,7 +172,7 @@
         android:id="@+id/artist_follow"
         />
 
-    <com.zhkrb.iwara.custom.SwitchButton
+    <com.zhkrb.custom.SwitchButton
         android:layout_width="60dp"
         android:layout_height="28dp"
         app:layout_constraintBottom_toBottomOf="@id/artist_thumb"
@@ -188,7 +188,7 @@
         app:unselect_image="@drawable/ic_add_16dp"
         app:select_text_color="@color/textColor_black_disable"
         app:select_text="@string/isfollow"
-        app:select_background_color="@color/grey_alpha"
+        app:select_background_color="@color/dividerColor"
         app:select_image="@drawable/ic_close_16dp"
         android:id="@+id/btn_follow"
         android:background="?android:selectableItemBackgroundBorderless"
@@ -205,7 +205,7 @@
         android:id="@+id/divider_line2"
         />
 
-    <com.zhkrb.iwara.custom.FoldTextView
+    <com.zhkrb.custom.FoldTextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/title"
@@ -232,7 +232,7 @@
         android:textSize="@dimen/subtitle2"
         />
 
-    <com.zhkrb.iwara.custom.refreshView.ScaleRecyclerView
+    <com.zhkrb.custom.refreshView.ScaleRecyclerView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -254,7 +254,7 @@
         android:textSize="@dimen/subtitle2"
         />
 
-    <com.zhkrb.iwara.custom.refreshView.ScaleRecyclerView
+    <com.zhkrb.custom.refreshView.ScaleRecyclerView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"

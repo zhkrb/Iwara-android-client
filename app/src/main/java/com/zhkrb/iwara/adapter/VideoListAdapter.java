@@ -29,11 +29,11 @@ import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.adapter.inter.AdapterClickInterface;
 import com.zhkrb.iwara.adapter.inter.AdapterLongClickInterface;
 import com.zhkrb.iwara.bean.VideoListBean;
-import com.zhkrb.iwara.custom.refreshView.RefreshAdapter;
-import com.zhkrb.iwara.utils.DpUtil;
-import com.zhkrb.iwara.utils.ImgLoader;
-import com.zhkrb.iwara.utils.SortUtil;
-import com.zhkrb.iwara.utils.WordUtil;
+import com.zhkrb.custom.refreshView.RefreshAdapter;
+import com.zhkrb.utils.DpUtil;
+import com.zhkrb.utils.ImgLoader;
+import com.zhkrb.utils.SortUtil;
+import com.zhkrb.utils.WordUtil;
 
 import java.util.List;
 

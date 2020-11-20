@@ -19,10 +19,9 @@
 package com.zhkrb.iwara.fragment;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.view.View;
 
-import com.zhkrb.iwara.base.AbsFragment;
+import com.zhkrb.base.AbsFragment;
 
 public abstract class BarBaseFragment extends AbsFragment {
 

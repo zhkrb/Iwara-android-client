@@ -20,41 +20,33 @@ package com.zhkrb.iwara.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import com.alibaba.fastjson.JSON;
-import com.google.android.material.button.MaterialButton;
 import com.zhkrb.iwara.AppConfig;
-import com.zhkrb.iwara.AppContext;
 import com.zhkrb.iwara.R;
-import com.zhkrb.iwara.activity.MainActivity;
 import com.zhkrb.iwara.adapter.VideoListAdapter;
 import com.zhkrb.iwara.adapter.inter.AdapterClickInterface;
-import com.zhkrb.iwara.base.AbsActivity;
-import com.zhkrb.iwara.base.AbsFragment;
-import com.zhkrb.iwara.base.FragmentFrame;
+import com.zhkrb.base.AbsActivity;
+import com.zhkrb.base.FragmentFrame;
 import com.zhkrb.iwara.bean.VideoListBean;
-import com.zhkrb.iwara.custom.ItemDecoration;
-import com.zhkrb.iwara.custom.refreshView.RefreshAdapter;
-import com.zhkrb.iwara.custom.refreshView.RefreshView;
-import com.zhkrb.iwara.custom.refreshView.ScaleRecyclerView;
-import com.zhkrb.iwara.netowrk.jsoup.JsoupCallback;
-import com.zhkrb.iwara.netowrk.retrofit.HttpUtil;
-import com.zhkrb.iwara.utils.HttpConstsUtil;
-import com.zhkrb.iwara.utils.SpUtil;
-import com.zhkrb.iwara.utils.ToastUtil;
-import com.zhkrb.iwara.utils.VibrateUtil;
-import com.zhkrb.iwara.netowrk.NetworkCallback;
-import com.zhkrb.iwara.netowrk.jsoup.JsoupUtil;
+import com.zhkrb.custom.ItemDecoration;
+import com.zhkrb.custom.refreshView.RefreshAdapter;
+import com.zhkrb.custom.refreshView.RefreshView;
+import com.zhkrb.custom.refreshView.ScaleRecyclerView;
+import com.zhkrb.netowrk.jsoup.JsoupCallback;
+import com.zhkrb.netowrk.retrofit.HttpUtil;
+import com.zhkrb.utils.HttpConstsUtil;
+import com.zhkrb.utils.SpUtil;
+import com.zhkrb.utils.VibrateUtil;
+import com.zhkrb.netowrk.NetworkCallback;
+import com.zhkrb.netowrk.jsoup.JsoupUtil;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -69,6 +61,7 @@ public class GalleryFragment extends BarBaseFragment implements View.OnClickList
     private static int mGalleryMode = 0;//0 上传时间 1 播放 2 like
     private static int mListViewMode;// 0 双排 1单排 2 混合(仅首页)
     private boolean isFirstLoad = true;
+    private List<VideoListBean> mListBeans;
 
 
     @Override
@@ -89,7 +82,7 @@ public class GalleryFragment extends BarBaseFragment implements View.OnClickList
         });
         mRefreshView.setLayoutManager(manager);
         mRefreshView.setOnScaleListener(this);
-        if (isFirstLoad){
+//        if (isFirstLoad){
             ItemDecoration decoration = new ItemDecoration(mContext, 0x00000000,8,6);
             decoration.setDrawBorderLeftAndRight(true);
             decoration.setOnlySetItemOffsetsButNoDraw(true);
@@ -98,7 +91,7 @@ public class GalleryFragment extends BarBaseFragment implements View.OnClickList
             mAdapter.setSortMode(mGalleryMode == 0);
             mAdapter.setListMode(mListViewMode);
             mAdapter.setClickListener(this);
-        }
+//        }
         mRefreshView.setDataHelper(new RefreshView.DataHelper<VideoListBean>() {
             @Override
             public RefreshAdapter<VideoListBean> getAdapter() {
@@ -153,9 +146,9 @@ public class GalleryFragment extends BarBaseFragment implements View.OnClickList
             }
         }
 
-        if (isFirstLoad){
+//        if (isFirstLoad){
             mRefreshView.initData();
-        }
+//        }
     }
 
     @Override
@@ -231,11 +224,14 @@ public class GalleryFragment extends BarBaseFragment implements View.OnClickList
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        mListBeans = null;
     }
 
     @Override
     public void onDestroyView() {
+        mListBeans = mAdapter.getList();
+        mRefreshView = null;
+        mAdapter = null;
         super.onDestroyView();
         HttpUtil.cancel(HttpConstsUtil.GET_VIDEO_LIST+getTag());
     }
@@ -302,7 +298,7 @@ public class GalleryFragment extends BarBaseFragment implements View.OnClickList
 
     @Override
     public void itemClick(VideoListBean bean) {
-        HttpUtil.cancel(HttpConstsUtil.GET_VIDEO_LIST+getTag());
+//        HttpUtil.cancel(HttpConstsUtil.GET_VIDEO_LIST+getTag());
         FragmentFrame frame = new FragmentFrame(TestFragment.class);
         startFragment(frame);
 

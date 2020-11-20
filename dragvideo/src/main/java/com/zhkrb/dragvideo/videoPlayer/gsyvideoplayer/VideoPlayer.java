@@ -19,9 +19,11 @@
 package com.zhkrb.dragvideo.videoPlayer.gsyvideoplayer;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -59,6 +61,7 @@ import androidx.transition.TransitionManager;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.listener.GSYVideoProgressListener;
 import com.shuyu.gsyvideoplayer.listener.VideoAllCallBack;
+import com.shuyu.gsyvideoplayer.model.VideoOptionModel;
 import com.shuyu.gsyvideoplayer.utils.CommonUtil;
 import com.shuyu.gsyvideoplayer.utils.Debuger;
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
@@ -74,10 +77,13 @@ import com.zhkrb.dragvideo.widget.ImgLoader;
 
 import java.lang.ref.WeakReference;
 import java.text.BreakIterator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.LogRecord;
 
 import moe.codeest.enviews.ENDownloadView;
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 import static com.shuyu.gsyvideoplayer.utils.CommonUtil.getActionBarHeight;
 import static com.shuyu.gsyvideoplayer.utils.CommonUtil.getStatusBarHeight;
@@ -176,25 +182,10 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
                 }
             }
         });
-        mScaleHide.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
+        mScaleHide.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mProgressBar.setEnabled(false);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
             }
         });
 
@@ -203,6 +194,10 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
         setSeekRatio(0.1f);
         setGSYVideoProgressListener(this);
         GSYVideoManager.instance().setTimeOut(60000,true);
+        VideoOptionModel videoOptionModel = new VideoOptionModel(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "packet-buffering", 1024);
+        List<VideoOptionModel> list = new ArrayList<>();
+        list.add(videoOptionModel);
+        GSYVideoManager.instance().setOptionModelList(list);
     }
 
 
@@ -411,7 +406,7 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
         if (startTime!=0){
             setSeekOnStart(startTime);
         }
-        mHeader.put("Host",host);
+        mHeader.put("Host"," "+host);
         setMapHeadData(mHeader);
         setUp(url,false,mTitle);
         startPlayLogic();
@@ -610,7 +605,8 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
             if (mCurrentState == CURRENT_STATE_PREPAREING){
                 return;
             }
-           mScaleHide.start();
+//           mScaleHide.start();
+            mProgressBar.setEnabled(false);
         }
 
         @Override
@@ -631,7 +627,7 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
                 return;
             }
             mProgressBar.setEnabled(true);
-            mScaleShow.start();
+//            mScaleShow.start();
         }
 
         @Override
@@ -922,9 +918,9 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
     @Override
     public void setSeekbar(SeekBar seekbar) {
         mProgressBar = seekbar;
-        mProgressBar.setEnabled(false);
         mProgressBar.setOnSeekBarChangeListener(this);
         mProgressBar.setOnTouchListener(this);
+//        post(() -> mProgressBar.setEnabled(false));
     }
 
     @Override
@@ -950,17 +946,16 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
 
     //重写progressbar的Max为1000，使进度增加更平滑
     @Override
-    protected void setTextAndProgress(int secProgress) {
+    protected void setTextAndProgress(int secProgress, boolean forceChange) {
         int position = getCurrentPositionWhenPlaying();
         int duration = getDuration();
         int progress = position * 1000 / (duration == 0 ? 1 : duration);
-        setProgressAndTime(progress, secProgress, position, duration);
-        setProgressAndTime(progress, secProgress, position, duration);
+        setProgressAndTime(progress, secProgress, position, duration,forceChange);
     }
 
     //同setTextAndProgress()
     @Override
-    protected void setProgressAndTime(int progress, int secProgress, int currentTime, int totalTime) {
+    protected void setProgressAndTime(int progress, int secProgress, int currentTime, int totalTime , boolean forceChange) {
         if (mGSYVideoProgressListener != null && mCurrentState == CURRENT_STATE_PLAYING) {
             mGSYVideoProgressListener.onProgress(progress, secProgress, currentTime, totalTime);
         }
@@ -972,7 +967,7 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
             return;
         }
         if (!mTouchingProgressBar) {
-            if (progress != 0) mProgressBar.setProgress(progress);
+            if (progress != 0 || forceChange) mProgressBar.setProgress(progress);
         }
         if (getGSYVideoManager().getBufferedPercentage() > 0) {
             secProgress = getGSYVideoManager().getBufferedPercentage();
@@ -984,7 +979,7 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
             mCurrentTimeTextView.setText(CommonUtil.stringForTime(currentTime));
 
         if (mBottomProgressBar != null) {
-            if (progress != 0) mBottomProgressBar.setProgress(progress);
+            if (progress != 0 || forceChange) mBottomProgressBar.setProgress(progress);
             setSecondaryProgress(secProgress);
         }
     }

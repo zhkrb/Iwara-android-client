@@ -18,14 +18,12 @@
 
 package com.zhkrb.dragvideo.widget;
 
-import android.content.Context;
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.zhkrb.dragvideo.R;
 import com.zhkrb.dragvideo.adapter.SettingAdapter;
@@ -35,7 +33,7 @@ import java.util.List;
 
 public class PlayerSettingDialogFragment extends AbsDialogFragment implements SettingAdapter.onItemClickListener {
 
-    private advRecyclerView mRecyclerView;
+    private AdvRecyclerView mRecyclerView;
     private SettingAdapter mAdapter;
     private onItemClickListener mListener;
     private List<SettingBean> mList;

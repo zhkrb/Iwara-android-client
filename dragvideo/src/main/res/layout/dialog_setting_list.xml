@@ -15,7 +15,7 @@
     >
 
 
-<com.zhkrb.dragvideo.widget.advRecyclerView
+<com.zhkrb.dragvideo.widget.AdvRecyclerView
     android:layout_marginTop="@dimen/dialog_margin_top"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

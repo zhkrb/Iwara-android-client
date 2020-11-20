@@ -33,6 +33,8 @@ import androidx.core.widget.NestedScrollView;
 
 import com.zhkrb.dragvideo.R;
 
+import java.lang.ref.WeakReference;
+
 public abstract class AbsContent extends NestedScrollView {
 
     protected Context mContext;
@@ -94,9 +96,9 @@ public abstract class AbsContent extends NestedScrollView {
         mArgs = args;
     }
 
-    public void setContext(Context context) {
-        mContext = context;
-    }
+//    public void setContext(Context context) {
+//        mContext = context;
+//    }
 
     public void setParent(VideoContentView videoContentView) {
         mParent = videoContentView;

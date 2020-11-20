@@ -22,8 +22,12 @@
         <attr name="CutForeground" format="reference"/>
         <attr name="CutProgress" format="integer"/>
     </declare-styleable>
-    <declare-styleable name="advRecyclerView">
+    <declare-styleable name="AdvRecyclerView">
         <attr name="maxHeight1" format="dimension"/>
+    </declare-styleable>
+    <declare-styleable name="AdvSeekbar">
+        <attr name="top" format="dimension"/>
+        <attr name="bottom" format="dimension"/>
     </declare-styleable>
     <declare-styleable name="FoldTextView">
         <attr name="isFold" format="boolean"/>

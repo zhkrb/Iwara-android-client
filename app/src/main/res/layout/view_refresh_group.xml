@@ -14,7 +14,7 @@
     android:background="@android:color/transparent"
     >
 
-    <com.zhkrb.iwara.custom.refreshView.ScaleRecyclerView
+    <com.zhkrb.custom.refreshView.ScaleRecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

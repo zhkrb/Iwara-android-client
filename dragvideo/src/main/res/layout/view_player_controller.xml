@@ -182,7 +182,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:id="@+id/loading"
         android:visibility="gone"
-        android:progressTint="@color/progress_color"
+        android:progressTint="@color/colorAccent"
         />
 
 

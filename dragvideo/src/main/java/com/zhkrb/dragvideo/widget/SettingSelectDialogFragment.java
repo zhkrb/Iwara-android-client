@@ -18,7 +18,6 @@
 
 package com.zhkrb.dragvideo.widget;
 
-import android.content.Context;
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
@@ -34,7 +33,7 @@ import java.util.List;
 
 public class SettingSelectDialogFragment extends AbsDialogFragment implements ValueSelectAdapter.onItemClickListener {
 
-    private advRecyclerView mRecyclerView;
+    private AdvRecyclerView mRecyclerView;
     private ValueSelectAdapter mAdapter;
     private onItemClickListener mListener;
     private List<ValueSelectBean> mList;

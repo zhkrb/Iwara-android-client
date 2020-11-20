@@ -29,7 +29,7 @@
                 android:layout_height="0dp"
                 android:background="@android:color/transparent" />
 
-            <com.zhkrb.iwara.custom.MaterialAppBarLayout
+            <com.zhkrb.custom.MaterialAppBarLayout
                 android:id="@+id/appBarLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

@@ -1,32 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 设置背景色(透明) -->
     <item android:id="@android:id/background">
         <shape>
             <corners android:radius="0dp"/>
-            <solid android:color="@color/nom_alpha"/>
+            <solid android:color="@color/shadowColor"/>
         </shape>
     </item>
     <item android:id="@android:id/secondaryProgress">
         <clip>
             <shape>
-                <!--            <gradient-->
-                <!--                android:angle="45"-->
-                <!--                android:endColor="@color/grey_alpha"-->
-                <!--                android:startColor="@color/grey_alpha"/>-->
-                <solid android:color="@color/grey_alpha"/>
+                <solid android:color="@color/dividerColor"/>
                 <corners android:radius="0dp"/>
             </shape>
         </clip>
     </item>
-    <!-- 设置进度条颜色（系统色统一色调） -->
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-<!--                <gradient-->
-<!--                    android:angle="45"-->
-<!--                    android:endColor="@color/colorAccent"-->
-<!--                    android:startColor="@color/colorAccent"/>-->
                 <solid android:color="@color/colorAccent"/>
                 <corners android:radius="0dp"/>
             </shape>

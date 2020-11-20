@@ -46,6 +46,7 @@ import com.zhkrb.dragvideo.contentViewBase.ReloadListener;
 import com.zhkrb.dragvideo.mainView.ScaleViewListener;
 import com.zhkrb.dragvideo.videoPlayer.gsyvideoplayer.VideoPlayer;
 
+import java.lang.ref.WeakReference;
 import java.util.Map;
 
 public class ScaleVideoView extends ConstraintLayout implements OnClickListener,PlayerStateListener{

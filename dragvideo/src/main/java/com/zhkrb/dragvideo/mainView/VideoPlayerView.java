@@ -66,10 +66,12 @@ import com.zhkrb.dragvideo.utils.SettingListUtil;
 import com.zhkrb.dragvideo.utils.ToastUtil;
 import com.zhkrb.dragvideo.videoPlayer.IVideoPlayer;
 import com.zhkrb.dragvideo.videoPlayer.ScaleVideoView;
+import com.zhkrb.dragvideo.widget.AdvSeekbar;
 import com.zhkrb.dragvideo.widget.PlayerSettingDialogFragment;
 import com.zhkrb.dragvideo.widget.SettingSelectDialogFragment;
 import com.zhkrb.dragvideo.contentViewBase.VideoContentView;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -88,7 +90,7 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
     private ViewWrapper mDescWrapper;
     private ViewGroup mContentView;
     private ScaleVideoView mScaleVideoView;
-    private SeekBar seekBar;
+    private AdvSeekbar seekBar;
     private VelocityTracker mTracker = null;
 
     //一些参数 单位 dp
@@ -245,7 +247,7 @@ public class VideoPlayerView extends ConstraintLayout implements ScaleViewListen
         mScaleVideoView.initData(mainUrl,title,thumb,user);
         Map<String,String> header = new ArrayMap<>();
         header.put("Referer",mBundle.getString("referer",""));
-        header.put("User-Agent",mBundle.getString("ua",""));
+//        header.put("User-Agent",mBundle.getString("ua",""));
         mScaleVideoView.setHeader(header);
         mScaleVideoView.getVideoView().setLoading(true);
         if (mNetworkUtil != null){

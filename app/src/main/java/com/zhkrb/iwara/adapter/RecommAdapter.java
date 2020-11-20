@@ -32,25 +32,23 @@ import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.adapter.inter.AdapterClickInterface;
 import com.zhkrb.iwara.adapter.inter.AdapterLongClickInterface;
 import com.zhkrb.iwara.bean.VideoListBean;
-import com.zhkrb.iwara.utils.ImgLoader;
-import com.zhkrb.iwara.utils.ToastUtil;
-import com.zhkrb.iwara.utils.WordUtil;
+import com.zhkrb.utils.ImgLoader;
+import com.zhkrb.utils.ToastUtil;
+import com.zhkrb.utils.WordUtil;
 
 import java.util.List;
 
 public class RecommAdapter extends RecyclerView.Adapter<RecommAdapter.holder> {
 
     private final LayoutInflater mInflater;
-    private Context mContext;
     private List<VideoListBean> mList;
     private AdapterClickInterface<VideoListBean> mItemClickListener;
     private View.OnClickListener mClickListener;
     private View.OnLongClickListener mLongClickListener;
 
     public RecommAdapter(Context context , @NonNull List<VideoListBean> list) {
-        mContext = context;
         mList = list;
-        mInflater = LayoutInflater.from(mContext);
+        mInflater = LayoutInflater.from(context);
         setHasStableIds(true);
         mClickListener = v -> {
             Object tag = v.getTag();

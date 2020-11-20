@@ -20,20 +20,16 @@ package com.zhkrb.iwara.videoInfoContent;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.Group;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,23 +45,19 @@ import com.zhkrb.iwara.adapter.RecommAdapter;
 import com.zhkrb.iwara.adapter.inter.AdapterClickInterface;
 import com.zhkrb.iwara.bean.VideoInfoBean;
 import com.zhkrb.iwara.bean.VideoListBean;
-import com.zhkrb.iwara.custom.FoldTextView;
-import com.zhkrb.iwara.custom.ItemDecoration;
-import com.zhkrb.iwara.custom.SwitchButton;
-import com.zhkrb.iwara.custom.AnimLinearLayoutManager;
-import com.zhkrb.iwara.custom.refreshView.OnScrollEndlessListener;
-import com.zhkrb.iwara.custom.refreshView.RefreshAdapter;
-import com.zhkrb.iwara.custom.refreshView.ScaleRecyclerView;
-import com.zhkrb.iwara.netowrk.jsoup.JsoupCallback;
-import com.zhkrb.iwara.netowrk.jsoup.JsoupUtil;
-import com.zhkrb.iwara.netowrk.retrofit.HttpUtil;
-import com.zhkrb.iwara.utils.HttpConstsUtil;
-import com.zhkrb.iwara.utils.ImgLoader;
-import com.zhkrb.iwara.utils.ToastUtil;
-import com.zhkrb.iwara.utils.WordUtil;
-
-import java.util.ArrayList;
-import java.util.Stack;
+import com.zhkrb.custom.FoldTextView;
+import com.zhkrb.custom.ItemDecoration;
+import com.zhkrb.custom.SwitchButton;
+import com.zhkrb.custom.AnimLinearLayoutManager;
+import com.zhkrb.custom.refreshView.OnScrollEndlessListener;
+import com.zhkrb.custom.refreshView.ScaleRecyclerView;
+import com.zhkrb.netowrk.jsoup.JsoupCallback;
+import com.zhkrb.netowrk.jsoup.JsoupUtil;
+import com.zhkrb.netowrk.retrofit.HttpUtil;
+import com.zhkrb.utils.HttpConstsUtil;
+import com.zhkrb.utils.ImgLoader;
+import com.zhkrb.utils.ToastUtil;
+import com.zhkrb.utils.WordUtil;
 
 public class VideoInfoContent extends AbsContent implements View.OnClickListener, AdapterClickInterface<VideoListBean>, ViewStub.OnInflateListener {
 
@@ -270,6 +262,7 @@ public class VideoInfoContent extends AbsContent implements View.OnClickListener
     private void initRecomm() {
         mRecyclerViewRecomm = mRootView.findViewById(R.id.recyclerView_video_recomm);
         layoutManager2 = new AnimLinearLayoutManager(mContext, RecyclerView.VERTICAL, false);
+        layoutManager2.setCanScrollVert(false);
         mRecyclerViewRecomm.setHasFixedSize(true);
         mRecyclerViewRecomm.setLayoutManager(layoutManager2);
         RecommAdapter recommAdapter = new RecommAdapter(mContext, mInfoBean.getAuthor_video_recomm());

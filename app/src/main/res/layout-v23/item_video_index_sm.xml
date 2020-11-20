@@ -22,7 +22,7 @@
         android:paddingBottom="8dp"
         >
 
-        <com.zhkrb.iwara.custom.RateImageView
+        <com.zhkrb.custom.RateImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/thumb"

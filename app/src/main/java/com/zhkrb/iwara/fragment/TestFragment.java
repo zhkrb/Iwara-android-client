@@ -18,31 +18,23 @@
 
 package com.zhkrb.iwara.fragment;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
-import androidx.constraintlayout.motion.widget.MotionLayout;
-import androidx.constraintlayout.motion.widget.MotionScene;
-import androidx.constraintlayout.motion.widget.TransitionBuilder;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
-
+import com.zhkrb.dragvideo.widget.AdvSeekbar;
 import com.zhkrb.iwara.R;
-import com.zhkrb.iwara.base.FragmentFrame;
-import com.zhkrb.iwara.custom.MaterialAppBarLayout;
-import com.zhkrb.iwara.custom.refreshView.loading.LoadingDrawable;
-import com.zhkrb.iwara.custom.refreshView.loading.LoadingView;
-import com.zhkrb.iwara.utils.DpUtil;
 
-public class TestFragment extends BarBaseFragment {
+public class TestFragment extends BarBaseFragment implements View.OnClickListener {
 
-//    private MaterialAppBarLayout mView;
-    private Button mButton;
-    private MotionLayout mConstraintLayout;
+    private AdvSeekbar mSeekBar;
+    private Button mButton1;
+    private Button mButton2;
+    private TextView mTextView;
+
 
     @Override
     public View getTopAppbar(Context context) {
@@ -56,23 +48,38 @@ public class TestFragment extends BarBaseFragment {
 
     @Override
     protected void main(Bundle savedInstanceState) {
-//        mView = mRootView.findViewById(R.id.view);
-        mButton = mRootView.findViewById(R.id.button);
-        mConstraintLayout = mRootView.findViewById(R.id.motion_layout);
+        mButton1 = mRootView.findViewById(R.id.button);
+        mButton2 = mRootView.findViewById(R.id.button1);
+        mTextView = mRootView.findViewById(R.id.text);
+        mButton1.setOnClickListener(this);
+        mButton2.setOnClickListener(this);
 
-        mButton.setOnClickListener(new View.OnClickListener() {
+        mSeekBar = mRootView.findViewById(R.id.progress);
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onClick(View v) {
-                FragmentFrame frame = new FragmentFrame(TestFragment.class);
-                startFragment(frame);
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mTextView.setText(String.valueOf(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
-        mRootView.findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                mView.setBarClose(false);
-            }
-        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        mSeekBar = null;
+        mButton1 = null;
+        mButton2 = null;
+        mTextView = null;
+        super.onDestroyView();
     }
 
     @Override
@@ -83,5 +90,32 @@ public class TestFragment extends BarBaseFragment {
     @Override
     public void onNewArguments(Bundle args) {
 
+    }
+
+    private void setSeekBarDelegate() {
+//        Rect touchRect = new Rect();
+//        mSeekBar.getHitRect(touchRect);
+//        touchRect.top -= DpUtil.dp2px(20);
+//        touchRect.bottom += DpUtil.dp2px(40);
+//        TouchDelegate mSeekTouchDelegate = new TouchDelegate(touchRect,mSeekBar);
+//        ((ViewGroup)mSeekBar.getParent()).setTouchDelegate(mSeekTouchDelegate);
+        mSeekBar.setEnabled(true);
+    }
+
+    private void removeDelegate(){
+//        ((ViewGroup)mSeekBar.getParent()).setTouchDelegate(null);
+        mSeekBar.setEnabled(false);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.button:
+                setSeekBarDelegate();
+                break;
+            case R.id.button1:
+                removeDelegate();
+                break;
+        }
     }
 }
