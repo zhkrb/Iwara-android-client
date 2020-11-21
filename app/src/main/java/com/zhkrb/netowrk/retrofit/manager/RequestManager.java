@@ -23,7 +23,7 @@ import android.util.ArrayMap;
 import java.util.Objects;
 import java.util.Set;
 
-import io.reactivex.disposables.Disposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 
 public class RequestManager implements IRequestManager<String> {

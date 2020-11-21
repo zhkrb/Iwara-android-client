@@ -109,7 +109,7 @@ public class HttpClient {
     Observable<JsonBean> post(String apiName, HashMap<String,String> header, PostBean bean){
         PostModel postModel = mRetrofit.create(PostModel.class);
         RequestBody body = null;
-        if (bean!=null&&!bean.isEmpry()){
+        if (bean!=null&&!bean.isEmpty()){
             body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),bean.create());
         }else {
             body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),"");
@@ -126,7 +126,7 @@ public class HttpClient {
     public Observable<JsonBean> post(String apiName, PostBean bean){
         PostModel postModel = mRetrofit.create(PostModel.class);
         RequestBody body = null;
-        if (bean!=null&&!bean.isEmpry()){
+        if (bean!=null&&!bean.isEmpty()){
             body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),bean.create());
         }else {
             body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),"");

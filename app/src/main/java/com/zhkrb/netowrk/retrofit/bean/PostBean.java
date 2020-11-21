@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 
 public class PostBean {
-
     private JSONObject mArgs;
 
 
@@ -14,47 +13,58 @@ public class PostBean {
         mArgs = new JSONObject();
     }
 
-    public void param(String key,String value){
+    public PostBean param(String key, String value) {
         try {
-            mArgs.put(key,value);
-        }catch (JSONException e){
+            mArgs.put(key, value);
+        } catch (JSONException e) {
             e.printStackTrace();
         }
+        return this;
     }
 
-    public void param(String key,int value){
+    public PostBean param(String key, int value) {
         try {
-            mArgs.put(key,value);
-        }catch (JSONException e){
+            mArgs.put(key, value);
+        } catch (JSONException e) {
             e.printStackTrace();
         }
+        return this;
     }
 
-    public void param(String key, JSONObject value){
+    public PostBean param(String key, long value) {
         try {
-            mArgs.put(key,value);
-        }catch (JSONException e){
+            mArgs.put(key, value);
+        } catch (JSONException e) {
             e.printStackTrace();
         }
+        return this;
     }
 
-    public void param(String key, JSONArray value){
+    public PostBean param(String key, JSONObject value) {
         try {
-            mArgs.put(key,value);
-        }catch (JSONException e){
+            mArgs.put(key, value);
+        } catch (JSONException e) {
             e.printStackTrace();
         }
+        return this;
     }
 
-    public boolean isEmpry(){
+    public PostBean param(String key, JSONArray value) {
+        try {
+            mArgs.put(key, value);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    public boolean isEmpty() {
         return mArgs == null || mArgs.size() == 0;
     }
 
-    public String create(){
+    public String create() {
         return mArgs.toJSONString();
     }
-
-
 
 
 }

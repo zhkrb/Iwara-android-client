@@ -10,8 +10,9 @@ import com.zhkrb.netowrk.retrofit.manager.RequestManager;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
 import okhttp3.ResponseBody;
 
 public abstract class RetrofitCallback implements Observer<ResponseBody>,NetworkCallback {

@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class GetBean {
 
-    private Map<String ,Object> mArgs;
+    private Map<String, Object> mArgs;
 
     public GetBean() {
         mArgs = new HashMap<>();
