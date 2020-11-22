@@ -16,9 +16,9 @@
  * Create by zhkrb on 2019/11/4 22:05
  */
 
-package com.zhkrb.iwara.adapter.inter;
+package com.zhkrb.custom.refreshView.clickInterface;
 
-public interface AdapterLongClickInterface<T> extends AdapterClickInterface<T> {
+public interface AdapterLongClickListener<T> extends AdapterClickListener<T> {
 
-    void itemLongClick(T bean);
+    void itemLongClick(T bean, int pos);
 }

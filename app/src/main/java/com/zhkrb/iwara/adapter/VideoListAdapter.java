@@ -31,7 +31,7 @@ import com.zhkrb.iwara.adapter.inter.AdapterLongClickInterface;
 import com.zhkrb.iwara.bean.VideoListBean;
 import com.zhkrb.custom.refreshView.RefreshAdapter;
 import com.zhkrb.utils.DpUtil;
-import com.zhkrb.utils.ImgLoader;
+import com.zhkrb.glide.ImgLoader;
 import com.zhkrb.utils.SortUtil;
 import com.zhkrb.utils.WordUtil;
 

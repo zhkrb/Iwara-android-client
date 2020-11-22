@@ -55,7 +55,7 @@ import com.zhkrb.netowrk.jsoup.JsoupCallback;
 import com.zhkrb.netowrk.jsoup.JsoupUtil;
 import com.zhkrb.netowrk.retrofit.HttpUtil;
 import com.zhkrb.utils.HttpConstsUtil;
-import com.zhkrb.utils.ImgLoader;
+import com.zhkrb.glide.ImgLoader;
 import com.zhkrb.utils.ToastUtil;
 import com.zhkrb.utils.WordUtil;
 

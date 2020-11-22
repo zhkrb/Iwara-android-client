@@ -32,7 +32,7 @@ import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.adapter.inter.AdapterClickInterface;
 import com.zhkrb.iwara.adapter.inter.AdapterLongClickInterface;
 import com.zhkrb.iwara.bean.VideoListBean;
-import com.zhkrb.utils.ImgLoader;
+import com.zhkrb.glide.ImgLoader;
 import com.zhkrb.utils.ToastUtil;
 import com.zhkrb.utils.WordUtil;
 

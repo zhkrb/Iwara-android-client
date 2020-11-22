@@ -27,6 +27,10 @@ static def gitVersionTag(boolean isPattern) {
     return version
 }
 
+static def time(){
+    return new Date().format('yyyyMMddHHmm',TimeZone.getDefault())
+}
+
 task switchToDebug(type: Copy) {
     description = 'Switches to DEBUG google-services.json'
     from "src/debug"
@@ -46,9 +50,9 @@ android {
     defaultConfig {
         applicationId "com.zhkrb.iwara"
         minSdkVersion 22
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode 2
-        versionName "0.0.3"
+        versionName "0.0.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -72,6 +76,7 @@ android {
             variant.outputs.each { output ->
                 output.versionNameOverride = gitVersionTag(true)
                 output.versionCodeOverride = gitVersionCode()
+                output.outputFileName = "iwara_${variant.buildType.name}_${defaultConfig.versionCode}_${time()}.apk"
             }
         }else if (variant.buildType.name == 'debug') {
             variant.outputs.each { output ->
@@ -98,7 +103,7 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation('com.android.support:appcompat-v7:23.0.1')
+    implementation('com.android.support:appcompat-v7:28.0.0')
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -138,5 +143,6 @@ dependencies {
 
     implementation 'com.zhkrb.cloudflare-scrape-android:scrape-webview:0.0.3'
 
-
+    //refresh
+    implementation  'com.scwang.smart:refresh-layout-kernel:2.0.1'
 }

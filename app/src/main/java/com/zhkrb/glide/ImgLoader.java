@@ -16,7 +16,7 @@
  * Create by zhkrb on 2019/9/7 22:12
  */
 
-package com.zhkrb.utils;
+package com.zhkrb.glide;
 
 import android.widget.ImageView;
 
@@ -55,7 +55,7 @@ public class ImgLoader {
     //TODO 加载失败时占位图
     public static void displayTryThumbnail(String url,ImageView imageView){
         RequestOptions options = new RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE);
-        sManager.load(url.replaceFirst("thumbnail","frontpage_wide"))
+        sManager.load(url.replaceFirst("thumbnail","frontpage_mid "))
                 .apply(options)
                 .error(sManager
                         .load(url)

@@ -33,7 +33,7 @@ import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.adapter.inter.AdapterClickInterface;
 import com.zhkrb.iwara.bean.CommentBean;
 import com.zhkrb.custom.refreshView.RefreshAdapter;
-import com.zhkrb.utils.ImgLoader;
+import com.zhkrb.glide.ImgLoader;
 import com.zhkrb.utils.WordUtil;
 
 import java.util.List;

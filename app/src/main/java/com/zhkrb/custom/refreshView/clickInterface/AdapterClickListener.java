@@ -16,10 +16,10 @@
  * Create by zhkrb on 2019/11/4 22:04
  */
 
-package com.zhkrb.iwara.adapter.inter;
+package com.zhkrb.custom.refreshView.clickInterface;
 
-public interface AdapterClickInterface<T> {
+public interface AdapterClickListener<T> {
 
-    void itemClick(T bean);
+    void itemClick(T bean, int pos);
 
 }
