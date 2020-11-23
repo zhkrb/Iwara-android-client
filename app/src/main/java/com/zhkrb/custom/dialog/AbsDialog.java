@@ -11,10 +11,8 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.qiyou.id.R;
-import com.qiyou.id.custom.dialog.dialogManager.DialogShowManager;
-import com.qiyou.id.utils.ClickUtils;
-import com.qiyou.id.utils.DpUtils;
+
+import com.zhkrb.iwara.R;
 
 import androidx.cardview.widget.CardView;
 

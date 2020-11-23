@@ -44,4 +44,9 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowAnimationStyle">@style/dialog_null_anim</item>
     </style>
+
+    <style name="dialog_null_anim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/half_pop_in</item>
+        <item name="android:windowExitAnimation">@anim/half_pop_out</item>
+    </style>
 </resources>

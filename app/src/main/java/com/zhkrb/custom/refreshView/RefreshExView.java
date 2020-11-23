@@ -21,12 +21,16 @@ package com.zhkrb.custom.refreshView;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.FrameLayout;
 
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.zhkrb.iwara.R;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * @description：带上下拉的recyclerview封装
@@ -43,8 +47,10 @@ public class RefreshExView extends FrameLayout {
     private int mLayoutRes;
 
     private boolean mEnableRefresh;
-
     private boolean mEnableLoadMore;
+
+    private RecyclerView mRecyclerView;
+    private SmartRefreshLayout mSmartRefreshLayout;
 
     public RefreshExView(@NonNull Context context) {
         this(context,null);
@@ -62,6 +68,11 @@ public class RefreshExView extends FrameLayout {
         mEnableLoadMore = ta.getBoolean(R.styleable.RefreshView_enableLoadMore, true);
         ta.recycle();
 
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(mLayoutRes,this,true);
+
+        mRecyclerView = view.findViewById(R.id.view_recycler);
+        mSmartRefreshLayout = view.findViewById(R.id.view_smart_refresh);
 
     }
 
@@ -71,7 +82,46 @@ public class RefreshExView extends FrameLayout {
         super.onAttachedToWindow();
         mAttachedToWindow = true;
 
+    }
 
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
 
     }
+
+    /**
+     * 获取recyclerview
+     * @return
+     */
+    public RecyclerView getRecyclerView(){
+        return mRecyclerView;
+    }
+
+    /**
+     * 设置分割线
+     * @param itemDecoration
+     */
+    public void setItemDecoration(RecyclerView.ItemDecoration itemDecoration){
+        if (mRecyclerView != null){
+            mRecyclerView.addItemDecoration(itemDecoration);
+        }
+    }
+
+    public void setLayoutManager(RecyclerView.LayoutManager manager){
+        if (mRecyclerView != null){
+            mRecyclerView.setLayoutManager(manager);
+        }
+    }
+
+    /**
+     * 初始化
+     */
+    public void initData(){
+
+    }
+
+
+
 }
