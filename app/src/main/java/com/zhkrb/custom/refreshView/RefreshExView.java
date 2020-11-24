@@ -62,6 +62,8 @@ public class RefreshExView extends FrameLayout {
     private SmartRefreshLayout mSmartRefreshLayout;
     private BaseDataHelper<?> mDataHelper;
 
+    private InterceptorDropListener mInterceptorDropListener;
+
     public RefreshExView(@NonNull Context context) {
         this(context,null);
     }
@@ -86,12 +88,31 @@ public class RefreshExView extends FrameLayout {
         mSmartRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-
+                if (mInterceptorDropListener != null &&
+                        mInterceptorDropListener.loadMore()){
+                    mSmartRefreshLayout.finishLoadMore();
+                    return;
+                }
+                if (reversalLoad){
+                    refresh();
+                }else {
+                    loadMore();
+                }
             }
 
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                if (mInterceptorDropListener != null &&
+                        mInterceptorDropListener.refresh()){
+                    mSmartRefreshLayout.finishRefresh();
+                    return;
+                }
 
+                if (reversalLoad){
+                    loadMore();
+                }else {
+                    refresh();
+                }
             }
         });
     }
@@ -139,7 +160,26 @@ public class RefreshExView extends FrameLayout {
      * 初始化
      */
     public void initData(){
+        if (firstLoad){
+            refresh();
+        }else {
+            getDataHelper().getAdapter().notifyDataSetChanged();
+        }
+    }
 
+    public void refresh(){
+        if (mDataHelper != null){
+            mPage = 0;
+            mDataHelper.loadData(mPage,getRefreshCallback());
+        }
+    }
+
+
+    public void loadMore(){
+        if (mDataHelper != null){
+            mPage++;
+            mDataHelper.loadData(mPage,getLoadCallback());
+        }
     }
 
     private Class<?> mClass;
@@ -186,5 +226,7 @@ public class RefreshExView extends FrameLayout {
     };
 
 
-
+    public void setInterceptorDropListener(InterceptorDropListener interceptorDropListener) {
+        mInterceptorDropListener = interceptorDropListener;
+    }
 }
