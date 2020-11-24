@@ -28,8 +28,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.zhkrb.iwara.R;
-import com.zhkrb.netowrk.jsoup.JsoupCallback;
-import com.zhkrb.netowrk.retrofit.RetrofitCallback;
+import com.zhkrb.netowrk.jsoup.BaseJsoupCallback;
+import com.zhkrb.netowrk.retrofit.BaseRetrofitCallback;
 import com.zhkrb.utils.ToastUtil;
 import com.zhkrb.utils.WordUtil;
 import com.zhkrb.netowrk.NetworkCallback;
@@ -143,7 +143,7 @@ public class RefreshView extends FrameLayout implements View.OnClickListener {
         if (mDataHelper == null) {
             throw new RuntimeException("must set Helper");
         }
-        RefreshAdapter adapter = mDataHelper.getAdapter();
+        BaseRefreshAdapter adapter = mDataHelper.getAdapter();
         if (adapter == null){
             return;
         }
@@ -230,7 +230,7 @@ public class RefreshView extends FrameLayout implements View.OnClickListener {
         return false;
     }
 
-    private JsoupCallback mJsoupRefreshCallback = new JsoupCallback() {
+    private BaseJsoupCallback mJsoupRefreshCallback = new BaseJsoupCallback() {
 
         private int mDataCount;
 
@@ -290,7 +290,7 @@ public class RefreshView extends FrameLayout implements View.OnClickListener {
         public void onError(int code,String msg) {
             mErrHint = WordUtil.getErrorMsg(code,msg);
             showError();
-            RefreshAdapter adapter = mDataHelper.getAdapter();
+            BaseRefreshAdapter adapter = mDataHelper.getAdapter();
             if (adapter != null && adapter.getItemCount() > 0) {
                 adapter.clearData();
             }
@@ -298,7 +298,7 @@ public class RefreshView extends FrameLayout implements View.OnClickListener {
         }
     };
 
-    private JsoupCallback mJsoupLoadMoreCallback = new JsoupCallback() {
+    private BaseJsoupCallback mJsoupLoadMoreCallback = new BaseJsoupCallback() {
 
         private int mDataCount;
 
@@ -313,7 +313,7 @@ public class RefreshView extends FrameLayout implements View.OnClickListener {
                 mPage--;
                 return;
             }
-            RefreshAdapter adapter = mDataHelper.getAdapter();
+            BaseRefreshAdapter adapter = mDataHelper.getAdapter();
             if (adapter == null){
                 return;
             }
@@ -350,7 +350,7 @@ public class RefreshView extends FrameLayout implements View.OnClickListener {
         @Override
         public void onError(int code,String msg) {
             mPage--;
-            RefreshAdapter adapter = mDataHelper.getAdapter();
+            BaseRefreshAdapter adapter = mDataHelper.getAdapter();
             if (adapter == null){
                 return;
             }
@@ -359,7 +359,7 @@ public class RefreshView extends FrameLayout implements View.OnClickListener {
         }
     };
 
-    private RetrofitCallback mRetrofitRefreshCallback = new RetrofitCallback() {
+    private BaseRetrofitCallback mRetrofitRefreshCallback = new BaseRetrofitCallback() {
 
         private int mDataCount;
 
@@ -422,7 +422,7 @@ public class RefreshView extends FrameLayout implements View.OnClickListener {
         public void onError(int code,String msg) {
             mErrHint = WordUtil.getErrorMsg(code,msg);
             showError();
-            RefreshAdapter adapter = mDataHelper.getAdapter();
+            BaseRefreshAdapter adapter = mDataHelper.getAdapter();
             if (adapter != null && adapter.getItemCount() > 0) {
                 adapter.clearData();
             }
@@ -430,7 +430,7 @@ public class RefreshView extends FrameLayout implements View.OnClickListener {
         }
     };
 
-    private RetrofitCallback mRetrofitLoadMoreCallback = new RetrofitCallback() {
+    private BaseRetrofitCallback mRetrofitLoadMoreCallback = new BaseRetrofitCallback() {
 
         private int mDataCount;
 
@@ -445,7 +445,7 @@ public class RefreshView extends FrameLayout implements View.OnClickListener {
                 mPage--;
                 return;
             }
-            RefreshAdapter adapter = mDataHelper.getAdapter();
+            BaseRefreshAdapter adapter = mDataHelper.getAdapter();
             if (adapter == null){
                 return;
             }
@@ -482,7 +482,7 @@ public class RefreshView extends FrameLayout implements View.OnClickListener {
         @Override
         public void onError(int code,String msg) {
             mPage--;
-            RefreshAdapter adapter = mDataHelper.getAdapter();
+            BaseRefreshAdapter adapter = mDataHelper.getAdapter();
             if (adapter == null){
                 return;
             }
@@ -591,7 +591,7 @@ public class RefreshView extends FrameLayout implements View.OnClickListener {
 
 
     public interface DataHelper<T> {
-        RefreshAdapter<T> getAdapter();
+        BaseRefreshAdapter<T> getAdapter();
 
         void loadData(int p, NetworkCallback callback);
 

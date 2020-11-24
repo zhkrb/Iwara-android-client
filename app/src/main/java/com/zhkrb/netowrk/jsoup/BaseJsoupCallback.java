@@ -20,35 +20,40 @@ package com.zhkrb.netowrk.jsoup;
 
 import android.util.Log;
 
+import com.zhkrb.netowrk.BaseDataLoadCallback;
 import com.zhkrb.netowrk.ExceptionUtil;
-import com.zhkrb.netowrk.NetworkCallback;
 import com.zhkrb.netowrk.retrofit.manager.RequestManager;
 
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
 import okhttp3.ResponseBody;
+import okio.BufferedSource;
+import okio.Okio;
 
-public  abstract class JsoupCallback implements Observer<ResponseBody>, NetworkCallback {
+public abstract class BaseJsoupCallback implements Observer<ResponseBody>, BaseDataLoadCallback {
 
     private String mTag;
-    private formater mFormater;
+    private Formatter mFormatter;
 
-    public JsoupCallback addTag(String tag){
+    public BaseJsoupCallback addTag(String tag) {
         mTag = tag;
         return this;
     }
 
     @Override
     public void onSubscribe(Disposable d) {
-        RequestManager.getInstance().add(mTag,d);
+        RequestManager.getInstance().add(mTag, d);
         onStart();
     }
 
     @Override
     public void onNext(ResponseBody responseBody) {
         try {
-            if (mFormater != null){
-                mFormater.format(responseBody);
+            BufferedSource bufferedSource = Okio.buffer(responseBody.source());
+            String response = bufferedSource.readUtf8();
+            bufferedSource.close();
+            if (mFormatter != null) {
+                mFormatter.format(response);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,9 +64,9 @@ public  abstract class JsoupCallback implements Observer<ResponseBody>, NetworkC
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        ExceptionUtil.msg msg1 = ExceptionUtil.getException(e);
-        Log.e("jsoup exception",msg1.getCode()+": "+msg1.getMsg());
-        onError(msg1.getCode(),msg1.getMsg());
+        ExceptionUtil.Msg msg1 = ExceptionUtil.getException(e);
+        Log.e("jsoup exception", msg1.getCode() + ": " + msg1.getMsg());
+        onError(msg1.getCode(), msg1.getMsg());
         RequestManager.getInstance().remove(mTag);
         onFinish();
     }
@@ -72,11 +77,18 @@ public  abstract class JsoupCallback implements Observer<ResponseBody>, NetworkC
         onFinish();
     }
 
-    public void setFormater(formater formater) {
-        mFormater = formater;
+    public void setFormatter(Formatter formatter) {
+        mFormatter = formatter;
     }
 
-    interface formater{
-        void format(ResponseBody responseBody) throws Exception;
+    interface Formatter {
+
+        /**
+         * 格式化数据
+         * @param string
+         * @throws Exception
+         */
+        void format(String string) throws Exception;
+
     }
 }

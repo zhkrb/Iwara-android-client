@@ -26,16 +26,16 @@ import android.view.View;
 import com.alibaba.fastjson.JSON;
 import com.zhkrb.iwara.AppConfig;
 import com.zhkrb.iwara.R;
-import com.zhkrb.iwara.adapter.VideoListAdapter;
+import com.zhkrb.iwara.adapter.VideoListAdapterBase;
 import com.zhkrb.iwara.adapter.inter.AdapterClickInterface;
 import com.zhkrb.base.AbsActivity;
 import com.zhkrb.base.FragmentFrame;
 import com.zhkrb.iwara.bean.VideoListBean;
 import com.zhkrb.custom.ItemDecoration;
-import com.zhkrb.custom.refreshView.RefreshAdapter;
+import com.zhkrb.custom.refreshView.BaseRefreshAdapter;
 import com.zhkrb.custom.refreshView.RefreshView;
 import com.zhkrb.custom.refreshView.ScaleRecyclerView;
-import com.zhkrb.netowrk.jsoup.JsoupCallback;
+import com.zhkrb.netowrk.jsoup.BaseJsoupCallback;
 import com.zhkrb.netowrk.retrofit.HttpUtil;
 import com.zhkrb.utils.HttpConstsUtil;
 import com.zhkrb.utils.SpUtil;
@@ -57,7 +57,7 @@ public class GalleryFragment extends BarBaseFragment implements View.OnClickList
     private static final String SAVED_POSITION = "saved_position";
     private static final String SAVED_POSITION_OFFSET = "saved_position_offset";
     private RefreshView mRefreshView;
-    private VideoListAdapter mAdapter;
+    private VideoListAdapterBase mAdapter;
     private static int mGalleryMode = 0;//0 上传时间 1 播放 2 like
     private static int mListViewMode;// 0 双排 1单排 2 混合(仅首页)
     private boolean isFirstLoad = true;
@@ -87,20 +87,20 @@ public class GalleryFragment extends BarBaseFragment implements View.OnClickList
             decoration.setDrawBorderLeftAndRight(true);
             decoration.setOnlySetItemOffsetsButNoDraw(true);
             mRefreshView.setItemDecoration(decoration);
-            mAdapter = new VideoListAdapter(mContext);
+            mAdapter = new VideoListAdapterBase(mContext);
             mAdapter.setSortMode(mGalleryMode == 0);
             mAdapter.setListMode(mListViewMode);
             mAdapter.setClickListener(this);
 //        }
         mRefreshView.setDataHelper(new RefreshView.DataHelper<VideoListBean>() {
             @Override
-            public RefreshAdapter<VideoListBean> getAdapter() {
+            public BaseRefreshAdapter<VideoListBean> getAdapter() {
                 return mAdapter;
             }
 
             @Override
             public void loadData(int p, NetworkCallback callback) {
-                JsoupUtil.getVideoList(mGalleryMode,p, HttpConstsUtil.GET_VIDEO_LIST+getTag(), (JsoupCallback) callback);
+                JsoupUtil.getVideoList(mGalleryMode,p, HttpConstsUtil.GET_VIDEO_LIST+getTag(), (BaseJsoupCallback) callback);
             }
 
             @Override

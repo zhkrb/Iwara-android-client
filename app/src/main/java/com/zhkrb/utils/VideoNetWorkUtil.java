@@ -23,7 +23,7 @@ import com.zhkrb.dragvideo.NetworkUtil;
 import com.zhkrb.dragvideo.bean.UrlBean;
 import com.zhkrb.iwara.AppConfig;
 import com.zhkrb.netowrk.retrofit.HttpUtil;
-import com.zhkrb.netowrk.retrofit.RetrofitCallback;
+import com.zhkrb.netowrk.retrofit.BaseRetrofitCallback;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class VideoNetWorkUtil extends NetworkUtil {
         HttpUtil.cancel(HttpConstsUtil.GET_VIDEO_URL_LIST);
     }
 
-    private RetrofitCallback mUrlCallback = new RetrofitCallback() {
+    private BaseRetrofitCallback mUrlCallback = new BaseRetrofitCallback() {
         @Override
         public void onStart() {
 

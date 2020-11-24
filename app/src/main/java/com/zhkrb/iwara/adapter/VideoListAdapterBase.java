@@ -29,7 +29,7 @@ import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.adapter.inter.AdapterClickInterface;
 import com.zhkrb.iwara.adapter.inter.AdapterLongClickInterface;
 import com.zhkrb.iwara.bean.VideoListBean;
-import com.zhkrb.custom.refreshView.RefreshAdapter;
+import com.zhkrb.custom.refreshView.BaseRefreshAdapter;
 import com.zhkrb.utils.DpUtil;
 import com.zhkrb.glide.ImgLoader;
 import com.zhkrb.utils.SortUtil;
@@ -40,7 +40,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class VideoListAdapter extends RefreshAdapter<VideoListBean> {
+public class VideoListAdapterBase extends BaseRefreshAdapter<VideoListBean> {
 
     private static final int TYPE_NOM = 0;
     private static final int TYPE_BIG = 1;
@@ -56,11 +56,11 @@ public class VideoListAdapter extends RefreshAdapter<VideoListBean> {
 
     private static final int mScreenWidth = DpUtil.getScreenWidth();
 
-    public VideoListAdapter(Context context) {
+    public VideoListAdapterBase(Context context) {
         this(context,null);
     }
 
-    public VideoListAdapter(Context context, List<VideoListBean> list) {
+    public VideoListAdapterBase(Context context, List<VideoListBean> list) {
         super(context, list);
         mClickListener = v -> {
             Object tag = v.getTag();
@@ -86,7 +86,7 @@ public class VideoListAdapter extends RefreshAdapter<VideoListBean> {
     }
 
     public void setListMode(int mListMode) {
-        VideoListAdapter.mListMode = mListMode;
+        VideoListAdapterBase.mListMode = mListMode;
         if (mList!=null && mList.size()>0){
             notifyDataSetChanged();
         }

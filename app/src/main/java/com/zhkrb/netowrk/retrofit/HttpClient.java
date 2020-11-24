@@ -80,27 +80,19 @@ public class HttpClient {
         return getModel.get(headers,apiName+a).compose(SchedulerProvider.getInstance().applySchedulers());
     }
 
-    /**
-     * 完整请求url
-     * @param url
-     * @param bean
-     * @param headers
-     * @return
-     */
-    public Observable<ResponseBody> getFullUrl(String url, GetBean bean, Map<String, String> headers){
+
+    public Observable<ResponseBody> get(String apiName, GetBean bean){
         GetModel getModel = mRetrofit.create(GetModel.class);
         String a = "";
         if (bean!=null){
             a = bean.create();
         }
-        if (headers == null){
-            return getModel.get(url+a).compose(SchedulerProvider.getInstance().applySchedulers());
-        }
-        return getModel.get(headers,url+a).compose(SchedulerProvider.getInstance().applySchedulers());
+
+        return getModel.get(apiName+a).compose(SchedulerProvider.getInstance().applySchedulers());
     }
 
     /**
-     * 待header的请求
+     * 带header的请求
      * @param apiName
      * @param header
      * @param bean

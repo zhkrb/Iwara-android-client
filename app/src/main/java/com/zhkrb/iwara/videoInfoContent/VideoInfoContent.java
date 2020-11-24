@@ -40,7 +40,7 @@ import com.zhkrb.dragvideo.contentViewBase.ContentFrame;
 import com.zhkrb.dragvideo.contentViewBase.VideoContentView;
 import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.activity.MainActivity;
-import com.zhkrb.iwara.adapter.CommentAdapter;
+import com.zhkrb.iwara.adapter.CommentAdapterBase;
 import com.zhkrb.iwara.adapter.RecommAdapter;
 import com.zhkrb.iwara.adapter.inter.AdapterClickInterface;
 import com.zhkrb.iwara.bean.VideoInfoBean;
@@ -51,7 +51,7 @@ import com.zhkrb.custom.SwitchButton;
 import com.zhkrb.custom.AnimLinearLayoutManager;
 import com.zhkrb.custom.refreshView.OnScrollEndlessListener;
 import com.zhkrb.custom.refreshView.ScaleRecyclerView;
-import com.zhkrb.netowrk.jsoup.JsoupCallback;
+import com.zhkrb.netowrk.jsoup.BaseJsoupCallback;
 import com.zhkrb.netowrk.jsoup.JsoupUtil;
 import com.zhkrb.netowrk.retrofit.HttpUtil;
 import com.zhkrb.utils.HttpConstsUtil;
@@ -186,7 +186,7 @@ public class VideoInfoContent extends AbsContent implements View.OnClickListener
     }
 
 
-    private JsoupCallback mCallback = new JsoupCallback() {
+    private BaseJsoupCallback mCallback = new BaseJsoupCallback() {
         @Override
         public void onStart() {
 
@@ -253,7 +253,7 @@ public class VideoInfoContent extends AbsContent implements View.OnClickListener
         mRecyclerViewComment.setHasFixedSize(true);
         mRecyclerViewComment.setLayoutManager(layoutManager3);
         mRecyclerViewComment.addOnScrollListener(commitScrollEndListener);
-        CommentAdapter commentAdapter = new CommentAdapter(mContext);
+        CommentAdapterBase commentAdapter = new CommentAdapterBase(mContext);
         mRecyclerViewComment.setAdapter(commentAdapter);
         commentAdapter.setList(mInfoBean.getComment_item_list());
         mRecyclerViewComment.addItemDecoration(new ItemDecoration(mContext, Color.parseColor("#14000000"),0,1));

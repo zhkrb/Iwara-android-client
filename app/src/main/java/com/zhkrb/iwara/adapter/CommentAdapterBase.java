@@ -32,18 +32,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.zhkrb.iwara.R;
 import com.zhkrb.iwara.adapter.inter.AdapterClickInterface;
 import com.zhkrb.iwara.bean.CommentBean;
-import com.zhkrb.custom.refreshView.RefreshAdapter;
+import com.zhkrb.custom.refreshView.BaseRefreshAdapter;
 import com.zhkrb.glide.ImgLoader;
 import com.zhkrb.utils.WordUtil;
 
 import java.util.List;
 
-public class CommentAdapter extends RefreshAdapter<CommentBean> {
+public class CommentAdapterBase extends BaseRefreshAdapter<CommentBean> {
 
     private View.OnClickListener mClickListener;
     private AdapterClickInterface<CommentBean> mItemClickListener;
 
-    public CommentAdapter(Context context) {
+    public CommentAdapterBase(Context context) {
         super(context);
         mClickListener = v -> {
             Object tag = v.getTag();
@@ -57,7 +57,7 @@ public class CommentAdapter extends RefreshAdapter<CommentBean> {
         };
     }
 
-    public CommentAdapter(Context context, List<CommentBean> list) {
+    public CommentAdapterBase(Context context, List<CommentBean> list) {
         super(context, list);
     }
 

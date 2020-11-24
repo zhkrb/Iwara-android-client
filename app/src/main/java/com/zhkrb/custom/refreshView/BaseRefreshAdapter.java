@@ -25,51 +25,54 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.zhkrb.custom.refreshView.loading.LoadingView;
 import com.zhkrb.iwara.R;
 
-public abstract class RefreshAdapter<T> extends RecyclerView.Adapter {
+public abstract class BaseRefreshAdapter<T> extends RecyclerView.Adapter {
 
     protected List<T> mList;
-    private Context mContext;
     protected LayoutInflater mInflater;
-    private RecyclerView mRecyclerView;
+    private WeakReference<RecyclerView> mRecyclerView;
     private boolean isFooterEnable = false;
-    private Vh_more mView_loadmore;
+    private Vh_more mViewLoadmore;
 
     protected static final int TYPE_MORE = -1;      //加载更多Vh type
 
 
-    public RefreshAdapter(Context context) {
-        this(context,new ArrayList<T>());
+    public BaseRefreshAdapter(Context context) {
+        this(context, new ArrayList<T>());
     }
 
-    public RefreshAdapter(Context context, List<T> list) {
-        mContext = context;
+    public BaseRefreshAdapter(Context context, List<T> list) {
         mList = list;
-        mInflater = LayoutInflater.from(mContext);
+        mInflater = LayoutInflater.from(context);
         setHasStableIds(true);
     }
 
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        mRecyclerView = recyclerView;
+        mRecyclerView = new WeakReference<>(recyclerView);
     }
 
     public RecyclerView getRecyclerView() {
-        return mRecyclerView;
+        if (mRecyclerView == null) {
+            return null;
+        }
+        return mRecyclerView.get();
     }
 
     @Override
     public int getItemCount() {
-        if (mList !=null){
-            return mList.size()+1;
+        if (mList != null) {
+            return mList.size() + 1;
         }
         return 0;
     }
@@ -77,22 +80,22 @@ public abstract class RefreshAdapter<T> extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == TYPE_MORE){
-            if (mView_loadmore ==null){
-                mView_loadmore = new Vh_more(mInflater.inflate(R.layout.view_loadmore,parent,false));
+        if (viewType == TYPE_MORE) {
+            if (mViewLoadmore == null) {
+                mViewLoadmore = new Vh_more(mInflater.inflate(R.layout.view_loadmore, parent, false));
             }
-            return mView_loadmore;
-        }else {
-            return onViewHolderCreate(parent,viewType);
+            return mViewLoadmore;
+        } else {
+            return onViewHolderCreate(parent, viewType);
         }
     }
 
-    protected abstract RecyclerView.ViewHolder onViewHolderCreate(@NonNull ViewGroup parent,int viewType);
+    protected abstract RecyclerView.ViewHolder onViewHolderCreate(@NonNull ViewGroup parent, int viewType);
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (position != mList.size()){
-            onViewHolderBind(holder,position);
+        if (position != mList.size()) {
+            onViewHolderBind(holder, position);
         }
     }
 
@@ -100,7 +103,7 @@ public abstract class RefreshAdapter<T> extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        if (mList != null && position==mList.size()){
+        if (mList != null && position == mList.size()) {
             return TYPE_MORE;
         }
         return getViewType(position);
@@ -108,44 +111,47 @@ public abstract class RefreshAdapter<T> extends RecyclerView.Adapter {
 
     protected abstract int getViewType(int pos);
 
-    public void enableFooter(boolean enable){
+    public void enableFooter(boolean enable) {
         isFooterEnable = enable;
-        if (mList != null && mList.size() > 0){
+        if (mList != null && mList.size() > 0) {
             notifyItemChanged(mList.size() + 1);
         }
     }
 
-    public void hideFooterLoad(){
+    public void hideFooterLoad() {
         hideFooterLoad(true);
     }
 
-    public void hideFooterLoad(boolean needAnim){
-        if (mList == null ||mList.size() == 0 || mRecyclerView.getLayoutManager() == null){
+    public void hideFooterLoad(boolean needAnim) {
+        if (mList == null || mList.size() == 0 ||
+                mRecyclerView == null ||
+                mRecyclerView.get() == null ||
+                mRecyclerView.get().getLayoutManager() == null) {
             return;
         }
-        View view = mRecyclerView.getLayoutManager().findViewByPosition(mList.size());
-        if (view == null){
+        View view = mRecyclerView.get().getLayoutManager().findViewByPosition(mList.size());
+        if (view == null) {
             return;
         }
         Rect visibleRect = new Rect();
-        if (isViewVisibleRect(view,visibleRect)){
+        if (isViewVisibleRect(view, visibleRect)) {
             LoadingView loadingView = view.findViewById(R.id.loading_view);
             loadingView.endAnimation(() -> {
-                if (needAnim){
-                    mRecyclerView.smoothScrollBy(0, -visibleRect.bottom,new AccelerateDecelerateInterpolator());
-                }else {
-                    mRecyclerView.scrollBy(0, -visibleRect.bottom);
+                if (needAnim) {
+                    mRecyclerView.get().smoothScrollBy(0, -visibleRect.bottom, new AccelerateDecelerateInterpolator());
+                } else {
+                    mRecyclerView.get().scrollBy(0, -visibleRect.bottom);
                 }
             });
         }
     }
 
-    private boolean isViewVisibleRect(View v,Rect rect){
+    private boolean isViewVisibleRect(View v, Rect rect) {
         return v.getLocalVisibleRect(rect);
     }
 
-    public void setList(List<T> list){
-        if (mList==null){
+    public void setList(List<T> list) {
+        if (mList == null) {
             mList = new ArrayList<>();
         }
         mList.clear();
@@ -153,14 +159,16 @@ public abstract class RefreshAdapter<T> extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    public void refreshData(List<T> list){
+    public void refreshData(List<T> list) {
         if (mRecyclerView != null) {
-            if (mList==null){
+            if (mList == null) {
                 mList = new ArrayList<>();
             }
+            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffCallback<T>(mList, list), true);
+            diffResult.dispatchUpdatesTo(this);
             mList.clear();
-            mList.addAll(list);
             notifyDataSetChanged();
+            mList.addAll(list);
         }
     }
 
@@ -169,6 +177,13 @@ public abstract class RefreshAdapter<T> extends RecyclerView.Adapter {
             int p = mList.size();
             mList.addAll(list);
             notifyItemRangeInserted(p, list.size());
+        }
+    }
+
+    public void insert(T object) {
+        if (mRecyclerView != null && mList != null && object != null) {
+            mList.add(0, object);
+            notifyDataSetChanged();
         }
     }
 
@@ -199,6 +214,39 @@ public abstract class RefreshAdapter<T> extends RecyclerView.Adapter {
                     R.color.ref_pink,
                     R.color.ref_pop,
                     R.color.ref_red);
+        }
+    }
+
+    private static class DiffCallback<T> extends DiffUtil.Callback {
+
+        private final List<T> mOldList;
+        private final List<T> mNewList;
+
+        public DiffCallback(List<T> oldList, List<T> newList) {
+            mOldList = oldList;
+            mNewList = newList;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return mOldList.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return mNewList.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            return mOldList.get(oldItemPosition).getClass().equals(mNewList.get(newItemPosition).getClass());
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            Object oldObject = mOldList.get(oldItemPosition);
+            Object newObject = mNewList.get(newItemPosition);
+            return oldObject.equals(newObject);
         }
     }
 

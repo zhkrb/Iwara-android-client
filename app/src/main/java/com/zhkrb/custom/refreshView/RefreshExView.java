@@ -26,7 +26,16 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
+import com.zhkrb.custom.refreshView.helper.BaseDataHelper;
+import com.zhkrb.custom.refreshView.helper.DataHelperAdapter;
 import com.zhkrb.iwara.R;
+import com.zhkrb.netowrk.BaseDataLoadCallback;
+import com.zhkrb.netowrk.listCallback.BaseRefreshNetCallback;
+import com.zhkrb.utils.L;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -51,6 +60,7 @@ public class RefreshExView extends FrameLayout {
 
     private RecyclerView mRecyclerView;
     private SmartRefreshLayout mSmartRefreshLayout;
+    private BaseDataHelper<?> mDataHelper;
 
     public RefreshExView(@NonNull Context context) {
         this(context,null);
@@ -73,7 +83,17 @@ public class RefreshExView extends FrameLayout {
 
         mRecyclerView = view.findViewById(R.id.view_recycler);
         mSmartRefreshLayout = view.findViewById(R.id.view_smart_refresh);
+        mSmartRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
 
+            }
+
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+
+            }
+        });
     }
 
 
@@ -121,6 +141,49 @@ public class RefreshExView extends FrameLayout {
     public void initData(){
 
     }
+
+    private Class<?> mClass;
+
+    /**
+     * 设置数据类
+     * @param dataHelper
+     */
+    public <T> void setDataHelper(BaseDataHelper<T> dataHelper,Class<?> clazz) {
+        mClass = clazz;
+        mDataHelper = dataHelper;
+        if (mDataHelper != null){
+            BaseRefreshAdapter<?> adapter = mDataHelper.getAdapter();
+            if (adapter == null){
+                L.e("adapter is null, didn't set");
+                return;
+            }
+            if (adapter.getRecyclerView() == null || !adapter.getRecyclerView().equals(mRecyclerView)){
+                mRecyclerView.setAdapter(adapter);
+            }
+        }
+    }
+
+    private final BaseDataLoadCallback<Object> mRefreshCallback = new BaseDataLoadCallback<Object>() {
+        @Override
+        public void onStart() {
+
+        }
+
+        @Override
+        public void onSuccess(int code, String msg, Object info) {
+
+        }
+
+        @Override
+        public void onFinish() {
+
+        }
+
+        @Override
+        public void onError(int code, String msg) {
+
+        }
+    };
 
 
 

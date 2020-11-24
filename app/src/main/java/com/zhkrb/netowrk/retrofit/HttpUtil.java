@@ -28,10 +28,10 @@ public class HttpUtil {
     }
 
     public static Observable<ResponseBody> getBodyWithoutHost(String url) {
-        return HttpClient.getInstance().getFullUrl(url, null, null);
+        return HttpClient.getInstance().get(url, null, null);
     }
 
-    public static void testSend(String tag, @NonNull RetrofitCallback callback) {
+    public static void testSend(String tag, @NonNull BaseRetrofitCallback callback) {
         HttpClient.getInstance().get("aa",
                 new GetBean()
                         .param("test", 1)
@@ -39,13 +39,13 @@ public class HttpUtil {
                 , null).subscribe(callback.addTag(tag));
     }
 
-    public static void getVideoUrlList(String url, String tag, @NonNull RetrofitCallback callback) {
+    public static void getVideoUrlList(String url, String tag, @NonNull BaseRetrofitCallback callback) {
         HttpClient.getInstance().get(url, null, null).
                 subscribe(callback.addTag(tag));
     }
 
-    public static void getUpdateInfo(@NonNull RetrofitCallback callback) {
-        HttpClient.getInstance().getFullUrl(AppConfig.UPDATE_URL, null, null).
+    public static void getUpdateInfo(@NonNull BaseRetrofitCallback callback) {
+        HttpClient.getInstance().get(AppConfig.UPDATE_URL, null, null).
                 subscribe(callback.addTag(HttpConstsUtil.CHECK_UPDATE));
     }
 }

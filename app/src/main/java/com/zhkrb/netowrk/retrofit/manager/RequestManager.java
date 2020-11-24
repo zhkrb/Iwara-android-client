@@ -26,10 +26,10 @@ import java.util.Set;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 
-public class RequestManager implements IRequestManager<String> {
+public class RequestManager implements IRequestManager {
 
     private static RequestManager sInstance;
-    private ArrayMap<String, Disposable> mMap;
+    private final ArrayMap<String, Disposable> mMap;
 
     public static RequestManager getInstance(){
         if (sInstance == null){
@@ -47,8 +47,12 @@ public class RequestManager implements IRequestManager<String> {
     }
 
     @Override
-    public synchronized void add(String tag, Disposable subscription) {
+    public synchronized String add(String tag, Disposable subscription) {
+        if (mMap.containsKey(tag)){
+            tag += System.currentTimeMillis();
+        }
         mMap.put(tag,subscription);
+        return tag;
     }
 
     @Override

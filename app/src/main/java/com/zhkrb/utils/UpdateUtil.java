@@ -33,7 +33,7 @@ import com.zhkrb.iwara.R;
 import com.zhkrb.base.AbsActivity;
 import com.zhkrb.iwara.bean.UpdateInfoBean;
 import com.zhkrb.netowrk.retrofit.HttpUtil;
-import com.zhkrb.netowrk.retrofit.RetrofitCallback;
+import com.zhkrb.netowrk.retrofit.BaseRetrofitCallback;
 
 import java.lang.ref.WeakReference;
 
@@ -75,7 +75,7 @@ public class UpdateUtil {
 
         @Override
         public void run() {
-            HttpUtil.getUpdateInfo(new RetrofitCallback() {
+            HttpUtil.getUpdateInfo(new BaseRetrofitCallback() {
                 @Override
                 public void onStart() {
 
