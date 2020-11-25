@@ -20,6 +20,8 @@ package com.zhkrb.custom.refreshView;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +50,10 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class RefreshExView extends FrameLayout {
 
+
+    private static final String TAG = "refreshView";
+
+
     private boolean mAttachedToWindow;
 
     /**
@@ -55,21 +61,50 @@ public class RefreshExView extends FrameLayout {
      */
     private int mLayoutRes;
 
+    /**
+     * 列表实体类类名
+     */
+    private Class<?> mClass;
+
+    /**
+     * 允许下拉刷新
+     */
     private boolean mEnableRefresh;
+    /**
+     * 允许上拉加载更多
+     */
     private boolean mEnableLoadMore;
 
     private RecyclerView mRecyclerView;
     private SmartRefreshLayout mSmartRefreshLayout;
     private BaseDataHelper<?> mDataHelper;
 
+    /**
+     * 上下拉响应拦截
+     */
     private InterceptorDropListener mInterceptorDropListener;
 
+    /**
+     * 颠倒上下拉功能
+     */
+    private boolean reversalLoad;
+
+    /**
+     * 是否是第一次初始化
+     */
+    private boolean firstLoad;
+
+    /**
+     * 页数
+     */
+    private int mPage = 0;
+
     public RefreshExView(@NonNull Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public RefreshExView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public RefreshExView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -81,7 +116,7 @@ public class RefreshExView extends FrameLayout {
         ta.recycle();
 
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(mLayoutRes,this,true);
+        View view = inflater.inflate(mLayoutRes, this, true);
 
         mRecyclerView = view.findViewById(R.id.view_recycler);
         mSmartRefreshLayout = view.findViewById(R.id.view_smart_refresh);
@@ -89,13 +124,13 @@ public class RefreshExView extends FrameLayout {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 if (mInterceptorDropListener != null &&
-                        mInterceptorDropListener.loadMore()){
+                        mInterceptorDropListener.loadMore()) {
                     mSmartRefreshLayout.finishLoadMore();
                     return;
                 }
-                if (reversalLoad){
+                if (reversalLoad) {
                     refresh();
-                }else {
+                } else {
                     loadMore();
                 }
             }
@@ -103,14 +138,14 @@ public class RefreshExView extends FrameLayout {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 if (mInterceptorDropListener != null &&
-                        mInterceptorDropListener.refresh()){
+                        mInterceptorDropListener.refresh()) {
                     mSmartRefreshLayout.finishRefresh();
                     return;
                 }
 
-                if (reversalLoad){
+                if (reversalLoad) {
                     loadMore();
-                }else {
+                } else {
                     refresh();
                 }
             }
@@ -134,24 +169,26 @@ public class RefreshExView extends FrameLayout {
 
     /**
      * 获取recyclerview
+     *
      * @return
      */
-    public RecyclerView getRecyclerView(){
+    public RecyclerView getRecyclerView() {
         return mRecyclerView;
     }
 
     /**
      * 设置分割线
+     *
      * @param itemDecoration
      */
-    public void setItemDecoration(RecyclerView.ItemDecoration itemDecoration){
-        if (mRecyclerView != null){
+    public void setItemDecoration(RecyclerView.ItemDecoration itemDecoration) {
+        if (mRecyclerView != null) {
             mRecyclerView.addItemDecoration(itemDecoration);
         }
     }
 
-    public void setLayoutManager(RecyclerView.LayoutManager manager){
-        if (mRecyclerView != null){
+    public void setLayoutManager(RecyclerView.LayoutManager manager) {
+        if (mRecyclerView != null) {
             mRecyclerView.setLayoutManager(manager);
         }
     }
@@ -159,54 +196,135 @@ public class RefreshExView extends FrameLayout {
     /**
      * 初始化
      */
-    public void initData(){
-        if (firstLoad){
+    public void initData() {
+        if (firstLoad) {
             refresh();
-        }else {
-            getDataHelper().getAdapter().notifyDataSetChanged();
+        } else {
+            mDataHelper.getAdapter().notifyDataSetChanged();
         }
     }
 
-    public void refresh(){
-        if (mDataHelper != null){
+    public void refresh() {
+        if (mDataHelper != null) {
             mPage = 0;
-            mDataHelper.loadData(mPage,getRefreshCallback());
+            mDataHelper.loadData(mPage, mRefreshCallback);
         }
     }
 
 
-    public void loadMore(){
-        if (mDataHelper != null){
+    public void loadMore() {
+        if (mDataHelper != null) {
             mPage++;
-            mDataHelper.loadData(mPage,getLoadCallback());
+            mDataHelper.loadData(mPage, getLoadCallback());
         }
     }
 
-    private Class<?> mClass;
+    /**
+     * 保存view状态，smartRecyclerView 要单独保存滚动距离
+     *
+     * @return
+     */
+    @Nullable
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        Parcelable parcelable = super.onSaveInstanceState();
+        bundle.putParcelable("super", parcelable);
+        bundle.putBoolean("firstLoad", false);
+        bundle.putInt("page", mPage);
+        bundle.putBoolean("reversalLoad", reversalLoad);
+        return bundle;
+    }
+
+    /**
+     * 恢复view状态
+     *
+     * @param state
+     */
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        Bundle bundle = (Bundle) state;
+        Parcelable parcelable = bundle.getParcelable("super");
+        firstLoad = bundle.getBoolean("firstLoad", true);
+        if (!firstLoad) {
+            mPage = bundle.getInt("page");
+            reversalLoad = bundle.getBoolean("reversalLoad");
+
+            initData();
+        }
+        super.onRestoreInstanceState(parcelable);
+    }
+
+
 
     /**
      * 设置数据类
+     *
      * @param dataHelper
      */
-    public <T> void setDataHelper(BaseDataHelper<T> dataHelper,Class<?> clazz) {
+    public <T> void setDataHelper(BaseDataHelper<T> dataHelper, Class<?> clazz) {
         mClass = clazz;
         mDataHelper = dataHelper;
-        if (mDataHelper != null){
+        if (mDataHelper != null) {
             BaseRefreshAdapter<?> adapter = mDataHelper.getAdapter();
-            if (adapter == null){
+            if (adapter == null) {
                 L.e("adapter is null, didn't set");
                 return;
             }
-            if (adapter.getRecyclerView() == null || !adapter.getRecyclerView().equals(mRecyclerView)){
+            if (adapter.getRecyclerView() == null || !adapter.getRecyclerView().equals(mRecyclerView)) {
                 mRecyclerView.setAdapter(adapter);
             }
         }
     }
 
-    private final BaseDataLoadCallback<Object> mRefreshCallback = new BaseDataLoadCallback<Object>() {
+    public void setInterceptorDropListener(InterceptorDropListener interceptorDropListener) {
+        mInterceptorDropListener = interceptorDropListener;
+    }
+
+    public void setReversalLoad(boolean reversalLoad) {
+        this.reversalLoad = reversalLoad;
+    }
+
+
+    private final  BaseDataLoadCallback<List<?>> mRefreshCallback = new BaseDataLoadCallback<List<?>>() {
         @Override
         public void onStart() {
+            mSmartRefreshLayout.setEnableLoadMore(false);
+        }
 
+        @Override
+        public void onSuccess(int code, String msg, List<?> info) {
+            if (mDataHelper == null){
+                throw new RuntimeException("didn't set helper");
+            }
+
+            if (code != 200){
+
+
+
+            }
+
+
+
+        }
+
+        @Override
+        public void onFinish() {
+            mSmartRefreshLayout.finishRefresh();
+            mSmartRefreshLayout.setEnableLoadMore(mEnableLoadMore);
+        }
+
+        @Override
+        public void onError(int code, String msg) {
+            mDataHelper.onNoData(true);
+        }
+    };
+
+
+    private final BaseDataLoadCallback<Object> mLoadMoreCallback = new BaseDataLoadCallback<Object>() {
+        @Override
+        public void onStart() {
+            mSmartRefreshLayout.setEnableRefresh(false);
         }
 
         @Override
@@ -216,6 +334,7 @@ public class RefreshExView extends FrameLayout {
 
         @Override
         public void onFinish() {
+            mSmartRefreshLayout.setEnableRefresh(mEnableRefresh);
 
         }
 
@@ -224,9 +343,4 @@ public class RefreshExView extends FrameLayout {
 
         }
     };
-
-
-    public void setInterceptorDropListener(InterceptorDropListener interceptorDropListener) {
-        mInterceptorDropListener = interceptorDropListener;
-    }
 }

@@ -72,7 +72,7 @@ public abstract class BaseRefreshNetCallback<T> implements Observer<ResponseBody
             onError(e);
         }
 
-        onSuccess(0, "success", list);
+        onSuccess(200, "success", list);
     }
 
     @Override
