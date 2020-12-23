@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,18 +46,26 @@ import androidx.fragment.app.FragmentTransaction;
 
 public abstract class AbsActivity extends AppCompatActivity {
 
+    private static final String TAG = "Base Activity: ";
+
     protected Context mContext;
     protected ArrayList<String> mFragmentStack;
-    private AtomicInteger mInteger = new AtomicInteger(0);
-    private static final HashMap<Class<?>,Integer> mFragmentMode = new HashMap<>(0);
+    private final AtomicInteger mInteger = new AtomicInteger(0);
+    private static final HashMap<Class<?>, Integer> M_FRAGMENT_MODE = new HashMap<>(0);
 
     private long mLastClickBackTime;
 
     private static final String FRAGMENT_STACK = "fragment_stack";
     private static final String FRAGMENT_STACK_NEXT_TAG = "fragment_stack_next_tag";
 
+    public static final String ACTION_START_FRAGMENT = "start_fragment";
+    public static final String KEY_FRAGMENT_NAME = "key_fragment_name";
+    public static final String KEY_FRAGMENT_ARGS = "key_fragment_args";
+
+    private static final ReentrantLock LOCK = new ReentrantLock();
+
     public int getLaunchMode(Class<?> clazz) {
-        Integer integer = mFragmentMode.get(clazz);
+        Integer integer = M_FRAGMENT_MODE.get(clazz);
         if (integer == null) {
             throw new RuntimeException("Not register " + clazz.getName());
         } else {
@@ -63,19 +73,19 @@ public abstract class AbsActivity extends AppCompatActivity {
         }
     }
 
-    public static void setLaunchMode(Class<?> clazz, @AbsFragment.LaunchMode int mode){
-        mFragmentMode.put(clazz,mode);
+    public static void setLaunchMode(Class<?> clazz, @AbsFragment.LaunchMode int mode) {
+        M_FRAGMENT_MODE.put(clazz, mode);
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
-        mContext = AppContext.sInstance;
+        mContext = this;
         mFragmentStack = new ArrayList<>();
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             ArrayList<String> list = savedInstanceState.getStringArrayList(FRAGMENT_STACK);
-            if (list != null){
+            if (list != null) {
                 mFragmentStack.addAll(list);
             }
             mInteger.lazySet(savedInstanceState.getInt(FRAGMENT_STACK_NEXT_TAG));
@@ -84,15 +94,17 @@ public abstract class AbsActivity extends AppCompatActivity {
         main(savedInstanceState);
 
         Intent intent = getIntent();
-        if (savedInstanceState == null){
-            if (intent != null){
+        if (savedInstanceState == null) {
+            if (intent != null) {
                 String action = intent.getAction();
-                if (Intent.ACTION_MAIN.equals(action)){
+                if (Intent.ACTION_MAIN.equals(action)) {
                     FragmentFrame frame = getLaunchFrame();
                     if (frame != null) {
                         startFragment(frame);
                         return;
                     }
+                } else if (ACTION_START_FRAGMENT.equals(action)) {
+                    onStartFragmentForIntent(intent);
                 }
             }
         }
@@ -103,8 +115,8 @@ public abstract class AbsActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putStringArrayList(FRAGMENT_STACK,mFragmentStack);
-        outState.putInt(FRAGMENT_STACK_NEXT_TAG,mInteger.getAndIncrement());
+        outState.putStringArrayList(FRAGMENT_STACK, mFragmentStack);
+        outState.putInt(FRAGMENT_STACK_NEXT_TAG, mInteger.getAndIncrement());
     }
 
     protected abstract int getLayoutId();
@@ -116,83 +128,109 @@ public abstract class AbsActivity extends AppCompatActivity {
     protected void main() {
     }
 
+    private void onStartFragmentForIntent(Intent intent) {
+        String clazzStr = intent.getStringExtra(KEY_FRAGMENT_NAME);
+        if (null == clazzStr) {
+            return;
+        }
 
-    protected void reLoadRootFragment(FragmentFrame frame){
-        Class<?> clazz = frame.getClazz();
-        Bundle args = frame.getArgs();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        int launchMode = getLaunchMode(clazz);
-        boolean createNewScene = true;
-        boolean findScene = false;
-        AbsFragment fragment = null;
+        Class<?> clazz;
+        try {
+            clazz = Class.forName(clazzStr);
+        } catch (ClassNotFoundException e) {
+            L.e(TAG, "Can't find class " + clazzStr + e);
+            return;
+        }
 
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        Bundle args = intent.getBundleExtra(KEY_FRAGMENT_ARGS);
 
-        // Set default animation
-        transaction.setCustomAnimations(R.anim.bottomtop_enter, R.anim.bottomtop_exit);
+        FragmentFrame frame = new FragmentFrame(clazz).setArgs(args);
 
-        String findSceneTag = null;
-        for (int i = 0, n = mFragmentStack.size(); i < n; i++) {
-            String tag = mFragmentStack.get(i);
-            Fragment currentFragment = fragmentManager.findFragmentByTag(tag);
-            if (currentFragment == null) {
-                L.e("AbsActivity", "Can't find fragment with tag: " + tag);
-                continue;
-            }
+        startFragment(frame);
+    }
 
-            // Clear shared element
-            currentFragment.setSharedElementEnterTransition(null);
-            currentFragment.setSharedElementReturnTransition(null);
-            currentFragment.setEnterTransition(null);
-            currentFragment.setExitTransition(null);
 
-            // Check is target scene
-            if (!findScene && clazz.isInstance(currentFragment) &&
-                    (launchMode == AbsFragment.LAUNCH_MODE_BASE || !currentFragment.isDetached())) {
-                fragment = (AbsFragment) currentFragment;
-                findScene = true;
-                createNewScene = false;
-                findSceneTag = tag;
-                if (currentFragment.isDetached()) {
-                    transaction.attach(currentFragment);
+    protected void reLoadRootFragment(FragmentFrame frame) {
+        LOCK.lock();
+        try {
+            Class<?> clazz = frame.getClazz();
+            Bundle args = frame.getArgs();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            int launchMode = getLaunchMode(clazz);
+            boolean createNewScene = true;
+            boolean findScene = false;
+            AbsFragment fragment = null;
+
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+            // Set default animation
+            transaction.setCustomAnimations(R.anim.bottomtop_enter, R.anim.bottomtop_exit);
+
+            String findSceneTag = null;
+            for (int i = 0, n = mFragmentStack.size(); i < n; i++) {
+                String tag = mFragmentStack.get(i);
+                Fragment currentFragment = fragmentManager.findFragmentByTag(tag);
+                if (currentFragment == null) {
+                    L.e("AbsActivity", "Can't find fragment with tag: " + tag);
+                    continue;
                 }
-            } else {
-                // Remove it
-                transaction.remove(currentFragment);
+
+                // Clear shared element
+                currentFragment.setSharedElementEnterTransition(null);
+                currentFragment.setSharedElementReturnTransition(null);
+                currentFragment.setEnterTransition(null);
+                currentFragment.setExitTransition(null);
+
+                // Check is target scene
+                if (!findScene && clazz.isInstance(currentFragment) &&
+                        (launchMode == AbsFragment.LAUNCH_MODE_BASE || !currentFragment.isDetached())) {
+                    fragment = (AbsFragment) currentFragment;
+                    findScene = true;
+                    createNewScene = false;
+                    findSceneTag = tag;
+                    if (currentFragment.isDetached()) {
+                        transaction.attach(currentFragment);
+                    }
+                } else {
+                    // Remove it
+                    transaction.remove(currentFragment);
+                }
             }
-        }
 
-        // Handle tag list
-        mFragmentStack.clear();
-        if (null != findSceneTag) {
-            mFragmentStack.add(findSceneTag);
-        }
+            // Handle tag list
+            mFragmentStack.clear();
+            if (null != findSceneTag) {
+                mFragmentStack.add(findSceneTag);
+            }
 
-        if (createNewScene) {
-            fragment = createFragment(clazz);
-            fragment.setArguments(args);
+            if (createNewScene) {
+                fragment = createFragment(clazz);
+                fragment.setArguments(args);
 
-            // Create scene tag
-            String tag = Integer.toString(mInteger.getAndIncrement());
+                // Create scene tag
+                String tag = Integer.toString(mInteger.getAndIncrement());
 
-            // Add tag to list
-            mFragmentStack.add(tag);
+                // Add tag to list
+                mFragmentStack.add(tag);
 
-            // Add scene
-            transaction.add(getContentView(), fragment, tag);
-        }
+                // Add scene
+                transaction.add(getContentView(), fragment, tag);
+            }
 
-        // Commit
-        transaction.commitAllowingStateLoss();
+            // Commit
+            transaction.commitAllowingStateLoss();
 
-        onTransactionFragment(fragment);
+            onTransactionFragment(fragment);
 
-        if (!createNewScene && args != null) {
-            fragment.onNewArguments(args);
+            if (!createNewScene && args != null) {
+                fragment.onNewArguments(args);
+            }
+        } finally {
+            LOCK.unlock();
         }
     }
 
-    public void startFragment(FragmentFrame frame){
+    public void startFragment(FragmentFrame frame) {
         FragmentManager manager = getSupportFragmentManager();
         Class clazz = frame.getClazz();
         Bundle args = frame.getArgs();
@@ -200,32 +238,32 @@ public abstract class AbsActivity extends AppCompatActivity {
         TransitionHelper helper = frame.getHelper();
         int stackSize = mFragmentStack.size();
 
-        if (launchMode==AbsFragment.LAUNCH_MODE_BASE && stackSize > 1){
-            for (int i = 0; i < stackSize;i++){
+        if (launchMode == AbsFragment.LAUNCH_MODE_BASE && stackSize > 1) {
+            for (int i = 0; i < stackSize; i++) {
                 String tag = mFragmentStack.get(i);
                 Fragment fragment = manager.findFragmentByTag(tag);
-                if (fragment == null){
-                    L.e("can't find tag: "+tag);
+                if (fragment == null) {
+                    L.e("can't find tag: " + tag);
                     continue;
                 }
-                if (clazz.isInstance(fragment)){
-                    if (isLatestFragment(tag)){
+                if (clazz.isInstance(fragment)) {
+                    if (isLatestFragment(tag)) {
                         return;
                     }
                     ArrayList<String> tagList = findBaseFragmentChildByTag(tag);
                     FragmentTransaction fragmentTransaction = manager.beginTransaction();
-                    fragmentTransaction.setCustomAnimations(R.anim.bottomtop_enter,R.anim.bottomtop_exit);
+                    fragmentTransaction.setCustomAnimations(R.anim.bottomtop_enter, R.anim.bottomtop_exit);
 
                     String currTag = mFragmentStack.get(stackSize - 1);
                     AbsFragment currentFragment = findFragmentbyTag(currTag);
                     if (currentFragment == null) {
-                        throw new RuntimeException("can't find AbsFragment: "+currTag);
+                        throw new RuntimeException("can't find AbsFragment: " + currTag);
                     }
 
                     String latestTag = tagList.get(tagList.size() - 1);
                     AbsFragment latestFragment = findFragmentbyTag(latestTag);
                     if (latestFragment == null) {
-                        throw new RuntimeException("can't find AbsFragment: "+latestTag);
+                        throw new RuntimeException("can't find AbsFragment: " + latestTag);
                     }
 
                     if (helper == null || helper.onTransition(mContext, fragmentTransaction, latestFragment, currentFragment)) {
@@ -245,7 +283,7 @@ public abstract class AbsActivity extends AppCompatActivity {
                     if (!currentFragment.isDetached()) {
                         fragmentTransaction.detach(currentFragment);
                     }
-                    if (latestFragment.isDetached()){
+                    if (latestFragment.isDetached()) {
                         fragmentTransaction.attach(latestFragment);
                     }
                     fragmentTransaction.commitAllowingStateLoss();
@@ -257,23 +295,23 @@ public abstract class AbsActivity extends AppCompatActivity {
         }
 
         AbsFragment currentFragment = null;
-        if (stackSize > 0){
+        if (stackSize > 0) {
             String tag = mFragmentStack.get(stackSize - 1);
             currentFragment = findFragmentbyTag(tag);
-            if (currentFragment == null){
-                L.e("can't find tag: "+ tag);
+            if (currentFragment == null) {
+                L.e("can't find tag: " + tag);
             }
         }
 
         FragmentTransaction fragmentTransaction = manager.beginTransaction();
         AbsFragment fragment = createFragment(clazz);
 
-        if (args!=null){
+        if (args != null) {
             fragment.setArguments(args);
         }
 
-        if (currentFragment != null){
-            if (helper==null||helper.onTransition(mContext,fragmentTransaction,fragment,currentFragment)){
+        if (currentFragment != null) {
+            if (helper == null || helper.onTransition(mContext, fragmentTransaction, fragment, currentFragment)) {
                 fragment.setEnterTransition(null);
                 fragment.setExitTransition(null);
                 fragment.setSharedElementReturnTransition(null);
@@ -283,22 +321,22 @@ public abstract class AbsActivity extends AppCompatActivity {
                 currentFragment.setSharedElementReturnTransition(null);
                 currentFragment.setSharedElementEnterTransition(null);
 
-                fragmentTransaction.setCustomAnimations(R.anim.bottomtop_enter,R.anim.bottomtop_exit);
+                fragmentTransaction.setCustomAnimations(R.anim.bottomtop_enter, R.anim.bottomtop_exit);
             }
-            if (!currentFragment.isDetached()){
+            if (!currentFragment.isDetached()) {
                 fragmentTransaction.detach(currentFragment);
             }
         }
         String tag = String.valueOf(mInteger.getAndIncrement());
-        fragmentTransaction.add(getContentView(),fragment,tag);
+        fragmentTransaction.add(getContentView(), fragment, tag);
 
         fragmentTransaction.commitAllowingStateLoss();
 
         mFragmentStack.add(tag);
         onTransactionFragment(fragment);
 
-        if (frame.getRequestFragment()!=null){
-            fragment.addRequest(frame.getRequestFragment().getClass().getName(),frame.getRequestCode());
+        if (frame.getRequestFragment() != null) {
+            fragment.addRequest(frame.getRequestFragment().getClass().getName(), frame.getRequestCode());
         }
     }
 
@@ -306,18 +344,18 @@ public abstract class AbsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         int size = mFragmentStack.size();
-        if (size==0){
+        if (size == 0) {
             super.onBackPressed();
             return;
         }
 
-        String tag = mFragmentStack.get(mFragmentStack.size()-1);
+        String tag = mFragmentStack.get(mFragmentStack.size() - 1);
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
-        if (fragment==null){
-            L.e("can't find finish fragment tag: "+ tag);
+        if (fragment == null) {
+            L.e("can't find finish fragment tag: " + tag);
             return;
         }
-        if (!(fragment instanceof AbsFragment)){
+        if (!(fragment instanceof AbsFragment)) {
             L.e("can't cash to AbsFragment: ");
             return;
         }
@@ -342,10 +380,10 @@ public abstract class AbsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(SpUtil.getInstance().getBooleanValue(SpUtil.SECURITY_ENABLE)){
+        if (SpUtil.getInstance().getBooleanValue(SpUtil.SECURITY_ENABLE)) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
                     WindowManager.LayoutParams.FLAG_SECURE);
-        }else{
+        } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
     }
@@ -359,35 +397,35 @@ public abstract class AbsActivity extends AppCompatActivity {
     protected void attachBaseContext(Context newBase) {
         Locale locale = null;
         String lang = SpUtil.getInstance().getStringValue(SpUtil.LANGUAGE);
-        if (!TextUtils.isEmpty(lang)&&!lang.equals("default")){
+        if (!TextUtils.isEmpty(lang) && !lang.equals("default")) {
             locale = new Locale(lang);
         }
-        if (locale!=null){
-            newBase = ContextLocalWrapper.wrap(newBase,locale);
+        if (locale != null) {
+            newBase = ContextLocalWrapper.wrap(newBase, locale);
         }
         super.attachBaseContext(newBase);
     }
 
-    public void finish(AbsFragment fragment, TransitionHelper helper){
-        finish(fragment.getTag(),helper);
+    public void finish(AbsFragment fragment, TransitionHelper helper) {
+        finish(fragment.getTag(), helper);
     }
 
     public void finish(String tag, TransitionHelper transitionHelper) {
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         Fragment fragment = fragmentManager.findFragmentByTag(tag);
-        if (fragment==null){
-            L.e("can't find fragment :"+tag);
+        if (fragment == null) {
+            L.e("can't find fragment :" + tag);
             return;
         }
 
         int fragmentIndex = mFragmentStack.indexOf(tag);
-        if (fragmentIndex<0){
-            L.e("can't find fragment tag :"+tag);
+        if (fragmentIndex < 0) {
+            L.e("can't find fragment tag :" + tag);
             return;
         }
 
-        if (mFragmentStack.size()==1){
+        if (mFragmentStack.size() == 1) {
             long curTime = System.currentTimeMillis();
             if (curTime - mLastClickBackTime > 2000) {
                 mLastClickBackTime = curTime;
@@ -431,7 +469,7 @@ public abstract class AbsActivity extends AppCompatActivity {
         // Remove tag
         mFragmentStack.remove(fragmentIndex);
 
-        if (getLaunchMode(fragment.getClass()) == AbsFragment.LAUNCH_MODE_BASE){
+        if (getLaunchMode(fragment.getClass()) == AbsFragment.LAUNCH_MODE_BASE) {
             onTransactionBaseFragment(findLatestBaseFragment());
         }
         onTransactionFragment(next);
@@ -444,11 +482,11 @@ public abstract class AbsActivity extends AppCompatActivity {
 
     }
 
-    protected void onTransactionBaseFragment(Class latestBaseFragment){
+    protected void onTransactionBaseFragment(Class latestBaseFragment) {
 
     }
 
-    protected void onTransactionFragment(Fragment fragment){
+    protected void onTransactionFragment(Fragment fragment) {
 
     }
 
@@ -462,15 +500,15 @@ public abstract class AbsActivity extends AppCompatActivity {
         }
     }
 
-    public ArrayList<String> findBaseFragmentChildByTag(String tag){
+    public ArrayList<String> findBaseFragmentChildByTag(String tag) {
         ArrayList<String> list = new ArrayList<>();
         list.add(tag);
         FragmentManager fragmentManager = getSupportFragmentManager();
         for (int i = mFragmentStack.indexOf(tag) + 1; i < mFragmentStack.size(); i++) {
             String childTag = mFragmentStack.get(i);
             Fragment fragment = fragmentManager.findFragmentByTag(childTag);
-            if (fragment == null){
-                L.e("can't find tag: "+childTag);
+            if (fragment == null) {
+                L.e("can't find tag: " + childTag);
                 continue;
             }
 
@@ -488,8 +526,8 @@ public abstract class AbsActivity extends AppCompatActivity {
         for (int i = mFragmentStack.indexOf(tag) + 1; i < mFragmentStack.size(); i++) {
             String childTag = mFragmentStack.get(i);
             Fragment fragment = fragmentManager.findFragmentByTag(childTag);
-            if (fragment == null){
-                L.e("can't find tag: "+childTag);
+            if (fragment == null) {
+                L.e("can't find tag: " + childTag);
                 continue;
             }
 
@@ -506,8 +544,8 @@ public abstract class AbsActivity extends AppCompatActivity {
         for (int i = 0; i < mFragmentStack.size(); i++) {
             String childTag = mFragmentStack.get(i);
             Fragment fragment = fragmentManager.findFragmentByTag(childTag);
-            if (fragment == null){
-                L.e("can't find tag: "+childTag);
+            if (fragment == null) {
+                L.e("can't find tag: " + childTag);
                 continue;
             }
 

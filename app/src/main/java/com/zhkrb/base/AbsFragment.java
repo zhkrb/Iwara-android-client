@@ -52,6 +52,8 @@ public abstract class AbsFragment extends Fragment {
     protected Context mContext;
     protected View mRootView;
 
+    protected boolean firstLoad = true;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -61,28 +63,36 @@ public abstract class AbsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (mRootView == null){
-            mRootView = LayoutInflater.from(getContext()).inflate(getLayoutId(),container,false);
-        }
-        return mRootView;
+        return LayoutInflater.from(getContext()).inflate(getLayoutId(),container,false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         main(savedInstanceState);
+        firstLoad = false;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mRootView = view;
+        if (mRootView == null){
+            mRootView = view;
+        }
+        bindView();
     }
 
     @Override
     public void onDestroyView() {
+        destroyView();
         mRootView = null;
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mContext = null;
     }
 
     protected abstract void main(Bundle savedInstanceState);
@@ -90,6 +100,10 @@ public abstract class AbsFragment extends Fragment {
     protected abstract int getLayoutId();
 
     public abstract void onNewArguments(Bundle args);
+
+    protected abstract void destroyView();
+
+    protected abstract void bindView();
 
     public void addRequest(String tag, int requestCode) {
         mRequestTagList.add(tag);
@@ -130,6 +144,12 @@ public abstract class AbsFragment extends Fragment {
         finish(null);
     }
 
+    protected void finishSelf(){
+        if (mContext instanceof AbsActivity){
+            ((AbsActivity) mContext).finishSelf(this);
+        }
+    }
+
     protected void finish(TransitionHelper helper){
         if (mContext instanceof AbsActivity){
             ((AbsActivity) mContext).finish(this,helper);
@@ -139,6 +159,7 @@ public abstract class AbsFragment extends Fragment {
         }
     }
 
+    public abstract void realDestroy();
 
 
     @IntDef({
@@ -147,9 +168,5 @@ public abstract class AbsFragment extends Fragment {
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface LaunchMode{}
-
-
-
-
 
 }
