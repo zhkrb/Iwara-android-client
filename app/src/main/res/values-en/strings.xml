@@ -7,7 +7,7 @@
     <string name="video_view">views</string>
     <string name="no_more">no more results</string>
     <string name="no_more_there" >nothing in there</string>
-    <string name="serializationerror">serialization fails</string>
+    <string name="serialization_error">serialization fails</string>
     <string name="uncheckedioerror">IO error</string>
     <string name="unsupported_mime_type">supported mime</string>
     <string name="unknow_error">unknow error</string>
@@ -35,4 +35,7 @@
     <string name="uploaddate">上传日期:%1$s</string>
     <string name="video_private">该视频仅好友可见</string>
     <string name="reply">条回复</string>
+    <string name="unknow_exception">未知异常</string>
+    <string name="io_exception">网络异常</string>
+    <string name="client_timeout">连接超时</string>
 </resources>

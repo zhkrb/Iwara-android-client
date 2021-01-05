@@ -1,5 +1,7 @@
 package com.zhkrb.netowrk.retrofit.model;
 
+import com.zhkrb.netowrk.retrofit.JsonBean;
+
 import java.util.Map;
 
 import io.reactivex.rxjava3.core.Observable;
@@ -17,5 +19,11 @@ public interface PostModel {
 
     @POST
     Observable<ResponseBody> post(@HeaderMap Map<String, String> header, @Url String url, @Body RequestBody body);
+
+    @POST
+    Observable<JsonBean> postJson(@Url String url, @Body RequestBody body);
+
+    @POST
+    Observable<JsonBean> postJson(@HeaderMap Map<String, String> header, @Url String url, @Body RequestBody body);
 
 }

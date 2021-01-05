@@ -182,8 +182,9 @@ public abstract class AbsActivity extends AppCompatActivity {
                 currentFragment.setExitTransition(null);
 
                 // Check is target scene
-                if (!findScene && clazz.isInstance(currentFragment) &&
-                        (launchMode == AbsFragment.LAUNCH_MODE_BASE || !currentFragment.isDetached())) {
+                boolean isSame = clazz.isInstance(currentFragment) &&
+                        (launchMode == AbsFragment.LAUNCH_MODE_BASE || !currentFragment.isDetached());
+                if (!findScene && isSame) {
                     fragment = (AbsFragment) currentFragment;
                     findScene = true;
                     createNewScene = false;

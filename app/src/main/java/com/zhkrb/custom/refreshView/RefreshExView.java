@@ -31,12 +31,12 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 import com.zhkrb.custom.refreshView.helper.BaseDataHelper;
-import com.zhkrb.custom.refreshView.helper.DataHelperAdapter;
 import com.zhkrb.iwara.R;
 import com.zhkrb.netowrk.BaseDataLoadCallback;
-import com.zhkrb.netowrk.listCallback.BaseRefreshNetCallback;
+import com.zhkrb.netowrk.callback.BaseListCallback;
 import com.zhkrb.utils.L;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -60,12 +60,6 @@ public class RefreshExView extends FrameLayout {
      * 布局
      */
     private int mLayoutRes;
-
-    /**
-     * 列表实体类类名
-     */
-    private Class<?> mClass;
-
     /**
      * 允许下拉刷新
      */
@@ -75,9 +69,10 @@ public class RefreshExView extends FrameLayout {
      */
     private boolean mEnableLoadMore;
 
-    private RecyclerView mRecyclerView;
-    private SmartRefreshLayout mSmartRefreshLayout;
+    private final RecyclerView mRecyclerView;
+    private final SmartRefreshLayout mSmartRefreshLayout;
     private BaseDataHelper<?> mDataHelper;
+    private Class<?> mType;
 
     /**
      * 上下拉响应拦截
@@ -256,14 +251,12 @@ public class RefreshExView extends FrameLayout {
     }
 
 
-
     /**
      * 设置数据类
      *
      * @param dataHelper
      */
-    public <T> void setDataHelper(BaseDataHelper<T> dataHelper, Class<?> clazz) {
-        mClass = clazz;
+    public <T> void setDataHelper(BaseDataHelper<T> dataHelper, Class<T> clazz) {
         mDataHelper = dataHelper;
         if (mDataHelper != null) {
             BaseRefreshAdapter<?> adapter = mDataHelper.getAdapter();
@@ -286,23 +279,23 @@ public class RefreshExView extends FrameLayout {
     }
 
 
-    private final  BaseDataLoadCallback<List<?>> mRefreshCallback = new BaseDataLoadCallback<List<?>>() {
+    private final BaseListCallback<Object> mRefreshCallback = new BaseListCallback<Object>() {
         @Override
         public void onStart() {
             mSmartRefreshLayout.setEnableLoadMore(false);
         }
 
         @Override
-        public void onSuccess(int code, String msg, List<?> info) {
-            if (mDataHelper == null){
+        public void onSuccess(int code, String msg, List<Object> info) {
+            if (mDataHelper == null) {
                 throw new RuntimeException("didn't set helper");
             }
 
-            if (code != 200){
-
-
-
+            if (code != 200) {
+                showFailView(msg);
+                return;
             }
+
 
 
 

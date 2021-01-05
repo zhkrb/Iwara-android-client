@@ -29,4 +29,9 @@ public class JsonBean {
     public void setData(String data) {
         this.data = data;
     }
+
+    public boolean isSuccess(){
+//        return state == 1;
+        return ret == ApiException.ApiErrorCode.RESPONSE_SUCCESS;
+    }
 }

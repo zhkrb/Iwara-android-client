@@ -2,6 +2,7 @@ package com.zhkrb.custom.refreshView.helper;
 
 import com.zhkrb.custom.refreshView.BaseRefreshAdapter;
 import com.zhkrb.netowrk.BaseDataLoadCallback;
+import com.zhkrb.netowrk.callback.BaseListCallback;
 
 import java.util.List;
 
@@ -23,14 +24,14 @@ public interface BaseDataHelper <T> {
      * @param p
      * @param callback
      */
-    void loadData(int p, BaseDataLoadCallback<Object> callback);
+    void loadData(int p, BaseListCallback<Object> callback);
 
     /**
      * 转换数据类
      * @param info
      * @return
      */
-    List<T> processData(Object info);
+    List<T> processData(List<T> info);
 
     /**
      * 数据刷新回调

@@ -51,7 +51,7 @@ public class WordUtil {
     public static String getErrorMsg(int code,String msg){
         switch (code){
             case -998:
-                return getString(R.string.serializationerror);
+                return getString(R.string.serialization_error);
             case -997:
                 return getString(R.string.uncheckedioerror);
             case -996:

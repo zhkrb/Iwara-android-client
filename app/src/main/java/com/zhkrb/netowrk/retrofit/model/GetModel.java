@@ -1,5 +1,7 @@
 package com.zhkrb.netowrk.retrofit.model;
 
+import com.zhkrb.netowrk.retrofit.JsonBean;
+
 import java.util.Map;
 
 import io.reactivex.rxjava3.core.Observable;
@@ -18,6 +20,12 @@ public interface GetModel {
 
     @GET
     Observable<ResponseBody> get(@HeaderMap Map<String, String> headers, @Url String url);
+
+    @GET
+    Observable<JsonBean> getJson(@Url String url);
+
+    @GET
+    Observable<JsonBean> getJson(@HeaderMap Map<String, String> headers, @Url String url);
 
     @Streaming
     @GET

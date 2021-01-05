@@ -41,7 +41,7 @@ public class VideoNetWorkUtil extends NetworkUtil {
         HttpUtil.cancel(HttpConstsUtil.GET_VIDEO_URL_LIST);
     }
 
-    private BaseRetrofitCallback mUrlCallback = new BaseRetrofitCallback() {
+    private final BaseRetrofitCallback mUrlCallback = new BaseRetrofitCallback() {
         @Override
         public void onStart() {
 

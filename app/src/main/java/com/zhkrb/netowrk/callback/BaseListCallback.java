@@ -16,38 +16,28 @@
  * Create by zhkrb on 2020/11/24 11:11
  */
 
-package com.zhkrb.netowrk.listCallback;
+package com.zhkrb.netowrk.callback;
 
-import com.alibaba.fastjson.JSONArray;
 import com.zhkrb.netowrk.BaseDataLoadCallback;
 import com.zhkrb.netowrk.ExceptionUtil;
 import com.zhkrb.netowrk.retrofit.manager.RequestManager;
 
-import java.io.IOException;
 import java.util.List;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
-import okhttp3.ResponseBody;
-import okio.BufferedSource;
-import okio.Okio;
 
 /**
  * @description：
  * @author：zhkrb
  * @DATE： 2020/11/24 11:11
  */
-public abstract class BaseRefreshNetCallback<T> implements Observer<ResponseBody>, BaseDataLoadCallback<List<T>> {
+public abstract class BaseListCallback<T> implements Observer<List<T>>, BaseDataLoadCallback<List<T>> {
 
     private String mTag;
-    private Class<T> mClass;
 
-    public BaseRefreshNetCallback(Class<T> clazz) {
-        mClass = clazz;
-    }
-
-    public BaseRefreshNetCallback<T> addTag(String tag) {
+    public BaseListCallback<T> addTag(String tag) {
         mTag = tag;
         return this;
     }
@@ -59,20 +49,8 @@ public abstract class BaseRefreshNetCallback<T> implements Observer<ResponseBody
     }
 
     @Override
-    public void onNext(@NonNull ResponseBody body) {
-        List<T> list = null;
-
-        try {
-            BufferedSource bufferedSource = Okio.buffer(body.source());
-            String string = bufferedSource.readUtf8();
-            bufferedSource.close();
-            list = JSONArray.parseArray(string,mClass);
-        } catch (IOException e) {
-            e.printStackTrace();
-            onError(e);
-        }
-
-        onSuccess(200, "success", list);
+    public void onNext(@NonNull List<T> list) {
+        onSuccess(200,"success",list);
     }
 
     @Override

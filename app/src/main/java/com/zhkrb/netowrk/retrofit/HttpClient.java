@@ -1,5 +1,6 @@
 package com.zhkrb.netowrk.retrofit;
 
+import com.zhkrb.netowrk.factory.FastJsonConverterFactory;
 import com.zhkrb.netowrk.retrofit.bean.GetBean;
 import com.zhkrb.netowrk.retrofit.bean.PostBean;
 import com.zhkrb.netowrk.retrofit.model.GetModel;
@@ -54,7 +55,7 @@ public class HttpClient {
                 L.e(message);
             }
         });
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        interceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
 
         builder.addInterceptor(interceptor);
 
@@ -63,7 +64,7 @@ public class HttpClient {
         mRetrofit = new Retrofit.Builder()
                 .baseUrl(url)
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-//                .addConverterFactory(FastJsonConverterFactory.create())
+                .addConverterFactory(FastJsonConverterFactory.create())
                 .client(mOkHttpClient)
                 .build();
     }
