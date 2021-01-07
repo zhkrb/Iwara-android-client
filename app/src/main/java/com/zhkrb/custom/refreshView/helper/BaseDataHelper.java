@@ -24,7 +24,7 @@ public interface BaseDataHelper <T> {
      * @param p
      * @param callback
      */
-    void loadData(int p, BaseListCallback<Object> callback);
+    void loadData(int p, BaseListCallback<?> callback);
 
     /**
      * 转换数据类

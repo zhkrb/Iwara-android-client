@@ -40,28 +40,12 @@ import java.lang.ref.WeakReference;
 public class UpdateUtil {
 
     public static void checkUpdate(Context context,boolean show){
-        AppConfig.getInstance().setVersionCode(getVersion());
+        AppConfig.getInstance().setVersionCode(SystemUtil.getVersion());
         Runnable runnable = new netRunable(context,show);
         ThreadPoolUtil.submit(runnable);
     }
 
-    public static long getVersion(){
-        long version = 0;
-        try {
-            PackageInfo packageInfo = AppContext.sInstance.getPackageManager().getPackageInfo(
-                    AppContext.sInstance.getPackageName(),0);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
-                version = packageInfo.getLongVersionCode();
-            }else {
-                version = packageInfo.versionCode;
-            }
-            L.e("getVersion: "+ version);
-            L.e("getVersionName: " + packageInfo.versionName);
-        } catch (PackageManager.NameNotFoundException e) {
-            L.e("getVersionErr: "+e.getMessage());
-        }
-        return version;
-    }
+
 
     static class netRunable implements Runnable{
 

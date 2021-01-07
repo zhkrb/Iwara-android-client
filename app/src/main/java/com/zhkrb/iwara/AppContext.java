@@ -27,28 +27,34 @@ import android.os.Handler;
 import com.zhkrb.utils.L;
 import com.zhkrb.netowrk.jsoup.JsoupUtil;
 import com.zhkrb.netowrk.retrofit.HttpUtil;
+import com.zhkrb.utils.SystemUtil;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
+import io.reactivex.rxjava3.plugins.RxJavaPlugins;
 
 public class AppContext extends MultiDexApplication {
+
+    private static final String TAG = "AppContext";
 
     public static AppContext sInstance;
     private final AtomicInteger mCount = new AtomicInteger(0);
     private boolean mFront;
     private Handler mHandler;
     private boolean isFirstStart = true;
-    public static boolean sDeBug = true;
+    public static boolean sDeBug;
 
     @Override
     public void onCreate() {
         super.onCreate();
         sInstance = this;
+        sDeBug = SystemUtil.isDebug();
         HttpUtil.init(AppConfig.HOST);
         JsoupUtil.init(AppConfig.HOST);
         registerActivityLifecycleCallbacks();
+        setRxJavaErrorHandler();
     }
 
 
@@ -56,6 +62,19 @@ public class AppContext extends MultiDexApplication {
     protected void attachBaseContext(Context base) {
         MultiDex.install(this);
         super.attachBaseContext(base);
+    }
+
+    private void setRxJavaErrorHandler() {
+        RxJavaPlugins.setErrorHandler(throwable -> {
+            throwable.printStackTrace();
+            L.e(TAG, "-----------↓↓↓↓----------RXJAVA---CRASH!!!!-----------↓↓↓↓----------");
+            L.e(TAG, "exception : " + throwable.getClass().toString() + ": " + throwable.getLocalizedMessage());
+            StackTraceElement[] elements = throwable.getStackTrace();
+            for (StackTraceElement element : elements) {
+                L.e(TAG, "stackTrace : " + element.toString());
+            }
+            L.e(TAG, "-----------↓↓↓↓----------RXJAVA---CRASH!!!!-----------↓↓↓↓----------");
+        });
     }
 
     private void registerActivityLifecycleCallbacks() {

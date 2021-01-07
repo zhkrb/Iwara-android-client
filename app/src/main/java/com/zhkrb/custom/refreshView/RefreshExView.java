@@ -20,25 +20,31 @@ package com.zhkrb.custom.refreshView;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.media.VolumeProvider;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 import com.zhkrb.custom.refreshView.helper.BaseDataHelper;
+import com.zhkrb.glide.ImgLoader;
 import com.zhkrb.iwara.R;
-import com.zhkrb.netowrk.BaseDataLoadCallback;
 import com.zhkrb.netowrk.callback.BaseListCallback;
 import com.zhkrb.utils.L;
+import com.zhkrb.utils.SystemUtil;
+import com.zhkrb.utils.ToastUtil;
+import com.zhkrb.utils.WordUtil;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
@@ -59,20 +65,23 @@ public class RefreshExView extends FrameLayout {
     /**
      * 布局
      */
-    private int mLayoutRes;
+    private final int mLayoutRes;
     /**
      * 允许下拉刷新
      */
-    private boolean mEnableRefresh;
+    private final boolean mEnableRefresh;
     /**
      * 允许上拉加载更多
      */
-    private boolean mEnableLoadMore;
+    private final boolean mEnableLoadMore;
 
     private final RecyclerView mRecyclerView;
     private final SmartRefreshLayout mSmartRefreshLayout;
     private BaseDataHelper<?> mDataHelper;
-    private Class<?> mType;
+    private BaseListCallback<?> mRefreshCallback;
+    private BaseListCallback<?> mLoadMoreCallback;
+
+    private View mFailedView;
 
     /**
      * 上下拉响应拦截
@@ -93,6 +102,16 @@ public class RefreshExView extends FrameLayout {
      * 页数
      */
     private int mPage = 0;
+
+    /**
+     * 加载的条数
+     */
+    private int mDataCount;
+
+    /**
+     * 是否在加载
+     */
+    private volatile boolean mLoading = false;
 
     public RefreshExView(@NonNull Context context) {
         this(context, null);
@@ -165,7 +184,7 @@ public class RefreshExView extends FrameLayout {
     /**
      * 获取recyclerview
      *
-     * @return
+     * @return recyclerView
      */
     public RecyclerView getRecyclerView() {
         return mRecyclerView;
@@ -174,7 +193,7 @@ public class RefreshExView extends FrameLayout {
     /**
      * 设置分割线
      *
-     * @param itemDecoration
+     * @param itemDecoration 分割线
      */
     public void setItemDecoration(RecyclerView.ItemDecoration itemDecoration) {
         if (mRecyclerView != null) {
@@ -199,25 +218,38 @@ public class RefreshExView extends FrameLayout {
         }
     }
 
+    /**
+     * 刷新数据
+     */
     public void refresh() {
+        if (mLoading){
+            return;
+        }
         if (mDataHelper != null) {
+            mLoading = true;
             mPage = 0;
             mDataHelper.loadData(mPage, mRefreshCallback);
         }
     }
 
-
+    /**
+     * 加载更多
+     */
     public void loadMore() {
+        if (mLoading){
+            return;
+        }
         if (mDataHelper != null) {
+            mLoading = true;
             mPage++;
-            mDataHelper.loadData(mPage, getLoadCallback());
+            mDataHelper.loadData(mPage, mLoadMoreCallback);
         }
     }
 
     /**
      * 保存view状态，smartRecyclerView 要单独保存滚动距离
      *
-     * @return
+     * @return bundle
      */
     @Nullable
     @Override
@@ -234,7 +266,7 @@ public class RefreshExView extends FrameLayout {
     /**
      * 恢复view状态
      *
-     * @param state
+     * @param state 默认
      */
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
@@ -254,7 +286,7 @@ public class RefreshExView extends FrameLayout {
     /**
      * 设置数据类
      *
-     * @param dataHelper
+     * @param dataHelper 数据帮助类
      */
     public <T> void setDataHelper(BaseDataHelper<T> dataHelper, Class<T> clazz) {
         mDataHelper = dataHelper;
@@ -268,72 +300,215 @@ public class RefreshExView extends FrameLayout {
                 mRecyclerView.setAdapter(adapter);
             }
         }
+
+        initDataCallback(clazz);
     }
 
+    private <T> void initDataCallback(Class<T> clazz) {
+        if (mRefreshCallback == null) {
+            mRefreshCallback = new BaseListCallback<T>() {
+                @Override
+                public void onStart() {
+                    mSmartRefreshLayout.setEnableLoadMore(false);
+                }
+
+                @Override
+                public void onSuccess(int code, String msg, List<T> info) {
+                    if (mDataHelper == null) {
+                        throw new RuntimeException("didn't set helper");
+                    }
+
+                    if (code != 200) {
+                        showFail(msg);
+                        return;
+                    }
+
+                    post(() ->{
+                        if (info == null || info.size() == 0) {
+                            showEmpty();
+                            return;
+                        } else {
+                            mDataCount = info.size();
+                            showRefreshData(info, mDataCount);
+                        }
+                        mDataHelper.onViewLoadCompleted();
+                    });
+                }
+
+                @Override
+                public void onFinish() {
+                    mLoading = false;
+                    post(() -> {
+                        mSmartRefreshLayout.setEnableLoadMore(mEnableLoadMore);
+                        if (reversalLoad) {
+                            mSmartRefreshLayout.finishLoadMore();
+                        } else {
+                            mSmartRefreshLayout.finishRefresh();
+                        }
+                        if (mDataHelper != null) {
+                            mDataHelper.onLoadDataCompleted(mDataCount);
+                        }
+                    });
+                }
+
+                @Override
+                public void onError(int code, String msg) {
+                    post(() -> {
+                        mDataHelper.onNoData(true);
+                    });
+
+                }
+            };
+        }
+
+        if (mLoadMoreCallback == null) {
+            mLoadMoreCallback = new BaseListCallback<T>() {
+                @Override
+                public void onStart() {
+                    mSmartRefreshLayout.setEnableLoadMore(false);
+                }
+
+                @Override
+                public void onSuccess(int code, String msg, List<T> info) {
+                    if (mDataHelper == null) {
+                        throw new RuntimeException("didn't set helper");
+                    }
+
+                    if (code != 200) {
+                        ToastUtil.show(msg);
+                        mPage--;
+                        return;
+                    }
+
+                    post(() -> {
+                        if (info == null || info.size() == 0) {
+                            L.e("no more data");
+                            mDataCount = 0;
+                            mPage--;
+                        } else {
+                            mDataCount = info.size();
+                            showLoadNewData(info, mDataCount);
+                        }
+                        mDataHelper.onViewLoadCompleted();
+                        mDataHelper.onLoadDataCompleted(mDataCount);
+                    });
+                }
+
+                @Override
+                public void onFinish() {
+                    mLoading = false;
+                    post(() -> {
+                        mSmartRefreshLayout.setEnableRefresh(mEnableRefresh);
+                        if (reversalLoad) {
+                            mSmartRefreshLayout.finishRefresh();
+                        } else {
+                            mSmartRefreshLayout.finishLoadMore();
+                        }
+                        if (mDataHelper != null) {
+                            mDataHelper.onLoadDataCompleted(mDataCount);
+                        }
+                    });
+                }
+
+                @Override
+                public void onError(int code, String msg) {
+                    L.e(msg);
+                    mPage--;
+                }
+            };
+        }
+    }
+
+    /**
+     * 加载更多数据
+     * @param info
+     * @param dataCount
+     * @param <T>
+     */
+    private <T> void showLoadNewData(List<T> info, int dataCount) {
+
+    }
+
+    /**
+     * 刷新数据
+     * @param info
+     * @param dataCount
+     * @param <T>
+     */
+    private <T> void showRefreshData(List<T> info, int dataCount) {
+
+    }
+
+    /**
+     * 展示空数据页面
+     */
+    private void showEmpty() {
+        showFailView(WordUtil.getString(R.string.no_more_there),R.drawable.empty_drawable);
+    }
+
+
+
+    /**
+     * 展示加载失败页面
+     * @param msg
+     */
+    private void showFail(String msg) {
+
+    }
+
+    /**
+     * 提示页面
+     * @param string
+     * @param drawable
+     */
+    private void showFailView(String string, int drawable) {
+        if (mFailedView == null){
+            mFailedView = LayoutInflater.from(getContext()).inflate(R.layout.view_refresh_error,this,false);
+            mFailedView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            mFailedView.setOnClickListener(v -> {
+                if (SystemUtil.canClick()){
+                    refresh();
+                }
+            });
+            addView(mFailedView);
+        }
+
+        mFailedView.setVisibility(VISIBLE);
+        mRecyclerView.setVisibility(GONE);
+
+        ((TextView)mFailedView.findViewById(R.id.hint)).setText(string);
+        ImgLoader.display(drawable,mFailedView.findViewById(R.id.no_data_img));
+    }
+
+    /**
+     * 隐藏提示页面
+     */
+    private void hideFail(){
+        if (mFailedView == null || mFailedView.getVisibility() == GONE){
+            return;
+        }
+
+        mFailedView.setVisibility(GONE);
+        mRecyclerView.setVisibility(VISIBLE);
+    }
+
+    /**
+     * 设置上下拉拦截
+     *
+     * @param interceptorDropListener 拦截监听
+     */
     public void setInterceptorDropListener(InterceptorDropListener interceptorDropListener) {
         mInterceptorDropListener = interceptorDropListener;
     }
 
+    /**
+     * 设置是否颠倒上下拉逻辑
+     *
+     * @param reversalLoad true 是 false 否
+     */
     public void setReversalLoad(boolean reversalLoad) {
         this.reversalLoad = reversalLoad;
     }
 
 
-    private final BaseListCallback<Object> mRefreshCallback = new BaseListCallback<Object>() {
-        @Override
-        public void onStart() {
-            mSmartRefreshLayout.setEnableLoadMore(false);
-        }
-
-        @Override
-        public void onSuccess(int code, String msg, List<Object> info) {
-            if (mDataHelper == null) {
-                throw new RuntimeException("didn't set helper");
-            }
-
-            if (code != 200) {
-                showFailView(msg);
-                return;
-            }
-
-
-
-
-        }
-
-        @Override
-        public void onFinish() {
-            mSmartRefreshLayout.finishRefresh();
-            mSmartRefreshLayout.setEnableLoadMore(mEnableLoadMore);
-        }
-
-        @Override
-        public void onError(int code, String msg) {
-            mDataHelper.onNoData(true);
-        }
-    };
-
-
-    private final BaseDataLoadCallback<Object> mLoadMoreCallback = new BaseDataLoadCallback<Object>() {
-        @Override
-        public void onStart() {
-            mSmartRefreshLayout.setEnableRefresh(false);
-        }
-
-        @Override
-        public void onSuccess(int code, String msg, Object info) {
-
-        }
-
-        @Override
-        public void onFinish() {
-            mSmartRefreshLayout.setEnableRefresh(mEnableRefresh);
-
-        }
-
-        @Override
-        public void onError(int code, String msg) {
-
-        }
-    };
 }

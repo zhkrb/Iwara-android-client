@@ -34,9 +34,7 @@ public class L {
     }
 
     public static void e(String tag, String s) {
-        if (AppContext.sDeBug) {
-            Log.e(tag, s);
-        }
+        Log.e(tag, s);
     }
 
     public static void i(String s) {
@@ -46,6 +44,27 @@ public class L {
     public static void i(String tag, String s) {
         if (AppContext.sDeBug) {
             Log.i(tag, s);
+        }
+    }
+
+
+    public static void w(String s) {
+        w(TAG, s);
+    }
+
+    public static void w(String tag, String s) {
+        if (AppContext.sDeBug) {
+            Log.w(tag, s);
+        }
+    }
+
+    public static void d(String s) {
+        d(TAG, s);
+    }
+
+    public static void d(String tag, String s) {
+        if (AppContext.sDeBug) {
+            Log.d(tag, s);
         }
     }
 }

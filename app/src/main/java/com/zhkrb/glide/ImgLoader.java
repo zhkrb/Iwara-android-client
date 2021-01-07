@@ -45,6 +45,10 @@ public class ImgLoader {
         sManager.load(url).apply(options).into(imageView);
     }
 
+    public static void display(int res, ImageView imageView) {
+        sManager.load(res).into(imageView);
+    }
+
     public static void displayCircle(String url, ImageView imageView){
         RequestOptions options = new RequestOptions()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
