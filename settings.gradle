@@ -1,1 +1,1 @@
-include ':app', ':dragvideo'
+include ':app', ':dragvideo',':dialog'

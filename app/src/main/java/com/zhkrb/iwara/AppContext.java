@@ -52,7 +52,6 @@ public class AppContext extends MultiDexApplication {
         sInstance = this;
         sDeBug = SystemUtil.isDebug();
         HttpUtil.init(AppConfig.HOST);
-        JsoupUtil.init(AppConfig.HOST);
         registerActivityLifecycleCallbacks();
         setRxJavaErrorHandler();
     }

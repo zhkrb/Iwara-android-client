@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="dialog_null" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@style/dialog_null_anim</item>
+    </style>
+
+    <style name="dialog_null_anim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/half_pop_in</item>
+        <item name="android:windowExitAnimation">@anim/half_pop_out</item>
+    </style>
+
+
+</resources>

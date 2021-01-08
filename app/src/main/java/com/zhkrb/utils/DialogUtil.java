@@ -20,6 +20,7 @@ package com.zhkrb.utils;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
@@ -27,7 +28,6 @@ import com.zhkrb.iwara.R;
 
 import java.lang.ref.WeakReference;
 
-import io.reactivex.annotations.NonNull;
 
 public class DialogUtil {
 
