@@ -7,7 +7,8 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.os.Build;
 
-import com.qiyou.id.AppContext;
+import com.zhkrb.iwara.AppContext;
+
 
 /**
  * @description：网络状态获取

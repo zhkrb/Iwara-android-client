@@ -8,9 +8,10 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 
-import com.qiyou.id.AppContext;
-import com.qiyou.id.utils.L;
-import com.qiyou.id.utils.WordUtil;
+
+import com.zhkrb.iwara.AppContext;
+import com.zhkrb.utils.L;
+import com.zhkrb.utils.WordUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;

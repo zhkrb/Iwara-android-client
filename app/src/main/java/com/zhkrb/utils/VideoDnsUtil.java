@@ -28,18 +28,19 @@ import com.zhkrb.netowrk.retrofit.manager.RequestManager;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 
 public class VideoDnsUtil extends DnsUtil {
 
     public VideoDnsUtil() {
     }
 
-    private Observable<String> mObservable = Observable.create(emitter -> {
+    private final Observable<String> mObservable = Observable.create(emitter -> {
         if (TextUtils.isEmpty(host)){
             emitter.onError(new RuntimeException());
             return;
