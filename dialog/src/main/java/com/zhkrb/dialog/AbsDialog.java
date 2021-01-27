@@ -12,11 +12,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
-import com.zhkrb.dialog.BaseDialog;
-import com.zhkrb.dialog.DialogController;
-import com.zhkrb.dialog.DpUtil;
-import com.zhkrb.dialog.InputDialogInterface;
-import com.zhkrb.dialog.R;
 import com.zhkrb.dialog.dialogManager.DialogShowManager;
 
 import androidx.cardview.widget.CardView;

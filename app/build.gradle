@@ -131,6 +131,7 @@ dependencies {
 
     implementation 'org.jsoup:jsoup:1.12.1'
     api project(':dragvideo')
+    api project(':dialog')
 
     // Firebase
     implementation 'com.google.firebase:firebase-core:18.0.0'

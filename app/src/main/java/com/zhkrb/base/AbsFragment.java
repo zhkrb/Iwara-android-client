@@ -114,7 +114,7 @@ public abstract class AbsFragment extends Fragment {
         for (int i = 0, size = Math.min(mRequestCodeList.size(),mRequestTagList.size());i < size; i++){
             String tag = mRequestTagList.get(i);
             int code = mRequestCodeList.get(i);
-            AbsFragment fragment = absActivity.findFragmentbyTag(tag);
+            AbsFragment fragment = absActivity.findFragmentByTag(tag);
             if (fragment!=null){
                 fragment.onFragmentResult(code,resultCode,result);
             }
