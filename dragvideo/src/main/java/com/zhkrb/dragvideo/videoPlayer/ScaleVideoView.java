@@ -154,8 +154,9 @@ public class ScaleVideoView extends ConstraintLayout implements OnClickListener,
         }else if (progress < 0||progress < 0.01f){
             progress = 0;
         }
-        if (mLayoutProgress == progress)
+        if (mLayoutProgress == progress) {
             return;
+        }
         mLayoutProgress = progress;
         Log.e("prog", String.valueOf(mLayoutProgress));
         if (mLayoutProgress == 0 ||mLayoutProgress == 1){

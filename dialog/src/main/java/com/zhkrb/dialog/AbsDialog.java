@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 
 import com.zhkrb.dialog.dialogManager.DialogShowManager;
+import com.zhkrb.iwara.AppContext;
 
 import androidx.cardview.widget.CardView;
 
@@ -58,7 +60,7 @@ public class AbsDialog extends BaseDialog implements View.OnClickListener {
         }
         if (cardView != null){
             cardView.setRadius(mController.isCornerRadius()
-                    ? DpUtil.dp2px(getActivityContext(),mController.getRadius())
+                    ? dp2px(getActivityContext(),mController.getRadius())
                     : 0);
         }
         if (mController.isCustomClick()){
@@ -73,7 +75,7 @@ public class AbsDialog extends BaseDialog implements View.OnClickListener {
         }else {
             WindowManager.LayoutParams params = window.getAttributes();
 
-            int screenWidth = DpUtil.getScreenWidth(getActivityContext());
+            int screenWidth = getScreenWidth(getActivityContext());
             params.width = (int) (screenWidth * mController.getWidthRate());
             params.height = WindowManager.LayoutParams.WRAP_CONTENT;
             params.gravity = Gravity.CENTER;
@@ -184,5 +186,23 @@ public class AbsDialog extends BaseDialog implements View.OnClickListener {
         return false;
     }
 
+    /**
+     * dp转px
+     * @param dpVal
+     * @return
+     */
+    public static float dp2px(Context context,float dpVal) {
+        return  TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal,
+                context.getResources().getDisplayMetrics());
+    }
+
+    /**
+     * 返回屏幕宽度
+     * @param context
+     * @return
+     */
+    public static int getScreenWidth(Context context){
+        return context.getResources().getDisplayMetrics().widthPixels;
+    }
 
 }

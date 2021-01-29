@@ -23,7 +23,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -33,21 +32,17 @@ import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 
 import com.zhkrb.dragvideo.R;
-import com.zhkrb.dragvideo.contentViewBase.AbsContent;
-import com.zhkrb.dragvideo.contentViewBase.ContentFrame;
-import com.zhkrb.dragvideo.contentViewBase.ContentTransHelper;
-import com.zhkrb.dragvideo.mainView.VideoPlayerView;
 
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class VideoContentView extends FrameLayout {
 
-    private ArrayList<String> mViweStack = new ArrayList<>(0);
+    private ArrayList<String> mViewStack = new ArrayList<>(0);
     private HashMap<String,AbsContent> mViewPool = new HashMap<>(0);
     private AtomicInteger mInteger = new AtomicInteger(0);
     private Context mContext;
@@ -91,16 +86,16 @@ public class VideoContentView extends FrameLayout {
             rootContent.setOnScrollChangeListener(mScrollListener);
         }
         addView(rootContent);
-        mViweStack.add(tag);
+        mViewStack.add(tag);
         mViewPool.put(tag,rootContent);
         rootContent.load();
     }
 
     public void reloadContent(Bundle arg){
-        if (getChildCount() == 0 || mViweStack.size() == 0){
+        if (getChildCount() == 0 || mViewStack.size() == 0){
             return;
         }
-        String id = mViweStack.get(mViweStack.size() - 1);
+        String id = mViewStack.get(mViewStack.size() - 1);
         AbsContent currentContent = mViewPool.get(id);
         if (currentContent == null){
             return;
@@ -117,8 +112,8 @@ public class VideoContentView extends FrameLayout {
         ContentTransHelper helper = frame.getHelper();
 
         AbsContent currentContent = null;
-        if (mViweStack.size() > 0){
-            String id = mViweStack.get(mViweStack.size() - 1);
+        if (mViewStack.size() > 0){
+            String id = mViewStack.get(mViewStack.size() - 1);
             currentContent = mViewPool.get(id);
         }
         String tag = String.valueOf(mInteger.getAndIncrement());
@@ -129,7 +124,7 @@ public class VideoContentView extends FrameLayout {
                 ViewGroup.LayoutParams.MATCH_PARENT);
         content.setLayoutParams(layoutParams);
         addView(content);
-        mViweStack.add(tag);
+        mViewStack.add(tag);
         mViewPool.put(tag,content);
         if (currentContent!=null ){
             currentContent.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) null);
@@ -140,14 +135,14 @@ public class VideoContentView extends FrameLayout {
     }
 
     public void finishContent(ContentTransHelper helper){
-        if (mViweStack.size() > 1){
-            String currentId = mViweStack.get(mViweStack.size() - 1);
+        if (mViewStack.size() > 1){
+            String currentId = mViewStack.get(mViewStack.size() - 1);
             AbsContent currentContent = mViewPool.get(currentId);
             if (currentContent == null){
                 return;
             }
 
-            String nextId = mViweStack.get(mViweStack.size() - 2);
+            String nextId = mViewStack.get(mViewStack.size() - 2);
             AbsContent nextContent = mViewPool.get(nextId);
 
             if (helper == null || !helper.onTransition(mContext,true,currentContent,nextContent)){
@@ -161,13 +156,15 @@ public class VideoContentView extends FrameLayout {
             removeView(currentContent);
             currentContent.release();
             mViewPool.remove(currentId);
-            mViweStack.remove(mViweStack.size()-1);
+            mViewStack.remove(mViewStack.size()-1);
         }
     }
 
     private void removeAllContent() {
-        if (mViweStack.size() > 0){
-            for (String id :mViweStack){
+        if (mViewStack.size() > 0){
+            Iterator<String> iterator = mViewStack.iterator();
+            while (iterator.hasNext()){
+                String id = iterator.next();
                 AbsContent content = mViewPool.get(id);
                 if (content == null){
                     Log.e("videoContent","Can't find View: "+id);
@@ -177,7 +174,7 @@ public class VideoContentView extends FrameLayout {
                 removeView(content);
                 content.release();
                 mViewPool.remove(id);
-                mViweStack.remove(mViweStack.size()-1);
+                iterator.remove();
             }
         }
         if (getChildCount() > 0){
@@ -213,7 +210,7 @@ public class VideoContentView extends FrameLayout {
     }
 
     public boolean canBackUp(){
-        if (mViweStack.size() > 1){
+        if (mViewStack.size() > 1){
             finishContent(null);
             return true;
         }
@@ -250,8 +247,8 @@ public class VideoContentView extends FrameLayout {
             return;
         }
         isAnim = anim;
-        if (mViweStack.size() > 0){
-            for (String id :mViweStack){
+        if (mViewStack.size() > 0){
+            for (String id : mViewStack){
                 AbsContent content = mViewPool.get(id);
                 if (content != null){
                     content.setAnim(isAnim);

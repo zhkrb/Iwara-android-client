@@ -237,8 +237,9 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
         if (isPlay) {
             release();
         }
-        if (orientationUtils != null)
+        if (orientationUtils != null) {
             orientationUtils.releaseListener();
+        }
     }
 
     @Override
