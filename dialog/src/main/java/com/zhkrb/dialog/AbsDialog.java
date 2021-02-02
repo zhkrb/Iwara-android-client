@@ -127,16 +127,23 @@ public class AbsDialog extends BaseDialog implements View.OnClickListener {
             if (mController.getClickInterface() != null) {
                 if (mEditText != null && mController.getClickInterface() instanceof InputDialogInterface) {
                     String str = TextUtils.isEmpty(mEditText.getText()) ? null : mEditText.getText().toString();
-                    ((InputDialogInterface) mController.getClickInterface()).confirmClick(str);
-                    dismiss();
+                    if (!((InputDialogInterface) mController.getClickInterface()).confirmClick(str)){
+                        dismiss();
+                    }
                     return;
                 }
-                mController.getClickInterface().confirmClick();
+                if (!mController.getClickInterface().confirmClick()){
+                    dismiss();
+                }
+                return;
             }
             dismiss();
         } else if (id == R.id.btn_cancel) {
             if (mController.getClickInterface() != null) {
-                mController.getClickInterface().cancelClick();
+                if (!mController.getClickInterface().cancelClick()){
+                    dismiss();
+                    return;
+                }
             }
             dismiss();
         }

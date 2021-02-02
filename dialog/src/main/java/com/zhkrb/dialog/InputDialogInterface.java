@@ -5,13 +5,17 @@ package com.zhkrb.dialog;
  * @author：zhkrb
  * @DATE： 2020/7/6 16:16
  */
-public interface InputDialogInterface extends BaseDialogInterface {
+public abstract class InputDialogInterface implements BaseDialogInterface {
 
+    @Override
+    public boolean confirmClick(){
+        return false;
+    }
 
     /**
      * 点击确认 获取输入字符
      * @param str 字符串
      */
-    void confirmClick(String str);
+    abstract boolean confirmClick(String str);
 
 }

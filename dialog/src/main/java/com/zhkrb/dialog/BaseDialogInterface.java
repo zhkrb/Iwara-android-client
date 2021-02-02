@@ -10,12 +10,12 @@ public interface BaseDialogInterface {
     /**
      * 点击确认
      */
-    void confirmClick();
+    boolean confirmClick();
 
     /**
      * 点击取消
      */
-    void cancelClick();
+    boolean cancelClick();
 
 
 }
