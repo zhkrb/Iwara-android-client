@@ -1,4 +1,4 @@
-package com.zhkrb.dialog;
+package com.zhkrb.dialog.base;
 
 /**
  * @description：

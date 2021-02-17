@@ -1,5 +1,7 @@
 package com.zhkrb.dialog;
 
+import com.zhkrb.dialog.base.BaseDialogInterface;
+
 /**
  * @description：
  * @author：zhkrb

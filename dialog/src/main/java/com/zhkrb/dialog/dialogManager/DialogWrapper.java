@@ -1,7 +1,7 @@
 package com.zhkrb.dialog.dialogManager;
 
 
-import com.zhkrb.dialog.DialogBuilder;
+import com.zhkrb.dialog.base.DialogBuilder;
 
 /**
  * @description：builder包装类

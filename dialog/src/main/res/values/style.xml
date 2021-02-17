@@ -15,5 +15,19 @@
         <item name="android:windowExitAnimation">@anim/half_pop_out</item>
     </style>
 
+    <style name="CustomCutSmallShapeAppearence">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">@dimen/cut_small</item>
+    </style>
+
+    <style name="CustomCutMediumShapeAppearence">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">@dimen/cut_medium</item>
+    </style>
+
+    <style name="CustomCutLargeShapeAppearence">
+        <item name="cornerFamilyTopLeft">cut</item>
+        <item name="cornerSizeTopLeft">@dimen/cut_large</item>
+    </style>
 
 </resources>

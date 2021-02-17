@@ -1,7 +1,11 @@
-package com.zhkrb.dialog;
+package com.zhkrb.dialog.base;
 
 import android.content.Context;
 
+import com.zhkrb.dialog.dialogManager.DialogShowManager;
+import com.zhkrb.dialog.dialogManager.DialogWrapper;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 /**
@@ -9,14 +13,25 @@ import androidx.fragment.app.FragmentManager;
  * @author：zhkrb
  * @DATE： 2020/7/6 13:50
  */
-public class DialogBuilder {
+public abstract class DialogBuilder {
     private final DialogController.Params mController;
 
     public DialogBuilder(Context context, FragmentManager fragmentManager) {
-        mController = new DialogController.Params();
+        mController = createParams();
         mController.setContext(context);
-        mController.setFragmentManager(fragmentManager);
     }
+
+    /**
+     * 创建params
+     * @return
+     */
+    public abstract DialogController.Params createParams();
+
+    /**
+     * 创建dialog
+     * @return
+     */
+    public abstract AbsDialog createDialog();
 
 
     public DialogBuilder setLayoutId(int layoutId) {
@@ -39,43 +54,8 @@ public class DialogBuilder {
         return this;
     }
 
-    public DialogBuilder setCornerRadius(boolean cornerRadius){
-        mController.setCornerRadius(cornerRadius);
-        return this;
-    }
-
-    public DialogBuilder setRadius(int radius){
-        mController.setRadius(radius);
-        return this;
-    }
-
-    public DialogBuilder setCustomWindow(boolean customWindow){
-        mController.setCustomWindow(customWindow);
-        return this;
-    }
-
-    public DialogBuilder setCustomClick(boolean customClick){
-        mController.setCustomClick(customClick);
-        return this;
-    }
-
     public DialogBuilder setGravity(int gravity){
         mController.setGravity(gravity);
-        return this;
-    }
-
-    public DialogBuilder setWidthRate(float widthRate){
-        mController.setWidthRate(widthRate);
-        return this;
-    }
-
-    public DialogBuilder setBackgroundAlpha(boolean backgroundAlpha){
-        mController.setBackgroundAlphaRate(backgroundAlpha);
-        return this;
-    }
-
-    public DialogBuilder setBackgroundAlphaRate(float rate){
-        mController.setBackgroundAlpha(rate);
         return this;
     }
 
@@ -94,10 +74,6 @@ public class DialogBuilder {
         return this;
     }
 
-    public DialogBuilder setEditHintText(String editHintText){
-        mController.setEditHintText(editHintText);
-        return this;
-    }
 
     public DialogBuilder setDialogLifeListener(DialogController.DialogLifeListener lifeListener){
         mController.setLifeListener(lifeListener);
@@ -105,12 +81,16 @@ public class DialogBuilder {
     }
 
     public AbsDialog create(){
-        AbsDialog dialog = new AbsDialog();
-        mController.apply(dialog.mController);
-        if (dialog.mController.getContext() == null){
+        AbsDialog dialog = createDialog();
+        mController.apply(dialog.getController());
+        if (dialog.getController().getContext() == null){
             return null;
         }
         return dialog;
+    }
+
+    public void showNow(){
+        DialogShowManager.getInstance().requestShow(new DialogWrapper(this));
     }
 
 
@@ -119,7 +99,14 @@ public class DialogBuilder {
         if (dialog == null){
             return false;
         }
-        dialog.showNow(dialog.mController.getFragmentManager(),"dialog");
+        Context context = dialog.getController().getContext();
+        FragmentManager manager;
+        if (context instanceof AppCompatActivity){
+            manager = ((AppCompatActivity) context).getSupportFragmentManager();
+        }else {
+            throw new RuntimeException("context not instance of AppCompatActivity");
+        }
+        dialog.showNow(manager,"dialog");
         return true;
     }
 }
