@@ -142,7 +142,7 @@ dependencies {
     //leakcanary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
 
-    implementation 'com.zhkrb.cloudflare-scrape-android:scrape-webview:0.0.3'
+    implementation 'com.zhkrb.cloudflare-scrape-android:scrape-webview:0.0.4'
 
     //refresh
     implementation  'com.scwang.smart:refresh-layout-kernel:2.0.1'
