@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.zhkrb.dialog.bottomMenuDialog.BottomMenuDialogBuilder;
 import com.zhkrb.dragvideo.widget.AdvSeekbar;
 import com.zhkrb.iwara.R;
 
@@ -92,6 +93,21 @@ public class TestFragment extends BarBaseFragment implements View.OnClickListene
 
     }
 
+    @Override
+    protected void destroyView() {
+
+    }
+
+    @Override
+    protected void bindView() {
+
+    }
+
+    @Override
+    public void realDestroy() {
+
+    }
+
     private void setSeekBarDelegate() {
 //        Rect touchRect = new Rect();
 //        mSeekBar.getHitRect(touchRect);
@@ -111,11 +127,16 @@ public class TestFragment extends BarBaseFragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button:
-                setSeekBarDelegate();
+//                setSeekBarDelegate();
+                new BottomMenuDialogBuilder(mContext)
+                        .setMenu(new String[]{"1123","2234","4432","2324"},2)
+                        .showNow();
+
                 break;
             case R.id.button1:
                 removeDelegate();
                 break;
+            default:
         }
     }
 }

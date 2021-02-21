@@ -1,1 +1,1 @@
-include ':app', ':dragvideo',':dialog'
+include ':app', ':dragvideo',':dialog',':resourseLib'

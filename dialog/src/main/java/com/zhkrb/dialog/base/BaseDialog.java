@@ -143,5 +143,14 @@ public abstract class BaseDialog extends DialogFragment {
         return context.getResources().getDisplayMetrics().widthPixels;
     }
 
+    /**
+     * 返回屏幕高度
+     * @param context
+     * @return
+     */
+    public static int getScreenHeight(Context context){
+        return context.getResources().getDisplayMetrics().heightPixels;
+    }
+
 
 }

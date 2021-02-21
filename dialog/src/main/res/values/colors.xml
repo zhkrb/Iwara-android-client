@@ -8,4 +8,6 @@
     <color name="black">#000</color>
     <color name="dark">#353535</color>
     <color name="empty">#00000000</color>
+
+    <color name="primaryText">#333333</color>
 </resources>

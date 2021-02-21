@@ -14,75 +14,75 @@ import androidx.fragment.app.FragmentManager;
  * @DATE： 2020/7/6 13:50
  */
 public abstract class DialogBuilder {
-    private final DialogController.Params mController;
+    protected final DialogController.Params mControllerParams;
 
-    public DialogBuilder(Context context, FragmentManager fragmentManager) {
-        mController = createParams();
-        mController.setContext(context);
+    public DialogBuilder(Context context) {
+        mControllerParams = createParams();
+        mControllerParams.setContext(context);
     }
 
     /**
      * 创建params
      * @return
      */
-    public abstract DialogController.Params createParams();
+    protected abstract DialogController.Params createParams();
 
     /**
      * 创建dialog
      * @return
      */
-    public abstract AbsDialog createDialog();
+    protected abstract AbsDialog createDialog();
 
 
     public DialogBuilder setLayoutId(int layoutId) {
-        mController.setLayoutId(layoutId);
+        mControllerParams.setLayoutId(layoutId);
         return this;
     }
 
     public DialogBuilder setStyle(int style) {
-        mController.setStyle(style);
+        mControllerParams.setStyle(style);
         return this;
     }
 
     public DialogBuilder setCancelOnTouchOutside(boolean cancelOnTouchOutside) {
-        mController.setCancelOnTouchOutside(cancelOnTouchOutside);
+        mControllerParams.setCancelOnTouchOutside(cancelOnTouchOutside);
         return this;
     }
 
     public DialogBuilder setCancel(boolean cancel) {
-        mController.setCancel(cancel);
+        mControllerParams.setCancel(cancel);
         return this;
     }
 
     public DialogBuilder setGravity(int gravity){
-        mController.setGravity(gravity);
+        mControllerParams.setGravity(gravity);
         return this;
     }
 
     public DialogBuilder setClickInterface(BaseDialogInterface clickInterface) {
-        mController.setClickInterface(clickInterface);
+        mControllerParams.setClickInterface(clickInterface);
         return this;
     }
 
     public DialogBuilder setTitle(String title){
-        mController.setTitle(title);
+        mControllerParams.setTitle(title);
         return this;
     }
 
     public DialogBuilder setContent(String content){
-        mController.setContent(content);
+        mControllerParams.setContent(content);
         return this;
     }
 
 
     public DialogBuilder setDialogLifeListener(DialogController.DialogLifeListener lifeListener){
-        mController.setLifeListener(lifeListener);
+        mControllerParams.setLifeListener(lifeListener);
         return this;
     }
 
     public AbsDialog create(){
         AbsDialog dialog = createDialog();
-        mController.apply(dialog.getController());
+        mControllerParams.apply(dialog.getController());
         if (dialog.getController().getContext() == null){
             return null;
         }

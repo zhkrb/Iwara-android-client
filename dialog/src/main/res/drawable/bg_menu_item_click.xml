@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple android:color="@color/drag_tab"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <selector>
+            <item android:state_pressed="true"
+                android:drawable=""/>
+            <item android:state_selected="true"
+                android:drawable=""/>
+            <item android:drawable="@color/white"/>
+        </selector>
+    </item>
+</ripple>

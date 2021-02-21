@@ -31,7 +31,7 @@ import com.zhkrb.iwara.R;
 import com.zhkrb.base.AbsFragment;
 import com.zhkrb.base.FragmentFrame;
 import com.zhkrb.iwara.bean.VideoListBean;
-import com.zhkrb.iwara.fragment.GalleryFragment;
+//import com.zhkrb.iwara.fragment.GalleryFragment;
 import com.zhkrb.iwara.fragment.TestFragment;
 import com.zhkrb.utils.UpdateUtil;
 import com.zhkrb.utils.VideoDnsUtil;
@@ -47,7 +47,7 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
     private ViewGroup mContentLayout;
 
     static {
-        setLaunchMode(GalleryFragment.class, AbsFragment.LAUNCH_MODE_BASE);
+//        setLaunchMode(GalleryFragment.class, AbsFragment.LAUNCH_MODE_BASE);
         setLaunchMode(TestFragment.class, AbsFragment.LAUNCH_MODE_PAGE);
     }
 
@@ -56,8 +56,8 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
 
     @Override
     protected FragmentFrame getLaunchFrame() {
-        return new FragmentFrame(GalleryFragment.class);
-//        return new FragmentFrame(TestFragment.class);
+//        return new FragmentFrame(GalleryFragment.class);
+        return new FragmentFrame(TestFragment.class);
     }
 
     @Override

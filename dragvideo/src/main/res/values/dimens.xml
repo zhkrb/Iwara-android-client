@@ -19,27 +19,6 @@
     <dimen name="cut_12dp">12dp</dimen>
     <dimen name="cut_16dp">16dp</dimen>
 
-    //文字大小
-    <dimen name="h5">24.29sp</dimen>
-    <dimen name="h6">20.2sp</dimen>
-    <dimen name="body1">16.19sp</dimen>
-    <dimen name="body2">14.2sp</dimen>
-    <dimen name="subtitle1">16.16sp</dimen>
-    <dimen name="subtitle2">14.17sp</dimen>
-    <dimen name="button">14.14sp</dimen>
-    <dimen name="caption">12.12sp</dimen>
-    <dimen name="overline">@dimen/caption</dimen>
-
-    //文字间距
-    <dimen name="h5_ls">0</dimen>
-    <dimen name="h6_ls">0.25</dimen>
-    <dimen name="body1_ls">0.5</dimen>
-    <dimen name="body2_ls">0.25</dimen>
-    <dimen name="subtitle1_ls">0.15</dimen>
-    <dimen name="subtitle2_ls">0.1</dimen>
-    <dimen name="button_ls">1.25</dimen>
-    <dimen name="caption_ls">0.1</dimen>
-    <dimen name="overline_ls">2</dimen>
 
     //dialog
     <dimen name="dialog_margin_top">20dp</dimen>

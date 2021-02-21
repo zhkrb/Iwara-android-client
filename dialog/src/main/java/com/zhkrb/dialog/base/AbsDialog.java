@@ -56,6 +56,12 @@ public abstract class AbsDialog extends BaseDialog {
 //        }
 //    }
 
+
+    @Override
+    protected void setWindowStyle(Dialog dialog) {
+        setStyle(STYLE_NO_FRAME,mController.getStyle());
+    }
+
     @Override
     protected int getShowAnim() {
         return mController.getShowAnimation();

@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/dialog_parent"
-    android:background=""
+    android:background="@color/white"
     >
 
     <ImageView
@@ -13,7 +13,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/ic_icon_drag_black"
+        android:src="@drawable/ic_icon_drag_grey"
         android:scaleType="centerInside"
         android:id="@+id/img_drag_tab"
         android:layout_marginTop="12dp"
