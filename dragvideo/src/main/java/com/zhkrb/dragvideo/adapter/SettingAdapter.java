@@ -61,7 +61,7 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.Vh> {
     @NonNull
     @Override
     public Vh onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new Vh(mLayoutInflater.inflate(R.layout.item_setting,parent,false));
+        return new Vh(mLayoutInflater.inflate(0,parent,false));
     }
 
     @Override
@@ -96,8 +96,8 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.Vh> {
             super(itemView);
             thumb = itemView.findViewById(R.id.icon);
             title = itemView.findViewById(R.id.title);
-            point = itemView.findViewById(R.id.point);
-            value = itemView.findViewById(R.id.value);
+//            point = itemView.findViewById(R.id.point);
+//            value = itemView.findViewById(R.id.value);
         }
 
 

@@ -4,60 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/bg_dialog_top_radius"
     android:paddingStart="36dp"
     android:paddingEnd="36dp"
     >
-    <TextView
-        android:id="@+id/text_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:layout_marginBottom="18dp"
-        android:paddingStart="@dimen/dialog_padding_start"
-        android:paddingEnd="@dimen/dialog_padding_end"
-        android:textColor="@color/C21"
-        android:textSize="@dimen/dialog_title_size"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/text_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/text_content"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="26dp"
-        android:paddingStart="@dimen/dialog_padding_start"
-        android:paddingEnd="@dimen/dialog_padding_end"
-        android:textAlignment="viewStart"
-        android:textColor="@color/C97"
-        android:textSize="@dimen/dialog_content_size"
-        app:layout_constraintBottom_toTopOf="@id/btn_confirm"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_title"
-        />
-
-    <TextView
-        android:id="@+id/btn_confirm"
-        android:layout_width="0dp"
-        android:layout_height="46dp"
-        android:gravity="center"
-        android:text="@string/confirm"
-        android:textColor="@color/C3B"
-        android:textSize="@dimen/dialog_button_size"
-        android:background="@drawable/bg_btn_dialog"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="24dp"
-        />
-
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

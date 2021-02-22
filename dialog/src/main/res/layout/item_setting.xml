@@ -3,22 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/item_height"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingStart="@dimen/item_padding_startend"
-    android:paddingEnd="@dimen/item_padding_startend"
+    android:paddingStart="@dimen/item_padding_start"
+    android:paddingEnd="@dimen/item_padding_end"
     android:clickable="true"
     android:focusable="true"
     android:background="@drawable/bg_menu_item_click"
     >
 
     <ImageView
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="@dimen/item_img_height"
+        android:layout_height="@dimen/item_img_width"
         android:id="@+id/img_icon"
         android:scaleType="centerInside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:tint="@color/grey_alpha"
+        app:tint="@color/item_img_gray"
         />
 
     <TextView
@@ -29,6 +29,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/img_icon"
         style="@style/TextAppearance.MdcTypographyStyles.Subtitle1"
+        android:gravity="center_vertical"
         android:textColor="@color/primaryText"
         android:paddingStart="@dimen/item_title_padding_start"
         android:paddingEnd="0dp"
@@ -43,7 +44,7 @@
         android:textColor="@color/primaryText"
         android:visibility="gone"
         android:id="@+id/text_point"
-        app:layout_constraintStart_toEndOf="@id/title"
+        app:layout_constraintStart_toEndOf="@id/text_title"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />

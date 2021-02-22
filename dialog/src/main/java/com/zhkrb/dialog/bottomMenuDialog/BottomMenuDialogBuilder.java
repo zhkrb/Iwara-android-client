@@ -66,6 +66,7 @@ public class BottomMenuDialogBuilder extends DialogBuilder {
             if (i == currentSelct){
                 bean.setSelect(true);
             }
+            beans.add(bean);
             i++;
         }
         ((BottomMenuDialogController.BottomMenuParams)mControllerParams).setMenuBeanList(beans);

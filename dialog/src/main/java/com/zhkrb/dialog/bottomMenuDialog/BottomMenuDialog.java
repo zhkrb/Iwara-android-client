@@ -11,11 +11,13 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zhkrb.dialog.R;
 import com.zhkrb.dialog.base.AbsDialog;
 import com.zhkrb.dialog.base.BaseDialog;
+import com.zhkrb.dialog.base.DialogController;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -29,12 +31,17 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class BottomMenuDialog extends AbsDialog {
 
-    private ConstraintLayout mParentLayout;
+    private LinearLayout mParentLayout;
     private RecyclerView mRecyclerView;
     private TextView mTextTitle;
 
     private MenuBaseAdapter mAdapter;
 
+
+    @Override
+    protected DialogController createController() {
+        return new BottomMenuDialogController();
+    }
 
     @Override
     protected int getLayoutId() {
@@ -48,9 +55,12 @@ public class BottomMenuDialog extends AbsDialog {
     protected void setWindowAttributes(Dialog dialog) {
         Window window = dialog.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
-        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.BOTTOM;
-        lp.windowAnimations = R.anim.bottom_to_top_enter;
+        lp.windowAnimations = R.anim.bottomtop_enter;
+        window.getDecorView().setPadding(0, 0, 0, 0);
         window.setAttributes(lp);
 
     }
@@ -71,8 +81,7 @@ public class BottomMenuDialog extends AbsDialog {
                 mParentLayout.animate().translationY(0).setDuration(333);
             }
         });
-
-
+        main();
     }
 
     @Override
@@ -89,6 +98,7 @@ public class BottomMenuDialog extends AbsDialog {
         } else {
             mAdapter = new MenuAdapter(getActivityContext());
         }
+        mRecyclerView.setAdapter(mAdapter);
 
         if (((BottomMenuDialogController) mController).getSelectInterface() != null) {
             mAdapter.setSelectInterface(((BottomMenuDialogController) mController).getSelectInterface());
@@ -97,7 +107,6 @@ public class BottomMenuDialog extends AbsDialog {
         if (((BottomMenuDialogController) mController).getMenuBeanList() != null) {
             mAdapter.setList(((BottomMenuDialogController) mController).getMenuBeanList());
         }
-
 
     }
 
@@ -111,7 +120,7 @@ public class BottomMenuDialog extends AbsDialog {
 
         @Override
         public MenuBaseViewHolder createHolder(LayoutInflater inflater, ViewGroup parent, int viewType) {
-            return new MenuBaseViewHolder(inflater.inflate(R.layout.dialog_bottom_menu, parent, false));
+            return new MenuBaseViewHolder(inflater.inflate(R.layout.item_setting, parent, false));
         }
 
         @Override
@@ -123,7 +132,7 @@ public class BottomMenuDialog extends AbsDialog {
                 if (bean.isSelect()) {
                     ((ImageView) holder.findView(R.id.img_icon)).setImageResource(R.drawable.ic_icon_item_select);
                 } else {
-                    ((ImageView) holder.findView(R.id.img_icon)).setImageResource(0);
+                    ((ImageView) holder.findView(R.id.img_icon)).setImageDrawable(null);
                 }
             } else {
                 ((ImageView) holder.findView(R.id.img_icon)).setImageResource(bean.getIcon());

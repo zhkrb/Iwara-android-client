@@ -4,9 +4,9 @@
     <item>
         <selector>
             <item android:state_pressed="true"
-                android:drawable=""/>
+                android:drawable="@color/gray_300"/>
             <item android:state_selected="true"
-                android:drawable=""/>
+                android:drawable="@color/gray_100"/>
             <item android:drawable="@color/white"/>
         </selector>
     </item>

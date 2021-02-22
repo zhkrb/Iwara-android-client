@@ -107,7 +107,7 @@ public class HttpClient {
         }else {
             body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),"");
         }
-        return postModel.post(header,apiName,body).compose(SchedulerProvider.getInstance().applySchedulers());
+        return postModel.postJson(header,apiName,body).compose(SchedulerProvider.getInstance().applySchedulers());
     }
 
     /**
@@ -124,7 +124,7 @@ public class HttpClient {
         }else {
             body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),"");
         }
-        return postModel.post(apiName,body).compose(SchedulerProvider.getInstance().applySchedulers());
+        return postModel.postJson(apiName,body).compose(SchedulerProvider.getInstance().applySchedulers());
     }
 
 

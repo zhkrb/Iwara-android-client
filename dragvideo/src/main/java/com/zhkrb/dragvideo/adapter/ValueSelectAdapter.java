@@ -62,7 +62,7 @@ public class ValueSelectAdapter extends RecyclerView.Adapter<ValueSelectAdapter.
     @NonNull
     @Override
     public Vh onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new Vh(mInflater.inflate(R.layout.item_setting,parent,false));
+        return new Vh(mInflater.inflate(0,parent,false));
     }
 
     @Override

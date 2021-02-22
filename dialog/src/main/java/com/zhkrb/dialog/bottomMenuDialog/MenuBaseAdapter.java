@@ -85,7 +85,7 @@ public abstract class MenuBaseAdapter<T> extends RecyclerView.Adapter<MenuBaseAd
 
     public class MenuBaseViewHolder extends RecyclerView.ViewHolder {
 
-        private final View mView;
+        private View mView;
 
         public MenuBaseViewHolder(@NonNull View itemView) {
             super(itemView);

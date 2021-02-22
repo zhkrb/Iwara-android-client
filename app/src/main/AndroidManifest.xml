@@ -24,7 +24,7 @@
         >
 
         <activity
-            android:name=".activity.LaunchActivity"
+            android:name=".activity.MainActivity"
             android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/LaunchTheme">
@@ -41,7 +41,7 @@
                 <data android:host="ecchi.iwara.tv"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity"
+        <activity android:name=".activity.LaunchActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             />

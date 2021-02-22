@@ -32,6 +32,7 @@ public abstract class BaseDialog extends DialogFragment {
         }
         dialog.setCancelable(isCanCancel());
         dialog.setCanceledOnTouchOutside(isCanCancelOnTouchOutside());
+        setWindowAttributes(dialog);
         return dialog;
     }
 
@@ -44,13 +45,13 @@ public abstract class BaseDialog extends DialogFragment {
         mRootView = inflater.inflate(getLayoutId(),null,false);
         bindView(mRootView);
         setWindowAttributes(getDialog());
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return mRootView;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        main();
+//        main();
     }
 
     /**

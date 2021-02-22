@@ -29,8 +29,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.zhkrb.iwara.R;
-import com.zhkrb.iwara.adapter.inter.AdapterClickInterface;
-import com.zhkrb.iwara.adapter.inter.AdapterLongClickInterface;
 import com.zhkrb.iwara.bean.VideoListBean;
 import com.zhkrb.glide.ImgLoader;
 import com.zhkrb.utils.ToastUtil;
@@ -42,7 +40,7 @@ public class RecommAdapter extends RecyclerView.Adapter<RecommAdapter.holder> {
 
     private final LayoutInflater mInflater;
     private List<VideoListBean> mList;
-    private AdapterClickInterface<VideoListBean> mItemClickListener;
+//    private AdapterClickInterface<VideoListBean> mItemClickListener;
     private View.OnClickListener mClickListener;
     private View.OnLongClickListener mLongClickListener;
 
@@ -59,9 +57,9 @@ public class RecommAdapter extends RecyclerView.Adapter<RecommAdapter.holder> {
                     ToastUtil.show(WordUtil.getString(R.string.video_private));
                     return;
                 }
-                if (mItemClickListener != null) {
-                    mItemClickListener.itemClick(bean);
-                }
+//                if (mItemClickListener != null) {
+//                    mItemClickListener.itemClick(bean);
+//                }
             }
         };
         mLongClickListener = v -> {
@@ -73,9 +71,9 @@ public class RecommAdapter extends RecyclerView.Adapter<RecommAdapter.holder> {
                     ToastUtil.show(WordUtil.getString(R.string.video_private));
                     return true;
                 }
-                if (mItemClickListener != null&&mItemClickListener instanceof AdapterLongClickInterface){
-                    ((AdapterLongClickInterface<VideoListBean>) mItemClickListener).itemLongClick(bean);
-                }
+//                if (mItemClickListener != null&&mItemClickListener instanceof AdapterLongClickInterface){
+//                    ((AdapterLongClickInterface<VideoListBean>) mItemClickListener).itemLongClick(bean);
+//                }
             }
             return true;
         };
@@ -105,9 +103,9 @@ public class RecommAdapter extends RecyclerView.Adapter<RecommAdapter.holder> {
         return 0;
     }
 
-    public void setClickListener(AdapterClickInterface<VideoListBean> clickListener) {
-        mItemClickListener = clickListener;
-    }
+//    public void setClickListener(AdapterClickInterface<VideoListBean> clickListener) {
+//        mItemClickListener = clickListener;
+//    }
 
     class holder extends RecyclerView.ViewHolder {
         int pos;
@@ -138,9 +136,9 @@ public class RecommAdapter extends RecyclerView.Adapter<RecommAdapter.holder> {
             like.setText(videoListBean.getLike());
             if (!itemView.hasOnClickListeners()){
                 itemView.setOnClickListener(mClickListener);
-                if (mItemClickListener instanceof AdapterLongClickInterface){
-                    itemView.setOnLongClickListener(mLongClickListener);
-                }
+//                if (mItemClickListener instanceof AdapterLongClickInterface){
+//                    itemView.setOnLongClickListener(mLongClickListener);
+//                }
             }
         }
 

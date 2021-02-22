@@ -2,6 +2,7 @@ package com.zhkrb.dialog.base;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
@@ -31,8 +32,14 @@ public abstract class AbsDialog extends BaseDialog {
     private DestroyListener mDestroyListener;
 
     public AbsDialog() {
-        mController = new DialogController();
+        mController = createController();
     }
+
+    /**
+     * 创建controller
+     * @return
+     */
+    protected abstract DialogController createController();
 
 //    @Override
 //    protected void setWindowAttributes(Window window) {
@@ -56,10 +63,42 @@ public abstract class AbsDialog extends BaseDialog {
 //        }
 //    }
 
+    private boolean isWaitAddFocusFlag = false;
 
     @Override
     protected void setWindowStyle(Dialog dialog) {
-        setStyle(STYLE_NO_FRAME,mController.getStyle());
+//        setStyle(STYLE_NO_FRAME,mController.getStyle());
+        isWaitAddFocusFlag = false;
+        Window dialogWindow = dialog.getWindow();
+        if (dialogWindow != null) {
+            dialogWindow.setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+            isWaitAddFocusFlag = true;
+        }
+    }
+
+    protected void setOnShowEvent(Dialog dialog) {
+        if (dialog != null) {
+            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface d) {
+                    Dialog dialog = getDialog();
+                    if (dialog != null) {
+                        Window dialogWindow = dialog.getWindow();
+                        if (dialogWindow != null) {
+                            if (isWaitAddFocusFlag) {
+                                dialogWindow.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+                                dialogWindow.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                                int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                        | View.SYSTEM_UI_FLAG_IMMERSIVE
+                                        | View.SYSTEM_UI_FLAG_FULLSCREEN;
+                                dialogWindow.getDecorView().setSystemUiVisibility(uiOptions);
+                            }
+                        }
+                    }
+                }
+            });
+        }
     }
 
     @Override

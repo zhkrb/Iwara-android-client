@@ -36,7 +36,7 @@ import com.zhkrb.iwara.fragment.TestFragment;
 import com.zhkrb.utils.UpdateUtil;
 import com.zhkrb.utils.VideoDnsUtil;
 import com.zhkrb.utils.VideoNetWorkUtil;
-import com.zhkrb.iwara.videoInfoContent.VideoInfoContent;
+//import com.zhkrb.iwara.videoInfoContent.VideoInfoContent;
 
 
 
@@ -89,7 +89,7 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
             mPlayerView.setDnsUtil(new VideoDnsUtil());
 //            mPlayerView.setInfoView(new AbsContent(mContext));
             mPlayerView.setHideFragmentListener(this);
-            mPlayerView.setRootContentView(VideoInfoContent.class);
+//            mPlayerView.setRootContentView(VideoInfoContent.class);
         }
 //        if (mContentLayout.getVisibility() != View.VISIBLE){
 //            mContentLayout.setVisibility(View.VISIBLE);

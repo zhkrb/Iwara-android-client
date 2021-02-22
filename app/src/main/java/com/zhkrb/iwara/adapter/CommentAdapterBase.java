@@ -30,7 +30,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.zhkrb.iwara.R;
-import com.zhkrb.iwara.adapter.inter.AdapterClickInterface;
 import com.zhkrb.iwara.bean.CommentBean;
 import com.zhkrb.custom.refreshView.BaseRefreshAdapter;
 import com.zhkrb.glide.ImgLoader;
@@ -41,7 +40,7 @@ import java.util.List;
 public class CommentAdapterBase extends BaseRefreshAdapter<CommentBean> {
 
     private View.OnClickListener mClickListener;
-    private AdapterClickInterface<CommentBean> mItemClickListener;
+//    private AdapterClickInterface<CommentBean> mItemClickListener;
 
     public CommentAdapterBase(Context context) {
         super(context);
@@ -50,9 +49,9 @@ public class CommentAdapterBase extends BaseRefreshAdapter<CommentBean> {
             if (tag != null) {
                 int position = (int) tag;
                 CommentBean bean = mList.get(position);
-                if (mItemClickListener != null) {
-                    mItemClickListener.itemClick(bean);
-                }
+//                if (mItemClickListener != null) {
+//                    mItemClickListener.itemClick(bean);
+//                }
             }
         };
     }
@@ -63,12 +62,12 @@ public class CommentAdapterBase extends BaseRefreshAdapter<CommentBean> {
 
     @Override
     protected RecyclerView.ViewHolder onViewHolderCreate(@NonNull ViewGroup parent, int viewType) {
-        return new holder(mInflater.inflate(R.layout.item_comment,parent,false));
+        return new holder(mInflater.inflate(R.layout.item_comment, parent, false));
     }
 
     @Override
     protected void onViewHolderBind(@NonNull RecyclerView.ViewHolder holder, int position) {
-        ((holder)holder).setData(mList.get(position),position);
+        ((holder) holder).setData(mList.get(position), position);
     }
 
     @Override
@@ -76,9 +75,9 @@ public class CommentAdapterBase extends BaseRefreshAdapter<CommentBean> {
         return 0;
     }
 
-    public void setItemClickListener(AdapterClickInterface<CommentBean> itemClickListener) {
-        mItemClickListener = itemClickListener;
-    }
+//    public void setItemClickListener(AdapterClickInterface<CommentBean> itemClickListener) {
+//        mItemClickListener = itemClickListener;
+//    }
 
 
     class holder extends RecyclerView.ViewHolder {
@@ -100,27 +99,27 @@ public class CommentAdapterBase extends BaseRefreshAdapter<CommentBean> {
             parent = itemView.findViewById(R.id.comm_parent);
         }
 
-        public void setData(CommentBean bean,int position){
-            if (bean == null){
+        public void setData(CommentBean bean, int position) {
+            if (bean == null) {
                 return;
             }
             parent.setTag(position);
             reply.setTag(position);
             pos = position;
-            ImgLoader.displayCircle(bean.getComment_thumb(),thumb);
+            ImgLoader.displayCircle(bean.getComment_thumb(), thumb);
             username.setText(bean.getComment_user());
             time.setText(bean.getComment_date());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                content.setText(Html.fromHtml(bean.getComment_content(),Html.FROM_HTML_MODE_COMPACT));
-            }else {
+                content.setText(Html.fromHtml(bean.getComment_content(), Html.FROM_HTML_MODE_COMPACT));
+            } else {
                 content.setText(Html.fromHtml(bean.getComment_content()));
             }
             reply.setVisibility(bean.getReply_count() > 0 ? View.VISIBLE : View.GONE);
-            reply.setText(String.format("%s %s",bean.getReply_count(),WordUtil.getString(R.string.reply)));
-            if (!parent.hasOnClickListeners()){
+            reply.setText(String.format("%s %s", bean.getReply_count(), WordUtil.getString(R.string.reply)));
+            if (!parent.hasOnClickListeners()) {
                 parent.setOnClickListener(mClickListener);
             }
-            if (!reply.hasOnClickListeners()){
+            if (!reply.hasOnClickListeners()) {
                 reply.setOnClickListener(mClickListener);
             }
 

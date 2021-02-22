@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    //cut dimen
+    <dimen name="cut_small">4dp</dimen>
+    <dimen name="cut_medium">8dp</dimen>
+    <dimen name="cut_large">24dp</dimen>
+
+    <dimen name="item_height">56dp</dimen>
+    <dimen name="item_padding_start">16dp</dimen>
+    <dimen name="item_padding_end">0dp</dimen>
+    <dimen name="item_img_height">24dp</dimen>
+    <dimen name="item_img_width">@dimen/item_img_height</dimen>
+    <dimen name="item_title_padding_start">32dp</dimen>
+</resources>
