@@ -19,6 +19,7 @@ import com.zhkrb.dialog.base.DialogController;
 import com.zhkrb.dialog.dialogManager.DialogShowManager;
 
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.DialogFragment;
 
 
 /**
@@ -41,33 +42,11 @@ public abstract class AbsDialog extends BaseDialog {
      */
     protected abstract DialogController createController();
 
-//    @Override
-//    protected void setWindowAttributes(Window window) {
-//        if (mController.isCustomWindow()){
-//            mController.setWindowAttributes(window);
-//        }else {
-//            WindowManager.LayoutParams params = window.getAttributes();
-//
-//            int screenWidth = getScreenWidth(getActivityContext());
-//            params.width = (int) (screenWidth * mController.getWidthRate());
-//            params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-//            params.gravity = Gravity.CENTER;
-//            if (mController.getBackgroundAlphaRate()){
-//                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//            }else {
-//                ColorDrawable drawable = new ColorDrawable(Color.GRAY);
-//                drawable.setAlpha((int) (255 * mController.getBackgroundAlpha()));
-//                window.setBackgroundDrawable(drawable);
-//            }
-//            window.setAttributes(params);
-//        }
-//    }
-
     private boolean isWaitAddFocusFlag = false;
 
     @Override
     protected void setWindowStyle(Dialog dialog) {
-//        setStyle(STYLE_NO_FRAME,mController.getStyle());
+        setStyle(DialogFragment.STYLE_NORMAL,mController.getStyle());
         isWaitAddFocusFlag = false;
         Window dialogWindow = dialog.getWindow();
         if (dialogWindow != null) {

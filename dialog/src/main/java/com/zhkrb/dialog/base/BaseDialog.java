@@ -12,6 +12,8 @@ import android.view.Window;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 /**
  * @description：dialogFragment基类
@@ -42,6 +44,7 @@ public abstract class BaseDialog extends DialogFragment {
         if (getLayoutId() == -1){
             throw new RuntimeException("must set layout");
         }
+        setCancelable(isCanCancel());
         mRootView = inflater.inflate(getLayoutId(),null,false);
         bindView(mRootView);
         setWindowAttributes(getDialog());
@@ -153,5 +156,14 @@ public abstract class BaseDialog extends DialogFragment {
         return context.getResources().getDisplayMetrics().heightPixels;
     }
 
-
+    @Override
+    public void show(@NonNull FragmentManager manager, @Nullable String tag) {
+        try {
+            FragmentTransaction ft = manager.beginTransaction();
+            ft.add(this, tag);
+            ft.commitAllowingStateLoss();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+    }
 }

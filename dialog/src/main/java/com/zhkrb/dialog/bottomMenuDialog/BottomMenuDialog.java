@@ -2,6 +2,8 @@ package com.zhkrb.dialog.bottomMenuDialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,7 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class BottomMenuDialog extends AbsDialog {
 
-    private LinearLayout mParentLayout;
+    private ViewGroup mParentLayout;
     private RecyclerView mRecyclerView;
     private TextView mTextTitle;
 
@@ -54,12 +56,12 @@ public class BottomMenuDialog extends AbsDialog {
     @Override
     protected void setWindowAttributes(Dialog dialog) {
         Window window = dialog.getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams lp = window.getAttributes();
-//        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.BOTTOM;
-        lp.windowAnimations = R.anim.bottomtop_enter;
+        lp.windowAnimations = R.style.dialog_null_anim;
         window.getDecorView().setPadding(0, 0, 0, 0);
         window.setAttributes(lp);
 
@@ -69,18 +71,18 @@ public class BottomMenuDialog extends AbsDialog {
     protected void bindView(View view) {
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mTextTitle = view.findViewById(R.id.text_title);
-        mParentLayout = view.findViewById(R.id.dialog_parent);
+        mParentLayout = (ViewGroup) view.findViewById(R.id.dialog_parent);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivityContext(), RecyclerView.VERTICAL, false));
         mRecyclerView.setHasFixedSize(true);
 
-        mParentLayout.setY(BaseDialog.getScreenHeight(getActivityContext()));
-        mParentLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mParentLayout.animate().translationY(0).setDuration(333);
-            }
-        });
+//        mParentLayout.setY(BaseDialog.getScreenHeight(getActivityContext()));
+//        mParentLayout.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                mParentLayout.animate().translationY(0).setDuration(333);
+//            }
+//        });
         main();
     }
 
@@ -99,10 +101,15 @@ public class BottomMenuDialog extends AbsDialog {
             mAdapter = new MenuAdapter(getActivityContext());
         }
         mRecyclerView.setAdapter(mAdapter);
-
-        if (((BottomMenuDialogController) mController).getSelectInterface() != null) {
-            mAdapter.setSelectInterface(((BottomMenuDialogController) mController).getSelectInterface());
-        }
+        mAdapter.setSelectInterface(new MenuBaseAdapter.MenuSelectInterface() {
+            @Override
+            public void onMenuSelect(Object data, int pos) {
+                if (((BottomMenuDialogController) mController).getSelectInterface() != null) {
+                    ((BottomMenuDialogController) mController).getSelectInterface().onMenuSelect(data,pos);
+                }
+                dismiss();
+            }
+        });
 
         if (((BottomMenuDialogController) mController).getMenuBeanList() != null) {
             mAdapter.setList(((BottomMenuDialogController) mController).getMenuBeanList());
