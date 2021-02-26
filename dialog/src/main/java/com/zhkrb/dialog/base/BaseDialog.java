@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import com.zhkrb.dialog.R;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -29,9 +31,6 @@ public abstract class BaseDialog extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         setWindowStyle(dialog);
-        if (getShowAnim() != -1){
-            dialog.getWindow().setWindowAnimations(getShowAnim());
-        }
         dialog.setCancelable(isCanCancel());
         dialog.setCanceledOnTouchOutside(isCanCancelOnTouchOutside());
         setWindowAttributes(dialog);
@@ -48,7 +47,15 @@ public abstract class BaseDialog extends DialogFragment {
         mRootView = inflater.inflate(getLayoutId(),null,false);
         bindView(mRootView);
         setWindowAttributes(getDialog());
+//        if (getShowAnim() != -1 && getDialog() != null){
+//            getDialog().getWindow().setWindowAnimations(getShowAnim());
+//        }
         return mRootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override

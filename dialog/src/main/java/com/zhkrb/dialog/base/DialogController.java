@@ -172,7 +172,7 @@ public class DialogController {
         private String mTitle;
         private String mContent;
         private int mLayoutId = -1;
-        private int mStyle = R.style.dialog_null;
+        private int mStyle = R.style.BottomDialog;
         private boolean mCancelOnTouchOutside = true;
         private boolean mCancel = true;
         private int mGravity = Gravity.CENTER;

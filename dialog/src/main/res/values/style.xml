@@ -1,22 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="dialog_null" parent="Theme.AppCompat.Light.Dialog">
+    <style name="dialog_null" parent="@android:style/Theme.Dialog">
+<!--        <item name="android:windowFrame">@null</item>-->
+<!--        <item name="android:windowNoTitle">true</item>-->
+<!--        <item name="android:windowIsFloating">true</item>-->
+<!--        <item name="android:windowIsTranslucent">true</item>-->
+<!--        <item name="android:background">@android:color/transparent</item>-->
+<!--        <item name="android:windowBackground">@android:color/transparent</item>-->
+<!--        <item name="android:backgroundDimEnabled">true</item>-->
+<!--        <item name="android:backgroundDimAmount">0.4</item>-->
+        <item name="colorAccent">@color/dark</item>
         <item name="android:windowFrame">@null</item>
-        <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowAnimationStyle">@style/dialog_null_anim</item>
+        <item name="android:windowNoTitle">true</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:backgroundDimAmount">0.4</item>
     </style>
 
-    <style name="dialog_null_anim">
+    <style name="BottomDialog" parent="dialog_null">
+        <item name="android:windowAnimationStyle">@style/dialog_anim</item>
+    </style>
+
+    <style name="dialog_null_anim" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/bottomtop_enter</item>
         <item name="android:windowExitAnimation">@anim/bottomtop_exit</item>
+    </style>
+
+    <style name="dialog_anim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/enter_bottom</item>
+        <item name="android:windowExitAnimation">@anim/exit_bottom</item>
     </style>
 
     <style name="CustomCutSmallShapeAppearence">

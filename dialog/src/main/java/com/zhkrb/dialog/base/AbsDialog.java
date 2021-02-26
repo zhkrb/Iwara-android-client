@@ -1,5 +1,6 @@
 package com.zhkrb.dialog.base;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,6 +39,7 @@ public abstract class AbsDialog extends BaseDialog {
 
     /**
      * 创建controller
+     *
      * @return
      */
     protected abstract DialogController createController();
@@ -46,13 +48,23 @@ public abstract class AbsDialog extends BaseDialog {
 
     @Override
     protected void setWindowStyle(Dialog dialog) {
-        setStyle(DialogFragment.STYLE_NORMAL,mController.getStyle());
+//        setStyle(DialogFragment.STYLE_NORMAL, mController.getStyle());
         isWaitAddFocusFlag = false;
         Window dialogWindow = dialog.getWindow();
-        if (dialogWindow != null) {
-            dialogWindow.setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
-            isWaitAddFocusFlag = true;
+        if (isShowNavBar(getActivity())) {
+            if (dialogWindow != null) {
+                dialogWindow.setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+                isWaitAddFocusFlag = true;
+            }
         }
+        setOnShowEvent(dialog);
+    }
+
+    private boolean isShowNavBar(Context context) {
+        if ((((Activity) context).getWindow().getDecorView().getSystemUiVisibility() & View.SYSTEM_UI_FLAG_FULLSCREEN) == View.SYSTEM_UI_FLAG_FULLSCREEN) {
+            return true;
+        }
+        return false;
     }
 
     protected void setOnShowEvent(Dialog dialog) {
@@ -119,7 +131,7 @@ public abstract class AbsDialog extends BaseDialog {
     public void onDestroy() {
         super.onDestroy();
         mController = null;
-        if (mDestroyListener != null){
+        if (mDestroyListener != null) {
             mDestroyListener.onDestroy();
         }
 
@@ -133,7 +145,7 @@ public abstract class AbsDialog extends BaseDialog {
     /**
      * dialog销毁监听
      */
-    public interface DestroyListener{
+    public interface DestroyListener {
 
         /**
          * 销毁

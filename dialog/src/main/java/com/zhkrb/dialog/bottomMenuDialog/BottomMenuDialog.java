@@ -56,12 +56,15 @@ public class BottomMenuDialog extends AbsDialog {
     @Override
     protected void setWindowAttributes(Dialog dialog) {
         Window window = dialog.getWindow();
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams lp = window.getAttributes();
+        window.setGravity(Gravity.BOTTOM);
+//        window.setWindowAnimations(R.style.dialog_anim);
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.BOTTOM;
-        lp.windowAnimations = R.style.dialog_null_anim;
+//        lp.windowAnimations = R.style.dialog_anim;
         window.getDecorView().setPadding(0, 0, 0, 0);
         window.setAttributes(lp);
 
@@ -117,6 +120,10 @@ public class BottomMenuDialog extends AbsDialog {
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 
     private static class MenuAdapter extends MenuBaseAdapter<MenuBean> {
 

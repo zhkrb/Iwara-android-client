@@ -2,10 +2,12 @@ package com.zhkrb.dialog.base;
 
 import android.content.Context;
 
+import com.zhkrb.dialog.R;
 import com.zhkrb.dialog.dialogManager.DialogShowManager;
 import com.zhkrb.dialog.dialogManager.DialogWrapper;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 /**
@@ -86,6 +88,7 @@ public abstract class DialogBuilder {
         if (dialog.getController().getContext() == null){
             return null;
         }
+        dialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomDialog);
         return dialog;
     }
 
@@ -106,7 +109,7 @@ public abstract class DialogBuilder {
         }else {
             throw new RuntimeException("context not instance of AppCompatActivity");
         }
-        dialog.showNow(manager,"dialog");
+        dialog.show(manager,"dialog");
         return true;
     }
 }
