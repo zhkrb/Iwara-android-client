@@ -6,6 +6,7 @@ import com.zhkrb.dialog.R;
 import com.zhkrb.dialog.dialogManager.DialogShowManager;
 import com.zhkrb.dialog.dialogManager.DialogWrapper;
 
+import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
@@ -76,6 +77,11 @@ public abstract class DialogBuilder {
         return this;
     }
 
+    public DialogBuilder setShowAnimation(@StyleRes int res){
+        mControllerParams.setShowAnimation(res);
+        return this;
+    }
+
 
     public DialogBuilder setDialogLifeListener(DialogController.DialogLifeListener lifeListener){
         mControllerParams.setLifeListener(lifeListener);
@@ -88,7 +94,7 @@ public abstract class DialogBuilder {
         if (dialog.getController().getContext() == null){
             return null;
         }
-        dialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomDialog);
+        dialog.setStyle(DialogFragment.STYLE_NORMAL, dialog.getController().getStyle());
         return dialog;
     }
 

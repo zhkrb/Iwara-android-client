@@ -130,6 +130,7 @@ public class TestFragment extends BarBaseFragment implements View.OnClickListene
 //                setSeekBarDelegate();
                 new BottomMenuDialogBuilder(mContext)
                         .setMenu(new String[]{"1123","2234","4432","2324"},2)
+                        .setShowAnimation(R.style.BottomMenuAnim)
                         .showNow();
 
                 break;

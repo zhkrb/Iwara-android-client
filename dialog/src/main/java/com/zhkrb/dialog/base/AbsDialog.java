@@ -48,7 +48,7 @@ public abstract class AbsDialog extends BaseDialog {
 
     @Override
     protected void setWindowStyle(Dialog dialog) {
-//        setStyle(DialogFragment.STYLE_NORMAL, mController.getStyle());
+        setStyle(DialogFragment.STYLE_NORMAL, mController.getStyle());
         isWaitAddFocusFlag = false;
         Window dialogWindow = dialog.getWindow();
         if (isShowNavBar(getActivity())) {
@@ -110,11 +110,6 @@ public abstract class AbsDialog extends BaseDialog {
     @Override
     protected int getLayoutId() {
         return mController.getLayoutId();
-    }
-
-    @Override
-    protected int getDialogStyle() {
-        return mController.getStyle();
     }
 
     @Override

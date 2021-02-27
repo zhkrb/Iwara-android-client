@@ -28,9 +28,4 @@
         <item name="android:windowEnterAnimation">@anim/bottom_to_top_enter</item>
         <item name="android:windowExitAnimation">@anim/bottom_to_top_exit</item>
     </style>
-
-    <style name="dialog_bottom_anim1" parent="TextAppearance.MaterialComponents.Overline">
-        <item name="android:windowEnterAnimation">@anim/bottom_to_top_enter</item>
-        <item name="android:windowExitAnimation">@anim/bottom_to_top_exit</item>
-    </style>
 </resources>

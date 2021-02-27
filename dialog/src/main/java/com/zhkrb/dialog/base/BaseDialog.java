@@ -33,6 +33,9 @@ public abstract class BaseDialog extends DialogFragment {
         setWindowStyle(dialog);
         dialog.setCancelable(isCanCancel());
         dialog.setCanceledOnTouchOutside(isCanCancelOnTouchOutside());
+        if (getShowAnim() != -1){
+            dialog.getWindow().setWindowAnimations(getShowAnim());
+        }
         setWindowAttributes(dialog);
         return dialog;
     }
@@ -47,9 +50,6 @@ public abstract class BaseDialog extends DialogFragment {
         mRootView = inflater.inflate(getLayoutId(),null,false);
         bindView(mRootView);
         setWindowAttributes(getDialog());
-//        if (getShowAnim() != -1 && getDialog() != null){
-//            getDialog().getWindow().setWindowAnimations(getShowAnim());
-//        }
         return mRootView;
     }
 
@@ -109,12 +109,6 @@ public abstract class BaseDialog extends DialogFragment {
      * @return int
      */
     protected abstract int getLayoutId();
-
-    /**
-     *自定义style属性
-     * @return int
-     */
-    protected abstract int getDialogStyle();
 
 
     protected abstract Context getActivityContext();

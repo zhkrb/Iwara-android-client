@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="dialog_null" parent="@android:style/Theme.Dialog">
-<!--        <item name="android:windowFrame">@null</item>-->
-<!--        <item name="android:windowNoTitle">true</item>-->
-<!--        <item name="android:windowIsFloating">true</item>-->
-<!--        <item name="android:windowIsTranslucent">true</item>-->
-<!--        <item name="android:background">@android:color/transparent</item>-->
-<!--        <item name="android:windowBackground">@android:color/transparent</item>-->
-<!--        <item name="android:backgroundDimEnabled">true</item>-->
-<!--        <item name="android:backgroundDimAmount">0.4</item>-->
+    <style name="DialogNull" parent="Theme.MaterialComponents.Dialog">
         <item name="colorAccent">@color/dark</item>
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>
@@ -21,33 +13,42 @@
         <item name="android:backgroundDimAmount">0.4</item>
     </style>
 
-    <style name="BottomDialog" parent="dialog_null">
-        <item name="android:windowAnimationStyle">@style/dialog_anim</item>
+    <style name="DialogDefaultAnim" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/default_show</item>
+        <item name="android:windowExitAnimation">@anim/default_hide</item>
     </style>
 
-    <style name="dialog_null_anim" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/bottomtop_enter</item>
-        <item name="android:windowExitAnimation">@anim/bottomtop_exit</item>
+    <style name="DialogDefault" parent="DialogNull">
+        <item name="android:windowAnimationStyle">@style/DialogDefaultAnim</item>
     </style>
 
-    <style name="dialog_anim" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/enter_bottom</item>
-        <item name="android:windowExitAnimation">@anim/exit_bottom</item>
+    <style name="BottomDialog" parent="DialogNull">
+        <item name="android:windowAnimationStyle">@style/BottomMenuAnim</item>
     </style>
 
-    <style name="CustomCutSmallShapeAppearence">
+    <style name="BottomMenuAnim" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/bottom_menu_enter</item>
+        <item name="android:windowExitAnimation">@anim/bottom_menu_exit</item>
+    </style>
+
+    <style name="CustomCutSmallShapeAppearance">
         <item name="cornerFamily">cut</item>
         <item name="cornerSize">@dimen/cut_small</item>
     </style>
 
-    <style name="CustomCutMediumShapeAppearence">
+    <style name="CustomCutMediumShapeAppearance">
         <item name="cornerFamily">cut</item>
         <item name="cornerSize">@dimen/cut_medium</item>
     </style>
 
-    <style name="CustomCutLargeShapeAppearence">
+    <style name="CustomCutLargeShapeAppearance">
         <item name="cornerFamilyTopLeft">cut</item>
         <item name="cornerSizeTopLeft">@dimen/cut_large</item>
     </style>
+
+    //dialog text
+    <style name="DialogTitle" parent="TextAppearance.MdcTypographyStyles.Headline6"/>
+    <style name="DialogBody" parent="TextAppearance.MdcTypographyStyles.Body1"/>
+    <style name="DialogButton" parent="TextAppearance.MdcTypographyStyles.Button"/>
 
 </resources>

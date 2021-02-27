@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="point">·</string>
+    <string name="action">ACTION</string>
+    <string name="cancel">CANCEL</string>
+    <string name="confirm">CONFIRM</string>
 </resources>

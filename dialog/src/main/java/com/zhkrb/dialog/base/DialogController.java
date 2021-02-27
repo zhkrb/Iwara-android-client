@@ -169,10 +169,10 @@ public class DialogController {
 
     public static class Params {
         private WeakReference<Context> mContext;
-        private String mTitle;
-        private String mContent;
+        private String mTitle = "";
+        private String mContent = "";
         private int mLayoutId = -1;
-        private int mStyle = R.style.BottomDialog;
+        private int mStyle = R.style.DialogDefault;
         private boolean mCancelOnTouchOutside = true;
         private boolean mCancel = true;
         private int mGravity = Gravity.CENTER;

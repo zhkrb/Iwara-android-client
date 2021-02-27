@@ -9,9 +9,9 @@
         <item name="android:colorBackground">@color/surfaceDark</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="shapeAppearanceSmallComponent">@style/CustomCutSmallShapeAppearence</item>
-        <item name="shapeAppearanceMediumComponent">@style/CustomCutMediumShapeAppearence</item>
-        <item name="shapeAppearanceLargeComponent">@style/CustomCutLargeShapeAppearence</item>
+        <item name="shapeAppearanceSmallComponent">@style/CustomCutSmallShapeAppearance</item>
+        <item name="shapeAppearanceMediumComponent">@style/CustomCutMediumShapeAppearance</item>
+        <item name="shapeAppearanceLargeComponent">@style/CustomCutLargeShapeAppearance</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 

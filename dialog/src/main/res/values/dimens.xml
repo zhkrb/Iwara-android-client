@@ -11,4 +11,5 @@
     <dimen name="item_img_height">24dp</dimen>
     <dimen name="item_img_width">@dimen/item_img_height</dimen>
     <dimen name="item_title_padding_start">32dp</dimen>
+
 </resources>
