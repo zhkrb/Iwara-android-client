@@ -26,6 +26,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.zhkrb.dialog.bottomMenuDialog.BottomMenuDialogBuilder;
+import com.zhkrb.dialog.messageDialog.MessageDialogBuilder;
 import com.zhkrb.dragvideo.widget.AdvSeekbar;
 import com.zhkrb.iwara.R;
 
@@ -128,9 +129,13 @@ public class TestFragment extends BarBaseFragment implements View.OnClickListene
         switch (v.getId()){
             case R.id.button:
 //                setSeekBarDelegate();
-                new BottomMenuDialogBuilder(mContext)
-                        .setMenu(new String[]{"1123","2234","4432","2324"},2)
-                        .setShowAnimation(R.style.BottomMenuAnim)
+//                new BottomMenuDialogBuilder(mContext)
+//                        .setMenu(new String[]{"1123","2234","4432","2324"},2)
+//                        .setShowAnimation(R.style.BottomMenuAnim)
+//                        .showNow();
+
+                new MessageDialogBuilder(mContext)
+                        .setContent("测试通知")
                         .showNow();
 
                 break;

@@ -108,11 +108,6 @@ public abstract class AbsDialog extends BaseDialog {
     }
 
     @Override
-    protected int getLayoutId() {
-        return mController.getLayoutId();
-    }
-
-    @Override
     protected Context getActivityContext() {
         return mController.getContext();
     }

@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/CustomCutMediumShapeAppearance"
-    android:background="@color/white"
+    style="@style/CardCutMedium"
+    app:cardBackgroundColor="@color/secondary"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,6 +27,7 @@
         app:layout_constraintHorizontal_bias="0"
         style="@style/DialogTitle"
         android:id="@+id/text_title"
+        android:textColor="@color/textColor_black"
         />
 
         <Space
@@ -60,6 +61,7 @@
             android:id="@+id/text_content"
             app:layout_constraintHorizontal_bias="0"
             style="@style/DialogBody"
+            android:textColor="@color/textColor_black_medium"
             />
 
         <com.google.android.material.button.MaterialButton
@@ -75,6 +77,7 @@
             android:text="@string/confirm"
             android:background="?android:attr/selectableItemBackground"
             android:visibility="visible"
+            android:textColor="@color/textColor_black"
             />
 
         <com.google.android.material.button.MaterialButton
@@ -90,6 +93,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:text="@string/cancel"
             android:visibility="gone"
+            android:textColor="@color/textColor_black"
             />
 
         <com.google.android.material.button.MaterialButton
@@ -105,6 +109,7 @@
             android:text="@string/action"
             android:id="@+id/btn_action"
             android:visibility="gone"
+            android:textColor="@color/textColor_black"
             />
 
 

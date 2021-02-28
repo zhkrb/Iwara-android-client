@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="DialogNull" parent="Theme.MaterialComponents.Dialog">
-        <item name="colorAccent">@color/dark</item>
+    <style name="DialogNull" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowIsTranslucent">true</item>
@@ -29,6 +28,23 @@
     <style name="BottomMenuAnim" parent="@android:style/Animation">
         <item name="android:windowEnterAnimation">@anim/bottom_menu_enter</item>
         <item name="android:windowExitAnimation">@anim/bottom_menu_exit</item>
+    </style>
+
+    <style name="MessageAnim" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+
+    <style name="CardCutSmall" parent="Widget.MaterialComponents.CardView">
+        <item name="shapeAppearance">@style/CustomCutSmallShapeAppearance</item>
+    </style>
+
+    <style name="CardCutMedium" parent="Widget.MaterialComponents.CardView">
+        <item name="shapeAppearance">@style/CustomCutMediumShapeAppearance</item>
+    </style>
+
+    <style name="CardCutLarge" parent="Widget.MaterialComponents.CardView">
+        <item name="shapeAppearance">@style/CustomCutLargeShapeAppearance</item>
     </style>
 
     <style name="CustomCutSmallShapeAppearance">

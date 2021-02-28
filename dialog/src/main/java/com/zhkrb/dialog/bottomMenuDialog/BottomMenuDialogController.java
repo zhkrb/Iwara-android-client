@@ -1,5 +1,6 @@
 package com.zhkrb.dialog.bottomMenuDialog;
 
+import com.zhkrb.dialog.R;
 import com.zhkrb.dialog.base.DialogController;
 
 import java.util.List;
@@ -41,6 +42,14 @@ public class BottomMenuDialogController extends DialogController {
         mMenuBeanList = menuBeanList;
     }
 
+    @Override
+    public int getShowAnimation() {
+        if (super.getShowAnimation() == -1){
+            return R.style.BottomMenuAnim;
+        }
+        return super.getShowAnimation();
+    }
+
     public static class BottomMenuParams extends Params{
 
         private MenuBaseAdapter mCustomAdapter = null;
@@ -58,6 +67,8 @@ public class BottomMenuDialogController extends DialogController {
         public void setMenuBeanList(List<MenuBean> menuBeanList) {
             mMenuBeanList = menuBeanList;
         }
+
+
 
         @Override
         public void apply(DialogController controller) {

@@ -50,21 +50,25 @@ public class BottomMenuDialog extends AbsDialog {
         if (mController.getLayoutId() == -1) {
             return R.layout.dialog_bottom_menu;
         }
-        return super.getLayoutId();
+        return mController.getLayoutId();
+    }
+
+    @Override
+    protected int getShowAnim() {
+        if (mController.getShowAnimation() == -1){
+            return R.style.BottomMenuAnim;
+        }
+        return super.getShowAnim();
     }
 
     @Override
     protected void setWindowAttributes(Dialog dialog) {
         Window window = dialog.getWindow();
-        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         WindowManager.LayoutParams lp = window.getAttributes();
-        window.setGravity(Gravity.BOTTOM);
-//        window.setWindowAnimations(R.style.dialog_anim);
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.BOTTOM;
-//        lp.windowAnimations = R.style.dialog_anim;
         window.getDecorView().setPadding(0, 0, 0, 0);
         window.setAttributes(lp);
 

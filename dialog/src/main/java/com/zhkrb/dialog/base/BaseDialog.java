@@ -56,6 +56,7 @@ public abstract class BaseDialog extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
+        setWindowAttributes(getDialog());
     }
 
     @Override
