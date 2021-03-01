@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/CardCutMedium"
-    app:cardBackgroundColor="@color/secondary"
+    app:cardBackgroundColor="@color/surfaceLight"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -56,8 +56,9 @@
             app:layout_constraintTop_toBottomOf="@id/space_title"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
-            android:paddingTop="28dp"
+            android:paddingTop="8dp"
             android:paddingBottom="28dp"
+            app:layout_goneMarginTop="20dp"
             android:id="@+id/text_content"
             app:layout_constraintHorizontal_bias="0"
             style="@style/DialogBody"
@@ -77,7 +78,7 @@
             android:text="@string/confirm"
             android:background="?android:attr/selectableItemBackground"
             android:visibility="visible"
-            android:textColor="@color/textColor_black"
+            android:textColor="@color/colorPrimary"
             />
 
         <com.google.android.material.button.MaterialButton
@@ -93,7 +94,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:text="@string/cancel"
             android:visibility="gone"
-            android:textColor="@color/textColor_black"
+            android:textColor="@color/colorPrimary"
             />
 
         <com.google.android.material.button.MaterialButton
@@ -109,7 +110,7 @@
             android:text="@string/action"
             android:id="@+id/btn_action"
             android:visibility="gone"
-            android:textColor="@color/textColor_black"
+            android:textColor="@color/colorPrimary"
             />
 
 

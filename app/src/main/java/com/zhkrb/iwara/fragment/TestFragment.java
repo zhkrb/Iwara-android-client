@@ -136,6 +136,8 @@ public class TestFragment extends BarBaseFragment implements View.OnClickListene
 
                 new MessageDialogBuilder(mContext)
                         .setContent("测试通知")
+                        .setTitle("测试标题")
+                        .setCancelOnTouchOutside(false)
                         .showNow();
 
                 break;

@@ -3,6 +3,8 @@ package com.zhkrb.dialog.messageDialog;
 import android.content.Context;
 import android.widget.TextView;
 
+import com.google.android.material.transition.MaterialFade;
+import com.google.android.material.transition.MaterialFadeThrough;
 import com.zhkrb.dialog.base.AbsDialog;
 import com.zhkrb.dialog.base.DialogBuilder;
 import com.zhkrb.dialog.base.DialogController;

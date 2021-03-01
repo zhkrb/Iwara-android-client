@@ -31,8 +31,8 @@
     </style>
 
     <style name="MessageAnim" parent="@android:style/Animation">
-        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
-        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+        <item name="android:windowEnterAnimation">@anim/message_fade_enter</item>
+        <item name="android:windowExitAnimation">@anim/message_fade_exit</item>
     </style>
 
     <style name="CardCutSmall" parent="Widget.MaterialComponents.CardView">
