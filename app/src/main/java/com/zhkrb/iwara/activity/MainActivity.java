@@ -32,6 +32,10 @@ import com.zhkrb.base.AbsFragment;
 import com.zhkrb.base.FragmentFrame;
 import com.zhkrb.iwara.bean.VideoListBean;
 //import com.zhkrb.iwara.fragment.GalleryFragment;
+import com.zhkrb.iwara.fragment.BaseChildFragment;
+import com.zhkrb.iwara.fragment.BaseTestFragment1;
+import com.zhkrb.iwara.fragment.BaseTestFragment2;
+import com.zhkrb.iwara.fragment.BaseTestFragment3;
 import com.zhkrb.iwara.fragment.TestFragment;
 import com.zhkrb.utils.UpdateUtil;
 import com.zhkrb.utils.VideoDnsUtil;
@@ -49,6 +53,10 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
     static {
 //        setLaunchMode(GalleryFragment.class, AbsFragment.LAUNCH_MODE_BASE);
         setLaunchMode(TestFragment.class, AbsFragment.LAUNCH_MODE_PAGE);
+        setLaunchMode(BaseTestFragment1.class, AbsFragment.LAUNCH_MODE_BASE);
+        setLaunchMode(BaseTestFragment2.class, AbsFragment.LAUNCH_MODE_BASE);
+        setLaunchMode(BaseTestFragment3.class, AbsFragment.LAUNCH_MODE_BASE);
+        setLaunchMode(BaseChildFragment.class, AbsFragment.LAUNCH_MODE_PAGE);
     }
 
     private ConstraintLayout mParentLayout;

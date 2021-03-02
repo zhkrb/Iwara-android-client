@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.ArrayMap;
 import android.view.WindowManager;
 
 import com.zhkrb.iwara.R;
@@ -49,6 +50,7 @@ public abstract class AbsActivity extends AppCompatActivity {
 
     protected Context mContext;
     protected ArrayList<String> mFragmentStack;
+    protected ArrayMap<Class<?>,String> mFragmentBaseCache;
     private final AtomicInteger mInteger = new AtomicInteger(0);
     private static final HashMap<Class<?>, Integer> M_FRAGMENT_MODE = new HashMap<>(0);
 
@@ -95,6 +97,7 @@ public abstract class AbsActivity extends AppCompatActivity {
         setContentView(getLayoutId());
         mContext = this;
         mFragmentStack = new ArrayList<>();
+        mFragmentBaseCache = new ArrayMap<>(1);
         if (savedInstanceState != null) {
             ArrayList<String> list = savedInstanceState.getStringArrayList(FRAGMENT_STACK);
             if (list != null) {
@@ -205,7 +208,9 @@ public abstract class AbsActivity extends AppCompatActivity {
                 currentFragment.setExitTransition(null);
 
                 // Check is target scene
-                if (!findScene && clazz.isInstance(currentFragment)) {
+                boolean isSame = clazz.isInstance(currentFragment) &&
+                        (launchMode == AbsFragment.LAUNCH_MODE_BASE || !currentFragment.isDetached());
+                if (!findScene && isSame) {
                     fragment = (AbsFragment) currentFragment;
                     findScene = true;
                     createNewScene = false;
@@ -234,6 +239,9 @@ public abstract class AbsActivity extends AppCompatActivity {
 
                 // Add tag to list
                 mFragmentStack.add(tag);
+                if (launchMode == AbsFragment.LAUNCH_MODE_BASE){
+                    mFragmentBaseCache.put(clazz,tag);
+                }
 
                 // Add scene
                 transaction.add(getContentView(), fragment, tag);
@@ -242,6 +250,9 @@ public abstract class AbsActivity extends AppCompatActivity {
             // Commit
             transaction.commitAllowingStateLoss();
 
+            if (getLaunchMode(fragment.getClass()) == AbsFragment.LAUNCH_MODE_BASE) {
+                onTransactionBaseFragment(fragment.getClass());
+            }
             onTransactionFragment(fragment);
 
             if (!createNewScene && args != null) {
@@ -254,65 +265,92 @@ public abstract class AbsActivity extends AppCompatActivity {
 
     public void startFragment(FragmentFrame frame) {
         FragmentManager manager = getSupportFragmentManager();
-        Class clazz = frame.getClazz();
+        Class<?> clazz = frame.getClazz();
         Bundle args = frame.getArgs();
         int launchMode = getLaunchMode(frame.getClazz());
         TransitionHelper helper = frame.getHelper();
         int stackSize = mFragmentStack.size();
 
-        if (launchMode == AbsFragment.LAUNCH_MODE_BASE && stackSize > 1) {
+        if (launchMode == AbsFragment.LAUNCH_MODE_BASE && (stackSize > 1 || mFragmentBaseCache.size() > 0)) {
+            Fragment baseLatestFragment = null;
+            String baseLatestTag = "";
+
             for (int i = 0; i < stackSize; i++) {
                 String tag = mFragmentStack.get(i);
                 Fragment fragment = manager.findFragmentByTag(tag);
                 if (fragment == null) {
-                    L.e("can't find tag: " + tag);
+                    L.e("can't find tag fragment: " + tag);
                     continue;
                 }
                 if (clazz.isInstance(fragment)) {
                     if (isLatestFragment(tag)) {
                         return;
                     }
-                    ArrayList<String> tagList = findBaseFragmentChildByTag(tag);
-                    FragmentTransaction fragmentTransaction = manager.beginTransaction();
-                    fragmentTransaction.setCustomAnimations(R.anim.bottomtop_enter, R.anim.bottomtop_exit);
-
-                    String currTag = mFragmentStack.get(stackSize - 1);
-                    AbsFragment currentFragment = findFragmentByTag(currTag);
-                    if (currentFragment == null) {
-                        throw new RuntimeException("can't find AbsFragment: " + currTag);
-                    }
-
-                    String latestTag = tagList.get(tagList.size() - 1);
-                    AbsFragment latestFragment = findFragmentByTag(latestTag);
-                    if (latestFragment == null) {
-                        throw new RuntimeException("can't find AbsFragment: " + latestTag);
-                    }
-
-                    if (helper == null || helper.onTransition(mContext, fragmentTransaction, latestFragment, currentFragment)) {
-                        fragment.setEnterTransition(null);
-                        fragment.setExitTransition(null);
-                        fragment.setSharedElementReturnTransition(null);
-                        fragment.setSharedElementEnterTransition(null);
-                        currentFragment.setEnterTransition(null);
-                        currentFragment.setExitTransition(null);
-                        currentFragment.setSharedElementReturnTransition(null);
-                        currentFragment.setSharedElementEnterTransition(null);
-
-                        fragmentTransaction.setCustomAnimations(R.anim.bottomtop_enter, R.anim.bottomtop_exit);
-                    }
-                    mFragmentStack.removeAll(tagList);
-                    mFragmentStack.addAll(tagList);
-                    if (!currentFragment.isDetached()) {
-                        fragmentTransaction.detach(currentFragment);
-                    }
-                    if (latestFragment.isDetached()) {
-                        fragmentTransaction.attach(latestFragment);
-                    }
-                    fragmentTransaction.commitAllowingStateLoss();
-
-                    onTransactionFragment(latestFragment);
-                    return;
+                    baseLatestFragment = fragment;
+                    baseLatestTag = tag;
                 }
+            }
+
+            if (baseLatestFragment == null){
+                String tag = mFragmentBaseCache.get(clazz);
+                if (!TextUtils.isEmpty(tag)){
+                    baseLatestFragment = manager.findFragmentByTag(tag);
+                    baseLatestTag = tag;
+                }
+
+            }
+
+            if (baseLatestFragment != null){
+                ArrayList<String> tagList = findBaseFragmentChildByTag(baseLatestTag);
+                FragmentTransaction fragmentTransaction = manager.beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.anim.bottomtop_enter, R.anim.bottomtop_exit);
+
+                String currTag = mFragmentStack.get(stackSize - 1);
+                AbsFragment currentFragment = findFragmentByTag(currTag);
+                if (currentFragment == null) {
+                    throw new RuntimeException("can't find current AbsFragment: " + currTag);
+                }
+
+                String latestTag = tagList.get(tagList.size() - 1);
+                AbsFragment latestFragment = findFragmentByTag(latestTag);
+                if (latestFragment == null) {
+                    latestFragment = (AbsFragment) baseLatestFragment;
+                }
+
+                if (helper == null || helper.onTransition(mContext, fragmentTransaction, latestFragment, currentFragment)) {
+                    baseLatestFragment.setEnterTransition(null);
+                    baseLatestFragment.setExitTransition(null);
+                    baseLatestFragment.setSharedElementReturnTransition(null);
+                    baseLatestFragment.setSharedElementEnterTransition(null);
+                    currentFragment.setEnterTransition(null);
+                    currentFragment.setExitTransition(null);
+                    currentFragment.setSharedElementReturnTransition(null);
+                    currentFragment.setSharedElementEnterTransition(null);
+
+                    fragmentTransaction.setCustomAnimations(R.anim.bottomtop_enter, R.anim.bottomtop_exit);
+                }
+
+                ArrayList<String> tempList = null;
+                if (mFragmentStack.get(0).equals(tagList.get(0))){
+                    tempList = new ArrayList<>(tagList);
+                    tempList.remove(tagList.get(0));
+                }
+
+                mFragmentStack.removeAll(tempList == null ? tagList : tempList);
+                mFragmentStack.addAll(tagList);
+                if (!currentFragment.isDetached()) {
+                    fragmentTransaction.detach(currentFragment);
+                }
+                if (latestFragment.isDetached()) {
+                    fragmentTransaction.attach(latestFragment);
+                }
+                fragmentTransaction.commitAllowingStateLoss();
+
+                if (getLaunchMode(latestFragment.getClass()) == AbsFragment.LAUNCH_MODE_BASE) {
+                    onTransactionBaseFragment(latestFragment.getClass());
+                }
+                onTransactionFragment(latestFragment);
+                return;
             }
         }
 
@@ -355,11 +393,24 @@ public abstract class AbsActivity extends AppCompatActivity {
         fragmentTransaction.commitAllowingStateLoss();
 
         mFragmentStack.add(tag);
+
+        if (launchMode == AbsFragment.LAUNCH_MODE_BASE) {
+            mFragmentBaseCache.put(clazz,tag);
+            onTransactionBaseFragment(clazz);
+        }
         onTransactionFragment(fragment);
 
         if (frame.getRequestFragment() != null) {
             fragment.addRequest(frame.getRequestFragment().getClass().getName(), frame.getRequestCode());
         }
+    }
+
+    /**
+     * 是否双击退出
+     * @return
+     */
+    protected boolean isDoubleExit(){
+        return true;
     }
 
 
@@ -369,6 +420,15 @@ public abstract class AbsActivity extends AppCompatActivity {
         if (size == 0) {
             super.onBackPressed();
             return;
+        }
+
+        if (isDoubleExit() && mFragmentStack.size() == 1){
+            long curTime = System.currentTimeMillis();
+            if (curTime - mLastClickBackTime > 2000) {
+                mLastClickBackTime = curTime;
+                ToastUtil.show(R.string.main_click_next_exit);
+                return;
+            }
         }
 
         String tag = mFragmentStack.get(mFragmentStack.size() - 1);
@@ -441,19 +501,20 @@ public abstract class AbsActivity extends AppCompatActivity {
             return;
         }
 
-        int fragmentIndex = mFragmentStack.indexOf(tag);
+        int fragmentIndex = -1;
+
+        for (int i = 0;i < mFragmentStack.size();i++){
+            if (tag.equals(mFragmentStack.get(i))){
+                fragmentIndex = i;
+            }
+        }
+
         if (fragmentIndex < 0) {
             L.e("can't find fragment tag :" + tag);
             return;
         }
 
         if (mFragmentStack.size() == 1) {
-            long curTime = System.currentTimeMillis();
-            if (curTime - mLastClickBackTime > 2000) {
-                mLastClickBackTime = curTime;
-                ToastUtil.show(R.string.main_click_next_exit);
-                return;
-            }
             L.i("finish activity");
             finish();
             return;
@@ -485,7 +546,15 @@ public abstract class AbsActivity extends AppCompatActivity {
             // Attach fragment
             transaction.attach(next);
         }
-        transaction.remove(fragment);
+
+        if (getLaunchMode(fragment.getClass()) == AbsFragment.LAUNCH_MODE_BASE){
+            if (!fragment.isDetached()) {
+                transaction.detach(fragment);
+            }
+        }else {
+            transaction.remove(fragment);
+        }
+
         transaction.commitAllowingStateLoss();
 
         // Remove tag
@@ -590,7 +659,7 @@ public abstract class AbsActivity extends AppCompatActivity {
             if (getLaunchMode(fragment.getClass()) == AbsFragment.LAUNCH_MODE_BASE) {
                 break;
             }
-            list.add(tag);
+            list.add(childTag);
         }
 
         return list;

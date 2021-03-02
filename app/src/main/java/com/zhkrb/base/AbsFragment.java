@@ -105,6 +105,10 @@ public abstract class AbsFragment extends Fragment {
 
     protected abstract void bindView();
 
+    public <T extends View> T findViewById(int id){
+        return mRootView.findViewById(id);
+    }
+
     public void addRequest(String tag, int requestCode) {
         mRequestTagList.add(tag);
         mRequestCodeList.add(requestCode);
@@ -153,7 +157,8 @@ public abstract class AbsFragment extends Fragment {
     protected void finish(TransitionHelper helper){
         if (mContext instanceof AbsActivity){
             ((AbsActivity) mContext).finish(this,helper);
-            if (((AbsActivity) mContext).mFragmentStack.size() > 1){
+            if (((AbsActivity) mContext).mFragmentStack.size() > 1 &&
+                    ((AbsActivity) mContext).getLaunchMode(getClass()) != AbsFragment.LAUNCH_MODE_BASE){
                 mContext = null;
             }
         }

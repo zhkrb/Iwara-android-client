@@ -12,7 +12,6 @@
         <item name="shapeAppearanceSmallComponent">@style/CustomCutSmallShapeAppearance</item>
         <item name="shapeAppearanceMediumComponent">@style/CustomCutMediumShapeAppearance</item>
         <item name="shapeAppearanceLargeComponent">@style/CustomCutLargeShapeAppearance</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="AppTheme" parent="BaseAppTheme">

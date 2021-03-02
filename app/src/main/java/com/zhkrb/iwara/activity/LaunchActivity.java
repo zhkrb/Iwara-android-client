@@ -68,9 +68,11 @@ public class LaunchActivity extends AppCompatActivity implements View.OnClickLis
         Intent intent = getIntent();
         if (intent != null ){
             if (Intent.ACTION_MAIN.equals(intent.getAction())){
-                mContext.startActivity(new Intent(mContext,MainActivity.class).setAction(Intent.ACTION_MAIN));
+//                mContext.startActivity(new Intent(mContext,MainActivity.class).setAction(Intent.ACTION_MAIN));
+                mContext.startActivity(new Intent(mContext,TextActivity.class).setAction(Intent.ACTION_MAIN));
             }else {
-                mContext.startActivity(intent.setClass(mContext,MainActivity.class));
+//                mContext.startActivity(intent.setClass(mContext,MainActivity.class));
+                mContext.startActivity(intent.setClass(mContext,TextActivity.class));
             }
         }
         finish();
