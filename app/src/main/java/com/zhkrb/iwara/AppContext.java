@@ -44,13 +44,12 @@ public class AppContext extends MultiDexApplication {
     private boolean mFront;
     private Handler mHandler;
     private boolean isFirstStart = true;
-    public static boolean sDeBug;
+    public static boolean sDeBug = BuildConfig.DEBUG;
 
     @Override
     public void onCreate() {
         super.onCreate();
         sInstance = this;
-        sDeBug = SystemUtil.isDebug();
         mHandler = new Handler();
         HttpUtil.init(AppConfig.HOST);
         registerActivityLifecycleCallbacks();
