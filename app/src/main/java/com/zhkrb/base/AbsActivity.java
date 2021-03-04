@@ -26,6 +26,7 @@ import android.util.ArrayMap;
 import android.view.WindowManager;
 
 import com.google.android.material.transition.MaterialFadeThrough;
+import com.google.android.material.transition.MaterialSharedAxis;
 import com.zhkrb.iwara.R;
 import com.zhkrb.utils.ContextLocalWrapper;
 import com.zhkrb.utils.L;
@@ -63,6 +64,8 @@ public abstract class AbsActivity extends AppCompatActivity {
     public static final String ACTION_START_FRAGMENT = "start_fragment";
     public static final String KEY_FRAGMENT_NAME = "key_fragment_name";
     public static final String KEY_FRAGMENT_ARGS = "key_fragment_args";
+
+    private static final int DEFAULT_FADE_DURATION = 300;
 
     /**
      * 切换锁
@@ -195,9 +198,6 @@ public abstract class AbsActivity extends AppCompatActivity {
 
             FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-            // Set default animation
-            transaction.setCustomAnimations(R.anim.bottomtop_enter, R.anim.bottomtop_exit);
-
             String findSceneTag = null;
             for (int i = 0, n = mFragmentStack.size(); i < n; i++) {
                 String tag = mFragmentStack.get(i);
@@ -207,11 +207,14 @@ public abstract class AbsActivity extends AppCompatActivity {
                     continue;
                 }
 
+                MaterialFadeThrough fadeThrough = new MaterialFadeThrough();
+                fadeThrough.setDuration(DEFAULT_FADE_DURATION);
+                currentFragment.setEnterTransition(fadeThrough);
+
                 // Clear shared element
+                currentFragment.setExitTransition(null);
                 currentFragment.setSharedElementEnterTransition(null);
                 currentFragment.setSharedElementReturnTransition(null);
-                currentFragment.setEnterTransition(null);
-                currentFragment.setExitTransition(null);
 
                 // Check is target scene
                 boolean isSame = clazz.isInstance(currentFragment) &&
@@ -329,6 +332,9 @@ public abstract class AbsActivity extends AppCompatActivity {
                         MaterialFadeThrough through = new MaterialFadeThrough();
                         through.setDuration(150);
                         latestFragment.setEnterTransition(through);
+                        latestFragment.setExitTransition(null);
+                        currentFragment.setEnterTransition(null);
+                        currentFragment.setExitTransition(null);
                     }
 
                     if (mFragmentStack.get(0).equals(tagList.get(0))) {
@@ -374,9 +380,7 @@ public abstract class AbsActivity extends AppCompatActivity {
 
             if (currentFragment != null) {
                 if (helper == null || helper.onTransition(mContext, fragmentTransaction, fragment, currentFragment)) {
-                MaterialFadeThrough through = new MaterialFadeThrough();
-                through.setDuration(150);
-                fragment.setEnterTransition(through);
+                    setDefaultAnim(launchMode,fragment,currentFragment,false);
                 }
                 if (!currentFragment.isDetached()) {
                     fragmentTransaction.detach(currentFragment);
@@ -400,6 +404,36 @@ public abstract class AbsActivity extends AppCompatActivity {
             }
         } finally {
             LOCK.unlock();
+        }
+    }
+
+    /**
+     * 设置默认动画
+     * @param launchMode
+     * @param enterFragment
+     * @param exitFragment
+     */
+    private void setDefaultAnim(int launchMode, Fragment enterFragment, Fragment exitFragment,boolean reverseAnim) {
+        if (launchMode == AbsFragment.LAUNCH_MODE_BASE){
+            MaterialFadeThrough through = new MaterialFadeThrough();
+            through.setDuration(DEFAULT_FADE_DURATION);
+            enterFragment.setEnterTransition(through);
+            enterFragment.setExitTransition(null);
+            exitFragment.setEnterTransition(null);
+            exitFragment.setExitTransition(null);
+        }else {
+            MaterialSharedAxis enterAxisEnter = new MaterialSharedAxis(MaterialSharedAxis.X, reverseAnim);
+            enterAxisEnter.setDuration(DEFAULT_FADE_DURATION);
+            MaterialSharedAxis enterAxisExit = new MaterialSharedAxis(MaterialSharedAxis.X, !reverseAnim);
+            enterAxisExit.setDuration(DEFAULT_FADE_DURATION);
+            enterFragment.setEnterTransition(enterAxisEnter);
+            enterFragment.setExitTransition(enterAxisExit);
+            MaterialSharedAxis exitAxisEnter = new MaterialSharedAxis(MaterialSharedAxis.X,!reverseAnim);
+            exitAxisEnter.setDuration(DEFAULT_FADE_DURATION);
+            MaterialSharedAxis exitAxisExit = new MaterialSharedAxis(MaterialSharedAxis.X,reverseAnim);
+            exitAxisExit.setDuration(DEFAULT_FADE_DURATION);
+            exitFragment.setEnterTransition(exitAxisEnter);
+            exitFragment.setExitTransition(exitAxisExit);
         }
     }
 
@@ -533,11 +567,7 @@ public abstract class AbsActivity extends AppCompatActivity {
             if (next != null) {
                 if (transitionHelper == null || !transitionHelper.onTransition(
                         this, transaction, fragment, next)) {
-                    // Clear shared item
-
-                    MaterialFadeThrough through = new MaterialFadeThrough();
-                    through.setDuration(150);
-                    next.setEnterTransition(through);
+                    setDefaultAnim(getLaunchMode(fragment.getClass()),next,fragment,true);
                 }
                 // Attach fragment
                 transaction.attach(next);
