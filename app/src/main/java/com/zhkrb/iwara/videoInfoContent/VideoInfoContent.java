@@ -40,6 +40,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.alibaba.fastjson.JSON;
 import com.zhkrb.dragvideo.contentViewBase.AbsContent;
 import com.zhkrb.iwara.R;
+import com.zhkrb.iwara.activity.MainActivity;
 import com.zhkrb.iwara.adapter.RecommAdapter;
 import com.zhkrb.iwara.bean.VideoInfoBean;
 import com.zhkrb.iwara.bean.VideoListBean;
@@ -267,11 +268,11 @@ public class VideoInfoContent extends AbsContent implements ViewStub.OnInflateLi
 
     @Override
     public void onClick(View v) {
-
+        ToastUtil.show(WordUtil.getString(R.string.action_disable));
     }
 
     @Override
     public void itemClick(VideoListBean bean) {
-
+        ((MainActivity)mContext).playVideo(bean);
     }
 }
