@@ -19,9 +19,9 @@ Iwara非官方安卓客户端，完全使用Material Design设计，Youtube like
 ## 截图
 Appbar目前仅为测试用，并非最终设计
 
-![screenshot_1](art/screenshot_1.png)
-![screenshot_2](art/screenshot_2_1.png)
-![screenshot_3](art/Screenshot_3.png)
+![screenshot_1](art/screenshot_1.png)  
+![screenshot_2](art/screenshot_2_1.png)  
+![screenshot_3](art/Screenshot_3.png)  
 
 ## 进度
 
