@@ -10,6 +10,8 @@
 ## 说明  
 Iwara非官方安卓客户端，完全使用Material Design设计，Youtube like播放器，目前仅完成视频列表和播放器以及一些简单的功能。
 
+目前整体重构中，因为设计苦手所以进度缓慢，如果您愿意指点一二或有兴趣参与项目请务必联系我
+
 ## 下载
 
 获取编译好的APK文件，请移步[Release](https://github.com/zhkrb/Iwara-android-client/releases)  

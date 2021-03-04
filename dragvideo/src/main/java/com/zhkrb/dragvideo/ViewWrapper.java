@@ -20,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 public class ViewWrapper {
 
     private View mView;
@@ -56,64 +58,64 @@ public class ViewWrapper {
     }
 
     public void setTopMargin(int top){
-        if (mLayoutParams instanceof ViewGroup.MarginLayoutParams){
-            ((ViewGroup.MarginLayoutParams) mLayoutParams).topMargin = top;
+        if (mLayoutParams instanceof ConstraintLayout.LayoutParams){
+            ((ConstraintLayout.LayoutParams) mLayoutParams).topMargin = top;
         }else {
             throw new RuntimeException(mView.getClass().getName()+"Can't cast to MarginLayoutParams");
         }
     }
 
     public int getTopMargin(){
-        if (mLayoutParams instanceof ViewGroup.MarginLayoutParams){
-            return ((ViewGroup.MarginLayoutParams) mLayoutParams).topMargin;
+        if (mLayoutParams instanceof ConstraintLayout.LayoutParams){
+            return ((ConstraintLayout.LayoutParams) mLayoutParams).topMargin;
         }else {
             throw new RuntimeException(mView.getClass().getName()+"Can't cast to MarginLayoutParams");
         }
     }
 
     public void setLeftMargin(int left){
-        if (mLayoutParams instanceof ViewGroup.MarginLayoutParams){
-            ((ViewGroup.MarginLayoutParams) mLayoutParams).leftMargin = left;
+        if (mLayoutParams instanceof ConstraintLayout.LayoutParams){
+            ((ConstraintLayout.LayoutParams) mLayoutParams).leftMargin = left;
         }else {
             throw new RuntimeException(mView.getClass().getName()+"Can't cast to MarginLayoutParams");
         }
     }
 
     public int getLeftMargin(){
-        if (mLayoutParams instanceof ViewGroup.MarginLayoutParams){
-            return ((ViewGroup.MarginLayoutParams) mLayoutParams).leftMargin;
+        if (mLayoutParams instanceof ConstraintLayout.LayoutParams){
+            return ((ConstraintLayout.LayoutParams) mLayoutParams).leftMargin;
         }else {
             throw new RuntimeException(mView.getClass().getName()+"Can't cast to MarginLayoutParams");
         }
     }
 
     public void setRightMargin(int right){
-        if (mLayoutParams instanceof ViewGroup.MarginLayoutParams){
-            ((ViewGroup.MarginLayoutParams) mLayoutParams).rightMargin = right;
+        if (mLayoutParams instanceof ConstraintLayout.LayoutParams){
+            ((ConstraintLayout.LayoutParams) mLayoutParams).rightMargin = right;
         }else {
             throw new RuntimeException(mView.getClass().getName()+"Can't cast to MarginLayoutParams");
         }
     }
 
     public int getRightMargin(){
-        if (mLayoutParams instanceof ViewGroup.MarginLayoutParams){
-            return ((ViewGroup.MarginLayoutParams) mLayoutParams).rightMargin;
+        if (mLayoutParams instanceof ConstraintLayout.LayoutParams){
+            return ((ConstraintLayout.LayoutParams) mLayoutParams).rightMargin;
         }else {
             throw new RuntimeException(mView.getClass().getName()+"Can't cast to MarginLayoutParams");
         }
     }
 
     public void setBottomMargin(int bottomMargin){
-        if (mLayoutParams instanceof ViewGroup.MarginLayoutParams){
-            ((ViewGroup.MarginLayoutParams) mLayoutParams).bottomMargin = bottomMargin;
+        if (mLayoutParams instanceof ConstraintLayout.LayoutParams){
+            ((ConstraintLayout.LayoutParams) mLayoutParams).bottomMargin = bottomMargin;
         }else {
             throw new RuntimeException(mView.getClass().getName()+"Can't cast to MarginLayoutParams");
         }
     }
 
     public int getBottomMargin(){
-        if (mLayoutParams instanceof ViewGroup.MarginLayoutParams){
-            return ((ViewGroup.MarginLayoutParams) mLayoutParams).bottomMargin;
+        if (mLayoutParams instanceof ConstraintLayout.LayoutParams){
+            return ((ConstraintLayout.LayoutParams) mLayoutParams).bottomMargin;
         }else {
             throw new RuntimeException(mView.getClass().getName()+"Can't cast to MarginLayoutParams");
         }

@@ -433,7 +433,7 @@ public class VideoPlayer extends MediaCodecVideoplayer implements VideoAllCallBa
         if (startTime!=0){
             setSeekOnStart(startTime);
         }
-        mHeader.put("Host",host);
+        mHeader.put("Host"," "+host);
         setMapHeadData(mHeader);
         setUp(url,false,mTitle);
         startPlayLogic();

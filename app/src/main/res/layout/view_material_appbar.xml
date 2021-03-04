@@ -57,11 +57,10 @@
                 android:layout_marginEnd="16dp"
                 android:id="@+id/btn_bar_second"
                 android:src="@mipmap/bar_icon"
-                android:scaleType="centerCrop"
-                android:background="@null"
+                android:scaleType="centerInside"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 />
 
             <androidx.constraintlayout.widget.Group

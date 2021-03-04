@@ -20,6 +20,7 @@ package com.zhkrb.iwara.fragment;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import com.alibaba.fastjson.JSON;
@@ -88,6 +89,13 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
 //        decoration.setOnlySetItemOffsetsButNoDraw(true);
 //        mRefreshView.setItemDecoration(decoration);
         mRefreshView.setOnScaleListener(this);
+
+        View view = LayoutInflater.from(mContext).inflate(R.layout.view_gallery_bar,null,false);
+        view.findViewById(R.id.btn_like).setOnClickListener(this);
+        view.findViewById(R.id.btn_time).setOnClickListener(this);
+        view.findViewById(R.id.btn_play).setOnClickListener(this);
+
+        ((MainActivity)mContext).addTitle(view);
 
         mAdapter = new VideoListAdapter(mContext);
         mAdapter.setSortMode(mGalleryMode == 0);
@@ -185,22 +193,19 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
-//        int pos = 0;
-//        switch (view.getId()){
-//            case R.id.btn_time:
-//                pos =  0;
-//                break;
-//            case R.id.btn_play:
-//                pos =  1;
-//                break;
-//            case R.id.btn_like:
-//                pos =  2;
-//                break;
-//        }
-//        if (pos == mGalleryMode){
-//            return;
-//        }
-//        targetMode(pos);
+        int pos = 0;
+        int id = view.getId();
+        if (id == R.id.btn_time){
+
+        }else if (id == R.id.btn_play){
+            pos = 1;
+        }else if (id == R.id.btn_like){
+            pos = 2;
+        }
+        if (pos == mGalleryMode){
+            return;
+        }
+        targetMode(pos);
     }
 
     private void targetMode(int pos) {
@@ -228,6 +233,7 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
             case 1:
                 mListViewMode = 2;
                 break;
+            default:
         }
         VibrateUtil.Short();
         saveListMode();
@@ -246,6 +252,7 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
             case 1:
                 mListViewMode = 0;
                 break;
+            default:
         }
         VibrateUtil.Short();
         saveListMode();
@@ -264,6 +271,7 @@ public class GalleryFragment extends AbsFragment implements View.OnClickListener
             case 2:
                 key = SpUtil.LIKE_VIDEO_LIST_MODE;
                 break;
+            default:
         }
         AppConfig.getInstance().putGalleryListMode(key,mListViewMode);
     }

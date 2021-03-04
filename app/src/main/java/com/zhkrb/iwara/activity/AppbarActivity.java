@@ -20,6 +20,8 @@ package com.zhkrb.iwara.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.motion.widget.MotionLayout;
@@ -166,6 +168,13 @@ public abstract class AppbarActivity extends AbsActivity {
             return;
         }
         drawerLayout.setDrawerLockMode(enabled ? DrawerLayout.LOCK_MODE_UNLOCKED: DrawerLayout.LOCK_MODE_LOCKED_CLOSED );
+    }
+
+    public void addTitle(View view){
+        if (mBarLayout == null){
+            return;
+        }
+        mBarLayout.addTitleBar(view);
     }
 
 }
