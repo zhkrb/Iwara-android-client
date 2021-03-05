@@ -17,11 +17,11 @@ Iwara非官方安卓客户端，完全使用Material Design设计，Youtube like
 获取编译好的APK文件，请移步[Release](https://github.com/zhkrb/Iwara-android-client/releases)  
 
 ## 截图
-Appbar目前仅为测试用，并非最终设计(-_,-……)
+Appbar目前仅为测试用，并非最终设计
 
-![screenshot_1](art/screenshot_1.png)
-![screenshot_2](art/Screenshot_2.png)
-![screenshot_3](art/Screenshot_3.png)
+![screenshot_1](art/screenshot_1.png)  
+![screenshot_2](art/screenshot_2_1.png)  
+![screenshot_3](art/Screenshot_3.png)  
 
 ## 进度
 
