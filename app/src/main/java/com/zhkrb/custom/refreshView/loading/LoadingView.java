@@ -30,7 +30,7 @@ import androidx.core.content.ContextCompat;
 
 import com.zhkrb.utils.L;
 
-public class LoadingView extends ImageView {
+public class LoadingView extends androidx.appcompat.widget.AppCompatImageView {
 
     private LoadingDrawable mLoadingDrawable;
 

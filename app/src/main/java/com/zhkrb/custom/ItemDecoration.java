@@ -48,8 +48,8 @@ public class ItemDecoration extends RecyclerView.ItemDecoration {
     private int dividerWidth;
     private int dividerColor;
     private static final int[] ATTRS = new int[]{android.R.attr.listDivider};
-    private static final int HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
-    private static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
+    private static final int HORIZONTAL_LIST = RecyclerView.HORIZONTAL;
+    private static final int VERTICAL_LIST = RecyclerView.VERTICAL;
     /**
      * 设置是否显示左右边界线
      */

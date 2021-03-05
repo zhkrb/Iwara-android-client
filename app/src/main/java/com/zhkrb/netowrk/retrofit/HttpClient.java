@@ -7,12 +7,12 @@ import com.zhkrb.netowrk.retrofit.model.GetModel;
 import com.zhkrb.netowrk.retrofit.model.PostModel;
 import com.zhkrb.utils.L;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -51,7 +51,7 @@ public class HttpClient {
         builder.retryOnConnectionFailure(true);
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
             @Override
-            public void log(@NotNull String message) {
+            public void log(@NonNull String message) {
                 L.e(message);
             }
         });
