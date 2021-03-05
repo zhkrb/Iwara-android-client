@@ -27,7 +27,7 @@ import com.zhkrb.iwara.R;
 
 import androidx.annotation.Nullable;
 
-public class RateImageView extends ImageView {
+public class RateImageView extends androidx.appcompat.widget.AppCompatImageView {
 
     private float mRate;
     private boolean isWidthRate;

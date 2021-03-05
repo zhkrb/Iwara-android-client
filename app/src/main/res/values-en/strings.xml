@@ -33,4 +33,5 @@
     <string name="text_recomm">相关推荐:</string>
     <string name="uploaddate">上传日期:%1$s</string>
     <string name="action_disable">功能当前不可用</string>
+    <string name="comment_tip">请自觉维护社区环境,理性发言</string>
 </resources>
