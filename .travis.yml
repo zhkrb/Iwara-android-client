@@ -1,18 +1,45 @@
+sudo: required
 
 language: android
-android:
-    components:
-    - platform-tools
-    - build-tools-28.0.3
-    - tools
-    - android-28
-    - android-27
-    - android-22
-    - extra-android-m2repository
-    - extra-android-support
+jdk: oraclejdk8
+
+env:
+  global:
+    - ANDROID_API=28
+    - ANDROID_BUILD_TOOLS=28.0.3
+    - EMAIL=fiybad1@gmail.com
+
+notifications:
+  email:
+    recipients:
+      - ${EMAIL}
+    on_success: change
+    on_failure: always
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
+
+
 before_install:
   - chmod +x gradlew
-  - yes | sudo sdkmanager --licenses
+  - echo yes | sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}"
+  - echo yes | sdkmanager "platforms;android-${ANDROID_API}"
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
+
+android:
+  components:
+    - platform-tools
+    - build-tools-${ANDROID_BUILD_TOOLS}
+    - tools
+    - android-${ANDROID_API}
+    - extra-android-m2repository
+    - extra-android-support
 
 script:
-    - ./gradlew assemble
+    - ./gradlew clean test build
