@@ -12,6 +12,7 @@ android:
     - extra-android-support
 before_install:
   - chmod +x gradlew
+  - yes | sudo sdkmanager --licenses
 
 script:
     - ./gradlew assemble
