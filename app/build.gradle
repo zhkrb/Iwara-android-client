@@ -25,6 +25,7 @@ static def gitVersionTag(boolean isPattern) {
 
 android {
     compileSdkVersion 28
+    buildToolsVersion "30.0.1"
     defaultConfig {
         applicationId "com.zhkrb.iwara"
         minSdkVersion 21
