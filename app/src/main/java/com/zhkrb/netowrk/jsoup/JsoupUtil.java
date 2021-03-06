@@ -2,6 +2,10 @@ package com.zhkrb.netowrk.jsoup;
 
 import android.text.TextUtils;
 
+import com.zhkrb.netowrk.jsoup.foramter.VideoInfoFormat;
+import com.zhkrb.netowrk.jsoup.foramter.VideoListFormat;
+import com.zhkrb.utils.L;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -37,7 +41,7 @@ public class JsoupUtil {
                 callback.onSuccess(200, "empty body", "");
                 return;
             }
-            callback.onSuccess(HttpURLConnection.HTTP_OK, "success", FormatUtil.videoListFormat(elements));
+            callback.onSuccess(HttpURLConnection.HTTP_OK, "success", VideoListFormat.videoListFormat(elements));
 
         });
         String url = "/videos?sort=";
@@ -106,9 +110,12 @@ public class JsoupUtil {
                 callback.onSuccess(200, "empty body", "");
                 return;
             }
-            callback.onSuccess(HttpURLConnection.HTTP_OK, "success", FormatUtil.videoInfoFormat(document));
+            long start = System.currentTimeMillis();
+            callback.onSuccess(HttpURLConnection.HTTP_OK, "success", VideoInfoFormat.videoInfoFormat(document));
+            L.e("usage"," " + (System.currentTimeMillis() - start));
         });
         JsoupClient.getInstance().getObservableWithoutHost(url).subscribe(callback.addTag(tag));
+
     }
 
 }

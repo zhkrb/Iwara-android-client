@@ -24,6 +24,9 @@ import android.os.Bundle;
 import android.os.Handler;
 
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.zhkrb.utils.CrashHandlerUtil;
+import com.zhkrb.utils.FirebaseUtil;
 import com.zhkrb.utils.L;
 import com.zhkrb.netowrk.jsoup.JsoupUtil;
 import com.zhkrb.netowrk.retrofit.HttpUtil;
@@ -45,12 +48,15 @@ public class AppContext extends MultiDexApplication {
     private Handler mHandler;
     private boolean isFirstStart = true;
     public static boolean sDeBug = BuildConfig.DEBUG;
+    private FirebaseAnalytics mAnalytics;
 
     @Override
     public void onCreate() {
         super.onCreate();
         sInstance = this;
         mHandler = new Handler();
+        CrashHandlerUtil.getInstance(sInstance);
+        FirebaseUtil.getInstance().init(sInstance);
         HttpUtil.init(AppConfig.HOST);
         registerActivityLifecycleCallbacks();
         setRxJavaErrorHandler();

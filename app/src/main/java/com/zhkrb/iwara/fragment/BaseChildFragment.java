@@ -1,12 +1,16 @@
 package com.zhkrb.iwara.fragment;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.zhkrb.base.AbsFragment;
 import com.zhkrb.dragvideo.widget.AdvSeekbar;
 import com.zhkrb.iwara.R;
+import com.zhkrb.netowrk.jsoup.BaseJsoupCallback;
+import com.zhkrb.netowrk.jsoup.JsoupUtil;
+import com.zhkrb.utils.L;
 
 public class BaseChildFragment extends AbsFragment {
 
@@ -52,6 +56,32 @@ public class BaseChildFragment extends AbsFragment {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
+            }
+        });
+        mRootView.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JsoupUtil.getVideoInfo("/videos/wqlwatgmvhqg40kg", "tag", new BaseJsoupCallback() {
+                    @Override
+                    public void onStart() {
+
+                    }
+
+                    @Override
+                    public void onSuccess(int code, String msg, Object info) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+
+                    }
+
+                    @Override
+                    public void onError(int code, String msg) {
+
+                    }
+                });
             }
         });
     }

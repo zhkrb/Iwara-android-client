@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.NETWORK_PROVIDER"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
@@ -20,8 +21,14 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/AppTheme"
         android:largeHeap="true"
-
         >
+
+        <!--在用户同意收集信息前暂停-->
+        <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
+        <!--停用广告ID收集-->
+        <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
+        <!--停用个性化广告数据-->
+        <meta-data android:name="google_analytics_default_allow_ad_personalization_signals" android:value="false" />
 
         <activity
             android:name=".activity.LaunchActivity"
