@@ -32,9 +32,8 @@ public class VideoListBean implements Parcelable {
     private String href;
     private String thumb;
     private String title;
-    private String user_name;
-    private String user_href;
-    private String play_href;
+    private String userName;
+    private String userHref;
     private boolean privated;
     private int type;
 
@@ -90,28 +89,20 @@ public class VideoListBean implements Parcelable {
         this.title = title;
     }
 
-    public String getUser_name() {
-        return user_name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUser_name(String user_name) {
-        this.user_name = user_name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getUser_href() {
-        return user_href;
+    public String getUserHref() {
+        return userHref;
     }
 
-    public void setUser_href(String user_href) {
-        this.user_href = user_href;
-    }
-
-    public String getPlay_href() {
-        return play_href;
-    }
-
-    public void setPlay_href(String play_href) {
-        this.play_href = play_href;
+    public void setUserHref(String userHref) {
+        this.userHref = userHref;
     }
 
     public boolean isPrivated() {
@@ -135,12 +126,9 @@ public class VideoListBean implements Parcelable {
         dest.writeString(this.href);
         dest.writeString(this.thumb);
         dest.writeString(this.title);
-        dest.writeString(this.user_name);
-        dest.writeString(this.user_href);
-        dest.writeString(this.play_href);
-        boolean[] booleans = new boolean[1];
-        booleans[0] = privated;
-        dest.writeBooleanArray(booleans);
+        dest.writeString(this.userName);
+        dest.writeString(this.userHref);
+        dest.writeInt(this.privated ? 1 : 0);
         dest.writeInt(this.type);
     }
 
@@ -150,12 +138,9 @@ public class VideoListBean implements Parcelable {
         this.href = in.readString();
         this.thumb = in.readString();
         this.title = in.readString();
-        this.user_name = in.readString();
-        this.user_href = in.readString();
-        this.play_href = in.readString();
-        boolean[] booleans = new boolean[1];
-        in.readBooleanArray(booleans);
-        this.privated = booleans[0];
+        this.userName = in.readString();
+        this.userHref = in.readString();
+        this.privated = in.readInt() == 1;
         this.type = in.readInt();
     }
 
@@ -172,5 +157,18 @@ public class VideoListBean implements Parcelable {
         }
     };
 
-
+    @Override
+    public String toString() {
+        return "VideoListBean{" +
+                "like='" + like + '\'' +
+                ", view='" + view + '\'' +
+                ", href='" + href + '\'' +
+                ", thumb='" + thumb + '\'' +
+                ", title='" + title + '\'' +
+                ", userName='" + userName + '\'' +
+                ", userHref='" + userHref + '\'' +
+                ", privated=" + privated +
+                ", type=" + type +
+                '}';
+    }
 }

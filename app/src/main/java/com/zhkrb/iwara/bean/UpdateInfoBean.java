@@ -22,7 +22,7 @@ public class UpdateInfoBean {
 
     private String info;
     private int version;
-    private String version_name;
+    private String versionName;
     private String size;
     private String url;
 
@@ -58,11 +58,22 @@ public class UpdateInfoBean {
         this.url = url;
     }
 
-    public String getVersion_name() {
-        return version_name;
+    public String getVersionName() {
+        return versionName;
     }
 
-    public void setVersion_name(String version_name) {
-        this.version_name = version_name;
+    public void setVersionName(String versionName) {
+        this.versionName = versionName;
+    }
+
+    @Override
+    public String toString() {
+        return "UpdateInfoBean{" +
+                "info='" + info + '\'' +
+                ", version=" + version +
+                ", versionName='" + versionName + '\'' +
+                ", size='" + size + '\'' +
+                ", url='" + url + '\'' +
+                '}';
     }
 }

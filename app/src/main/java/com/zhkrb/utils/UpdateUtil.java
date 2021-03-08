@@ -19,16 +19,12 @@
 package com.zhkrb.utils;
 
 import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.Build;
 
 import androidx.appcompat.app.AlertDialog;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.zhkrb.iwara.AppConfig;
-import com.zhkrb.iwara.AppContext;
 import com.zhkrb.iwara.R;
 import com.zhkrb.base.AbsActivity;
 import com.zhkrb.iwara.bean.UpdateInfoBean;
@@ -113,7 +109,7 @@ public class UpdateUtil {
             new AlertDialog.Builder(context)
                     .setTitle(R.string.update)
                     .setMessage(String.format(context.getResources().getString(R.string.update_info),
-                            bean.getVersion_name(),
+                            bean.getVersionName(),
                             bean.getSize(),
                             bean.getInfo().replace("\\n", "\n")))
                     .setCancelable(true)

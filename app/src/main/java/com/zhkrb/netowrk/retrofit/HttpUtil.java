@@ -24,28 +24,24 @@ public class HttpUtil {
     }
 
     public static Observable<ResponseBody> getBody(String api) {
-        return HttpClient.getInstance().get(api, null, null);
-    }
-
-    public static Observable<ResponseBody> getBodyWithoutHost(String url) {
-        return HttpClient.getInstance().get(url, null, null);
+        return HttpClient.getInstance().get(api, null);
     }
 
     public static void testSend(String tag, @NonNull BaseRetrofitCallback callback) {
         HttpClient.getInstance().get("aa",
                 new GetBean()
                         .param("test", 1)
-                        .param("cc", 2)
-                , null).subscribe(callback.addTag(tag));
+                        .param("cc", 2))
+                .subscribe(callback.addTag(tag));
     }
 
     public static void getVideoUrlList(String url, String tag, @NonNull BaseRetrofitCallback callback) {
-        HttpClient.getInstance().get(url, null, null).
+        HttpClient.getInstance().get(url, null).
                 subscribe(callback.addTag(tag));
     }
 
     public static void getUpdateInfo(@NonNull BaseRetrofitCallback callback) {
-        HttpClient.getInstance().get(AppConfig.UPDATE_URL, null, null).
+        HttpClient.getInstance().get(AppConfig.UPDATE_URL, null).
                 subscribe(callback.addTag(HttpConstsUtil.CHECK_UPDATE));
     }
 }

@@ -106,16 +106,16 @@ public class CommentAdapterBase extends BaseRefreshAdapter<CommentBean> {
             parent.setTag(position);
             reply.setTag(position);
             pos = position;
-            ImgLoader.displayCircle(bean.getComment_thumb(), thumb);
-            username.setText(bean.getComment_user());
-            time.setText(bean.getComment_date());
+            ImgLoader.displayCircle(bean.getCommentThumb(), thumb);
+            username.setText(bean.getCommentUser());
+            time.setText(bean.getCommentDate());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                content.setText(Html.fromHtml(bean.getComment_content(), Html.FROM_HTML_MODE_COMPACT));
+                content.setText(Html.fromHtml(bean.getCommentContent(), Html.FROM_HTML_MODE_COMPACT));
             } else {
-                content.setText(Html.fromHtml(bean.getComment_content()));
+                content.setText(Html.fromHtml(bean.getCommentContent()));
             }
-            reply.setVisibility(bean.getReply_count() > 0 ? View.VISIBLE : View.GONE);
-            reply.setText(String.format("%s %s", bean.getReply_count(), WordUtil.getString(R.string.reply)));
+            reply.setVisibility(bean.getReplyCount() > 0 ? View.VISIBLE : View.GONE);
+            reply.setText(String.format("%s %s", bean.getReplyCount(), WordUtil.getString(R.string.reply)));
             if (!parent.hasOnClickListeners()) {
                 parent.setOnClickListener(mClickListener);
             }

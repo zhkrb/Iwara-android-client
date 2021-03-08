@@ -25,7 +25,7 @@ import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 public class HttpClient {
 
     private static HttpClient mClient;
-    private static final int TIMEOUT = 30000;
+    private static final int TIMEOUT = 30;
     private static OkHttpClient mOkHttpClient;
     private static Retrofit mRetrofit;
 
@@ -45,16 +45,11 @@ public class HttpClient {
 
     public void init(String url){
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
-        builder.readTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
-        builder.writeTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
+        builder.connectTimeout(TIMEOUT, TimeUnit.SECONDS);
+        builder.readTimeout(TIMEOUT, TimeUnit.SECONDS);
+        builder.writeTimeout(TIMEOUT, TimeUnit.SECONDS);
         builder.retryOnConnectionFailure(true);
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-            @Override
-            public void log(@NonNull String message) {
-                L.e(message);
-            }
-        });
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(L::e);
         interceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
 
         builder.addInterceptor(interceptor);
@@ -69,14 +64,11 @@ public class HttpClient {
                 .build();
     }
 
-    public Observable<ResponseBody> get(String apiName, GetBean bean, Map<String, String> headers){
+    public Observable<ResponseBody> get(String apiName, GetBean bean,@NonNull Map<String, String> headers){
         GetModel getModel = mRetrofit.create(GetModel.class);
         String a = "";
         if (bean!=null){
             a = bean.create();
-        }
-        if (headers == null){
-            return getModel.get(apiName+a).compose(SchedulerProvider.getInstance().applySchedulers());
         }
         return getModel.get(headers,apiName+a).compose(SchedulerProvider.getInstance().applySchedulers());
     }

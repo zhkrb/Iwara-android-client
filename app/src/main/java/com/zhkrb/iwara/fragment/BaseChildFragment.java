@@ -8,9 +8,11 @@ import android.widget.TextView;
 import com.zhkrb.base.AbsFragment;
 import com.zhkrb.dragvideo.widget.AdvSeekbar;
 import com.zhkrb.iwara.R;
+import com.zhkrb.iwara.bean.VideoInfoBean;
 import com.zhkrb.netowrk.jsoup.BaseJsoupCallback;
 import com.zhkrb.netowrk.jsoup.JsoupUtil;
 import com.zhkrb.utils.L;
+import com.zhkrb.utils.UpdateUtil;
 
 public class BaseChildFragment extends AbsFragment {
 
@@ -61,15 +63,15 @@ public class BaseChildFragment extends AbsFragment {
         mRootView.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                JsoupUtil.getVideoInfo("/videos/wqlwatgmvhqg40kg", "tag", new BaseJsoupCallback() {
+                JsoupUtil.getVideoInfo("/videos/wqlwatgmvhqg40kg", "tag", new BaseJsoupCallback<VideoInfoBean>() {
                     @Override
                     public void onStart() {
 
                     }
 
                     @Override
-                    public void onSuccess(int code, String msg, Object info) {
-
+                    public void onSuccess(int code, String msg, VideoInfoBean info) {
+                        L.e(info.toString());
                     }
 
                     @Override

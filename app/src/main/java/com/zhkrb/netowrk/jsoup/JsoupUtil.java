@@ -1,16 +1,11 @@
 package com.zhkrb.netowrk.jsoup;
 
-import android.text.TextUtils;
-
+import com.zhkrb.iwara.bean.VideoInfoBean;
+import com.zhkrb.iwara.bean.VideoListBean;
 import com.zhkrb.netowrk.jsoup.foramter.VideoInfoFormat;
 import com.zhkrb.netowrk.jsoup.foramter.VideoListFormat;
-import com.zhkrb.utils.L;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-
-import java.net.HttpURLConnection;
+import java.util.List;
 
 public class JsoupUtil {
 
@@ -33,17 +28,7 @@ public class JsoupUtil {
      *                 ...
      *                 ]
      */
-    public static void getVideoList(int type, int p, String tag, final BaseJsoupCallback callback) {
-        callback.setFormatter(body -> {
-            Document document = Jsoup.parse(body);
-            Elements elements = document.select("div.node-video");
-            if (elements == null || elements.size() == 0) {
-                callback.onSuccess(200, "empty body", "");
-                return;
-            }
-            callback.onSuccess(HttpURLConnection.HTTP_OK, "success", VideoListFormat.videoListFormat(elements));
-
-        });
+    public static void getVideoList(int type, int p, String tag, final BaseJsoupCallback<List<VideoListBean>> callback) {
         String url = "/videos?sort=";
 //        switch (type){
 //            case 0://日期
@@ -62,7 +47,9 @@ public class JsoupUtil {
             url = "/vides?sort=";
         }
 //        JsoupClient.getInstance().getObservable("/videos/wqlwatgmvhqg40kg").subscribe(observer);
-        JsoupClient.getInstance().getObservable(url).subscribe(callback.addTag(tag));
+        JsoupClient.getInstance().getObservable(url).subscribe(callback
+                .setFormatter(VideoListFormat.formatter)
+                .addTag(tag));
     }
 
     /**
@@ -103,19 +90,10 @@ public class JsoupUtil {
      *                 ]
      */
 
-    public static void getVideoInfo(String url, String tag,  BaseJsoupCallback callback) {
-        callback.setFormatter(body -> {
-            Document document = Jsoup.parse(body);
-            if (document == null || TextUtils.isEmpty(document.body().toString())) {
-                callback.onSuccess(200, "empty body", "");
-                return;
-            }
-            long start = System.currentTimeMillis();
-            callback.onSuccess(HttpURLConnection.HTTP_OK, "success", VideoInfoFormat.videoInfoFormat(document));
-            L.e("usage"," " + (System.currentTimeMillis() - start));
-        });
-        JsoupClient.getInstance().getObservableWithoutHost(url).subscribe(callback.addTag(tag));
-
+    public static void getVideoInfo(String url, String tag,  BaseJsoupCallback<VideoInfoBean> callback) {
+        JsoupClient.getInstance().getObservable(url).subscribe(callback.
+                setFormatter(VideoInfoFormat.formatter).
+                addTag(tag));
     }
 
 }

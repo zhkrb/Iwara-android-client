@@ -23,10 +23,16 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.zhkrb.iwara.bean.VideoInfoBean;
+import com.zhkrb.netowrk.jsoup.BaseJsoupCallback;
+import com.zhkrb.utils.L;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import java.net.HttpURLConnection;
 
 /**
  * @description：视频详情页解析
@@ -35,49 +41,58 @@ import org.jsoup.select.Elements;
  */
 public class VideoInfoFormat {
 
-    public static String videoInfoFormat(Document document) {
-        JSONObject object = new JSONObject();
-        Element infoElem = document.selectFirst("div.node-info");
-        object.put("title",BaseFormatUtil.selectTextMayNull(infoElem,"h1.title"));
-        object.put("author_name",BaseFormatUtil.selectTextMayNull(infoElem,"a.username"));
-        String thumb = BaseFormatUtil.selectAttrMayNull(infoElem,"div.user-picture>a>img","src");
-        if (TextUtils.isEmpty(thumb) || thumb.contains("default_avatar.png")){
-            thumb = "default_avatar";
-        }else {
-            thumb = "https:"+thumb;
+    public static BaseJsoupCallback.Formatter<VideoInfoBean> formatter = (callback, body) -> {
+        Document document = Jsoup.parse(body);
+        if (document == null || !document.body().hasText()) {
+            callback.onSuccess(null);
+            return;
         }
-        object.put("author_thumb",thumb);
-        object.put("author_href",infoElem.selectFirst("a.username").attr("href"));
-        String[] a = BaseFormatUtil.selectTextMayNull(infoElem,"div.submitted").split("作成日:");
+        callback.onSuccess(VideoInfoFormat.videoInfoFormat(document));
+    };
+
+    public static VideoInfoBean videoInfoFormat(Document document) {
+        VideoInfoBean bean = new VideoInfoBean();
+        Element infoElem = document.selectFirst("div.node-info");
+        bean.setTitle(BaseFormatUtil.selectTextMayNull(infoElem, "h1.title"));
+        bean.setAuthorName(BaseFormatUtil.selectTextMayNull(infoElem, "a.username"));
+        String thumb = BaseFormatUtil.selectAttrMayNull(infoElem, "div.user-picture>a>img", "src");
+        if (TextUtils.isEmpty(thumb) || thumb.contains("default_avatar.png")) {
+            thumb = "default_avatar";
+        } else {
+            thumb = "https:" + thumb;
+        }
+        bean.setAuthorThumb(thumb);
+        bean.setAuthorHref(infoElem.selectFirst("a.username").attr("href"));
+        String[] a = BaseFormatUtil.selectTextMayNull(infoElem, "div.submitted").split("作成日:");
         String date = "";
-        if (a.length == 2){
+        if (a.length == 2) {
             date = a[1];
         }
-        object.put("author_video_upload_date",date);
-        object.put("author_video_info",BaseFormatUtil.selectHtmlMayNull(infoElem,"div.field-item"));
+        bean.setAuthorVideoUploadDate(date);
+        bean.setAuthorVideoInfo(BaseFormatUtil.selectHtmlMayNull(infoElem, "div.field-item"));
         //TODO format video tag
         Elements tags = infoElem.select("div.field-name-field-categories");
 
-        String[] info = BaseFormatUtil.selectTextMayNull(infoElem,"div.node-views").split(" ");
-        object.put("author_video_like",info.length == 2 ? info[0] : "");
-        object.put("author_video_view",info.length == 2 ? info[1] : "");
+        String[] info = BaseFormatUtil.selectTextMayNull(infoElem, "div.node-views").split(" ");
+        bean.setAuthorVideoLike(info.length == 2 ? info[0] : "");
+        bean.setAuthorVideoView(info.length == 2 ? info[1] : "");
         Elements from = null;
         Element video_from = document.selectFirst("div.view-id-videos");
-        if (video_from != null){
+        if (video_from != null) {
             from = video_from.select("div.node-video");
         }
-        object.put("author_video_from_user", JSON.parseArray(VideoListFormat.videoListFormat(from)));
+        bean.setAuthorVideoFromUser(VideoListFormat.videoListFormat(from));
         Elements recomm = null;
         Element video_recomm = document.selectFirst("div.view-id-search");
-        if (video_recomm != null){
+        if (video_recomm != null) {
             recomm = video_recomm.select("div.node-video");
         }
-        object.put("author_video_recomm", JSON.parseArray(VideoListFormat.videoListFormat(recomm)));
+        bean.setAuthorVideoRecomm(VideoListFormat.videoListFormat(recomm));
         Element comment = document.selectFirst("#comments");
-        object.put("comment_count", CommentFormatUtil.getCommentCount(comment));
-        object.put("comment_pages", CommentFormatUtil.getCommentPages(comment));
-        object.put("comment_item_list", CommentFormatUtil.getCommentItemList(document));
-        object.put("comment_item_reply_pageid",CommentFormatUtil.getCommentPageId(document));
-        return object.toJSONString();
+        bean.setCommentCount(CommentFormatUtil.getCommentCount(comment));
+        bean.setCommentPages(CommentFormatUtil.getCommentPages(comment));
+        bean.setCommentItemList(CommentFormatUtil.getCommentItemList(document));
+        bean.setCommentItemReplyPageid(CommentFormatUtil.getCommentPageId(document));
+        return bean;
     }
 }

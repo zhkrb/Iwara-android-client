@@ -25,80 +25,81 @@ import java.util.List;
 
 public class CommentBean  implements Parcelable {
 
-    private long comment_date_stamp;
-    private String comment_user;
-    private String comment_date;
-    private String comment_content;
-    private String comment_id;
-    private String comment_thumb;
-    private List<CommentBean> reply_list;
-    private int reply_count;
+    private long commentDateStamp;
+    private String commentUser;
+    private String commentDate;
+    private String commentContent;
+    private String commentId;
+    private String commentThumb;
+    private List<CommentBean> replyList;
+    private int replyCount;
+    private String commentReplyIdList;
 
     public CommentBean() {
     }
 
-    public long getComment_date_stamp() {
-        return comment_date_stamp;
+    public long getCommentDateStamp() {
+        return commentDateStamp;
     }
 
-    public void setComment_date_stamp(long comment_date_stamp) {
-        this.comment_date_stamp = comment_date_stamp;
+    public void setCommentDateStamp(long commentDateStamp) {
+        this.commentDateStamp = commentDateStamp;
     }
 
-    public String getComment_user() {
-        return comment_user;
+    public String getCommentUser() {
+        return commentUser;
     }
 
-    public void setComment_user(String comment_user) {
-        this.comment_user = comment_user;
+    public void setCommentUser(String commentUser) {
+        this.commentUser = commentUser;
     }
 
-    public String getComment_date() {
-        return comment_date;
+    public String getCommentDate() {
+        return commentDate;
     }
 
-    public void setComment_date(String comment_date) {
-        this.comment_date = comment_date;
+    public void setCommentDate(String commentDate) {
+        this.commentDate = commentDate;
     }
 
-    public String getComment_content() {
-        return comment_content;
+    public String getCommentContent() {
+        return commentContent;
     }
 
-    public void setComment_content(String comment_content) {
-        this.comment_content = comment_content;
+    public void setCommentContent(String commentContent) {
+        this.commentContent = commentContent;
     }
 
-    public String getComment_id() {
-        return comment_id;
+    public String getCommentId() {
+        return commentId;
     }
 
-    public void setComment_id(String comment_id) {
-        this.comment_id = comment_id;
+    public void setCommentId(String commentId) {
+        this.commentId = commentId;
     }
 
-    public String getComment_thumb() {
-        return comment_thumb;
+    public String getCommentThumb() {
+        return commentThumb;
     }
 
-    public void setComment_thumb(String comment_thumb) {
-        this.comment_thumb = comment_thumb;
+    public void setCommentThumb(String commentThumb) {
+        this.commentThumb = commentThumb;
     }
 
-    public List<CommentBean> getReply_list() {
-        return reply_list;
+    public List<CommentBean> getReplyList() {
+        return replyList;
     }
 
-    public void setReply_list(List<CommentBean> reply_list) {
-        this.reply_list = reply_list;
+    public void setReplyList(List<CommentBean> replyList) {
+        this.replyList = replyList;
     }
 
-    public int getReply_count() {
-        return reply_count;
+    public int getReplyCount() {
+        return replyCount;
     }
 
-    public void setReply_count(int reply_count) {
-        this.reply_count = reply_count;
+    public void setReplyCount(int replyCount) {
+        this.replyCount = replyCount;
     }
 
     @Override
@@ -108,25 +109,27 @@ public class CommentBean  implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.comment_date_stamp);
-        dest.writeString(this.comment_user);
-        dest.writeString(this.comment_date);
-        dest.writeString(this.comment_content);
-        dest.writeString(this.comment_id);
-        dest.writeString(this.comment_thumb);
-        dest.writeInt(this.reply_count);
-        dest.writeList(this.reply_list);
+        dest.writeLong(this.commentDateStamp);
+        dest.writeString(this.commentUser);
+        dest.writeString(this.commentDate);
+        dest.writeString(this.commentContent);
+        dest.writeString(this.commentId);
+        dest.writeString(this.commentThumb);
+        dest.writeInt(this.replyCount);
+        dest.writeList(this.replyList);
+        dest.writeString(this.commentReplyIdList);
     }
 
     public CommentBean(Parcel in) {
-        this.comment_date_stamp = in.readLong();
-        this.comment_user = in.readString();
-        this.comment_date = in.readString();
-        this.comment_content = in.readString();
-        this.comment_id = in.readString();
-        this.comment_thumb = in.readString();
-        this.reply_count = in.readInt();
-        this.reply_list = in.createTypedArrayList(CommentBean.CREATOR);
+        this.commentDateStamp = in.readLong();
+        this.commentUser = in.readString();
+        this.commentDate = in.readString();
+        this.commentContent = in.readString();
+        this.commentId = in.readString();
+        this.commentThumb = in.readString();
+        this.replyCount = in.readInt();
+        this.replyList = in.createTypedArrayList(CommentBean.CREATOR);
+        this.commentReplyIdList = in.readString();
     }
 
     public static final Parcelable.Creator<CommentBean> CREATOR = new Creator<CommentBean>() {
@@ -140,4 +143,27 @@ public class CommentBean  implements Parcelable {
             return new CommentBean(in);
         }
     };
+
+    public String getCommentReplyIdList() {
+        return commentReplyIdList;
+    }
+
+    public void setCommentReplyIdList(String commentReplyIdList) {
+        this.commentReplyIdList = commentReplyIdList;
+    }
+
+    @Override
+    public String toString() {
+        return "CommentBean{" +
+                "commentDateStamp=" + commentDateStamp +
+                ", commentUser='" + commentUser + '\'' +
+                ", commentDate='" + commentDate + '\'' +
+                ", commentContent='" + commentContent + '\'' +
+                ", commentId='" + commentId + '\'' +
+                ", commentThumb='" + commentThumb + '\'' +
+                ", replyList=" + replyList +
+                ", replyCount=" + replyCount +
+                ", commentReplyIdList='" + commentReplyIdList + '\'' +
+                '}';
+    }
 }

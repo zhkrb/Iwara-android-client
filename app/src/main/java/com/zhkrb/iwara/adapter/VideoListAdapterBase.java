@@ -215,7 +215,7 @@ public class VideoListAdapterBase extends BaseRefreshAdapter<VideoListBean> {
                 ImgLoader.display(videoListBean.getThumb(),thumb);
             }
             title.setText(videoListBean.getTitle());
-            user.setText(videoListBean.getUser_name());
+            user.setText(videoListBean.getUserName());
             views.setText(String.format("%s %s", videoListBean.getView(), WordUtil.getString(R.string.video_view)));
             like.setText(videoListBean.getLike());
             if (!itemView.hasOnClickListeners()){

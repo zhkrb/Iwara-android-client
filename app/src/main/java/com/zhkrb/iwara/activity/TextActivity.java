@@ -11,6 +11,7 @@ import com.zhkrb.iwara.fragment.BaseChildFragment;
 import com.zhkrb.iwara.fragment.BaseTestFragment1;
 import com.zhkrb.iwara.fragment.BaseTestFragment2;
 import com.zhkrb.iwara.fragment.BaseTestFragment3;
+import com.zhkrb.utils.UpdateUtil;
 
 import java.util.Map;
 import java.util.Set;

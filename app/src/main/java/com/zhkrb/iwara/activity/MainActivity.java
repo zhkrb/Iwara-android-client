@@ -106,7 +106,7 @@ public class MainActivity extends AppbarActivity implements VideoPlayerView.onHi
         bundle.putString("url", AppConfig.HOST+bean.getHref());
         bundle.putString("title",bean.getTitle());
         bundle.putString("thumb",bean.getThumb());
-        bundle.putString("user",bean.getUser_name());
+        bundle.putString("user",bean.getUserName());
         bundle.putString("referer",AppConfig.HOST+"/");
         bundle.putString("ua",AppConfig.UA);
         mPlayerView.show();

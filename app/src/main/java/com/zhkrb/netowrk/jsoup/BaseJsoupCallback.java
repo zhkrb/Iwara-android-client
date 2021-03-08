@@ -18,24 +18,28 @@
 
 package com.zhkrb.netowrk.jsoup;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.zhkrb.netowrk.BaseDataLoadCallback;
 import com.zhkrb.netowrk.ExceptionUtil;
 import com.zhkrb.netowrk.retrofit.manager.RequestManager;
 
+import java.net.HttpURLConnection;
+
+import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
 import okhttp3.ResponseBody;
 import okio.BufferedSource;
 import okio.Okio;
 
-public abstract class BaseJsoupCallback implements Observer<ResponseBody>, BaseDataLoadCallback {
+public abstract class BaseJsoupCallback<T> implements Observer<ResponseBody>, BaseDataLoadCallback<T> {
 
     private String mTag;
     private Formatter mFormatter;
 
-    public BaseJsoupCallback addTag(String tag) {
+    public BaseJsoupCallback<T> addTag(String tag) {
         mTag = tag;
         return this;
     }
@@ -47,13 +51,13 @@ public abstract class BaseJsoupCallback implements Observer<ResponseBody>, BaseD
     }
 
     @Override
-    public void onNext(ResponseBody responseBody) {
+    public void onNext(@NonNull ResponseBody responseBody) {
         try {
             BufferedSource bufferedSource = Okio.buffer(responseBody.source());
             String response = bufferedSource.readUtf8();
             bufferedSource.close();
             if (mFormatter != null) {
-                mFormatter.format(response);
+                mFormatter.format(BaseJsoupCallback.this, response);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,10 +69,15 @@ public abstract class BaseJsoupCallback implements Observer<ResponseBody>, BaseD
     public void onError(Throwable e) {
         e.printStackTrace();
         ExceptionUtil.Msg msg1 = ExceptionUtil.getException(e);
-        Log.e("jsoup exception", msg1.getCode() + ": " + msg1.getMsg());
+        Log.e("Jsoup exception", msg1.getCode() + ": " + msg1.getMsg());
         onError(msg1.getCode(), msg1.getMsg());
         RequestManager.getInstance().remove(mTag);
         onFinish();
+    }
+
+
+    public void onSuccess(T info) {
+        onSuccess(HttpURLConnection.HTTP_OK, info == null ? "empty body" : "success", info);
     }
 
     @Override
@@ -77,18 +86,21 @@ public abstract class BaseJsoupCallback implements Observer<ResponseBody>, BaseD
         onFinish();
     }
 
-    public void setFormatter(Formatter formatter) {
+    public BaseJsoupCallback<T> setFormatter(Formatter<T> formatter) {
         mFormatter = formatter;
+        return this;
     }
 
-    interface Formatter {
+    public interface Formatter<T> {
 
         /**
          * 格式化数据
+         *
+         * @param jsoupCallback
          * @param string
          * @throws Exception
          */
-        void format(String string) throws Exception;
+        void format(BaseJsoupCallback<T> jsoupCallback, String string) throws Exception;
 
     }
 }

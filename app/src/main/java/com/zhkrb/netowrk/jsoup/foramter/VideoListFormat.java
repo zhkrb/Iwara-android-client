@@ -24,9 +24,17 @@ import android.text.TextUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zhkrb.iwara.AppConfig;
+import com.zhkrb.iwara.bean.VideoListBean;
+import com.zhkrb.netowrk.jsoup.BaseJsoupCallback;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @description：视频列表解析
@@ -35,22 +43,32 @@ import org.jsoup.select.Elements;
  */
 public class VideoListFormat {
 
-    public static String videoListFormat(Elements elements){
-        JSONArray array = new JSONArray();
+    public static BaseJsoupCallback.Formatter<List<VideoListBean>> formatter = ((callback, body) -> {
+        Document document = Jsoup.parse(body);
+        Elements elements = document.select("div.node-video");
+        if (elements == null || elements.size() == 0) {
+            callback.onSuccess(null);
+            return;
+        }
+        callback.onSuccess(VideoListFormat.videoListFormat(elements));
+    });
+
+    public static List<VideoListBean> videoListFormat(Elements elements){
+        List<VideoListBean> beanList = new ArrayList<>();
         if (elements == null){
-            return array.toJSONString();
+            return null;
         }
         for (Element element:elements){
-            JSONObject object = new JSONObject();
-            object.put("like",BaseFormatUtil.selectTextMayNull(element,"div.right-icon"));
-            object.put("view",BaseFormatUtil.selectTextMayNull(element,"div.left-icon"));
-            object.put("href",element.selectFirst("div.field-item").getElementsByTag("a").attr("href"));
+            VideoListBean bean = new VideoListBean();
+            bean.setLike(BaseFormatUtil.selectTextMayNull(element,"div.right-icon"));
+            bean.setView(BaseFormatUtil.selectTextMayNull(element,"div.left-icon"));
+            bean.setHref(element.selectFirst("div.field-item").getElementsByTag("a").attr("href"));
             if (element.selectFirst("img")!=null){
                 String thumb = BaseFormatUtil.selectAttrMayNull(element,"img","src");
                 if (!TextUtils.isEmpty(thumb)&&!thumb.contains(AppConfig.NOM_HOST_URL)){
                     thumb = "//" + AppConfig.HOST_URL + thumb;
                 }
-                object.put("thumb","https:" + thumb);
+                bean.setThumb("https:" + thumb);
                 String title = "";
                 if (TextUtils.isEmpty(BaseFormatUtil.selectAttrMayNull(element,"img","title"))){
                     if (element.selectFirst("h3.title") != null){
@@ -61,19 +79,20 @@ public class VideoListFormat {
                 }else {
                     title = BaseFormatUtil.selectAttrMayNull(element,"img","title");
                 }
-                object.put("title",title);
+                bean.setTitle(title);
             }else {
-                object.put("thumb","");
-                object.put("title",BaseFormatUtil.selectTextMayNull(element,"h3.title>a"));
+                bean.setThumb("");
+                bean.setTitle(BaseFormatUtil.selectTextMayNull(element,"h3.title>a"));
             }
 
-            object.put("user_name",BaseFormatUtil.selectTextMayNull(element,"a.username"));
-            object.put("user_href",BaseFormatUtil.selectAttrMayNull(element,"a.username","href"));
-            object.put("privated",element.selectFirst("div.private-video") != null);
-            object.put("type",0);
-            array.add(object);
+            bean.setUserName(BaseFormatUtil.selectTextMayNull(element,"a.username"));
+            bean.setUserHref(BaseFormatUtil.selectAttrMayNull(element,"a.username","href"));
+            bean.setPrivated(element.selectFirst("div.private-video") != null);
+            bean.setType(0);
+
+            beanList.add(bean);
         }
-        return array.toJSONString();
+        return beanList;
     }
 
 
